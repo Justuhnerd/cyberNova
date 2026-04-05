@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova | Training Events Gallery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+
+    /* Gallery Grid */
+    .gallery-item { transition: all 0.25s; cursor: pointer; }
+    .gallery-item:hover { transform: scale(1.02); }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-item:hover .gallery-img { filter: brightness(0.85); }
+    .gallery-overlay { opacity: 0; transition: opacity 0.25s; }
+    .gallery-img { transition: filter 0.25s; }
+    .gallery-item.hidden-item { display: none; }
+
+    /* Lightbox */
+    #lightbox { backdrop-filter: blur(8px); transition: opacity 0.25s; }
+    #lightboxImg { transition: transform 0.3s ease, opacity 0.3s ease; }
+    #lightboxImg.entering { opacity: 0; transform: scale(0.95); }
+
+    /* Filter pills */
+    .filter-pill { transition: all 0.18s; cursor: pointer; }
+    .filter-pill.active { background: #0A2F44; color: white; border-color: #0A2F44; }
+
+    /* Featured item */
+    .gallery-featured { grid-column: span 2; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp 0.5s ease forwards; opacity:0; }
+
+    @keyframes lightboxIn { from{opacity:0;transform:scale(.97)} to{opacity:1;transform:scale(1)} }
+    .lightbox-in { animation: lightboxIn 0.25s ease; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <div class="h-9 w-9 bg-[#0A2F44] rounded-lg flex items-center justify-center flex-shrink-0 border-2 border-[#E0A800]/40">
+        <span class="text-[#E0A800] font-black text-sm leading-none tracking-tighter">CN</span>
+      </div>
+      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+      <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
+      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
+      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
+      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
+      <a href="chatbot.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">AI Analyst</a>
+      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="login.html" class="text-slate-500 text-sm font-medium hover:text-[#0A2F44] transition-colors flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">lock</span> Admin
+      </a>
+      <a href="request.html" class="bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
+    </div>
+  </div>
+</header>
+
+<main class="pt-20">
+
+  <!-- PAGE HERO -->
+  <section class="bg-[#0A2F44] py-20 px-8 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5" style="background-image:linear-gradient(rgba(224,168,0,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(224,168,0,.3) 1px,transparent 1px);background-size:40px 40px;"></div>
+    <div class="absolute top-0 right-0 w-80 h-80 bg-[#E0A800]/5 rounded-full -translate-y-1/3 translate-x-1/4"></div>
+    <div class="max-w-7xl mx-auto relative z-10 flex flex-col md:flex-row justify-between items-end gap-8">
+      <div>
+        <span class="text-[#E0A800] text-xs font-bold tracking-widest uppercase">Events & Training</span>
+        <h1 class="text-5xl font-black text-white mt-3 mb-4 tracking-tight">Training Events Gallery</h1>
+        <p class="text-slate-300 text-lg max-w-2xl leading-relaxed">Behind-the-scenes from our workshops, SOC deployments, tabletop exercises, and security awareness campaigns across Southern Africa.</p>
+      </div>
+      <div class="flex gap-6 flex-shrink-0">
+        <div class="text-center"><div class="text-2xl font-black text-[#E0A800]" id="totalCount">12</div><p class="text-slate-400 text-xs mt-0.5">Photos</p></div>
+        <div class="w-px bg-white/10"></div>
+        <div class="text-center"><div class="text-2xl font-black text-[#E0A800]">5</div><p class="text-slate-400 text-xs mt-0.5">Event Types</p></div>
+        <div class="w-px bg-white/10"></div>
+        <div class="text-center"><div class="text-2xl font-black text-[#E0A800]">3</div><p class="text-slate-400 text-xs mt-0.5">Countries</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <section class="bg-white border-b border-slate-100 sticky top-[73px] z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Filter:</span>
+        <button class="filter-pill active border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="all">All Events</button>
+        <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="workshop">Workshops</button>
+        <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="tabletop">Tabletop Exercises</button>
+        <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="soc">SOC Deployments</button>
+        <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="conference">Conferences</button>
+        <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="awareness">Awareness Campaigns</button>
+      </div>
+      <span id="galleryCount" class="text-xs text-slate-400 font-medium">12 photos</span>
+    </div>
+  </section>
+
+  <!-- GALLERY GRID -->
+  <section class="py-12 px-8">
+    <div class="max-w-7xl mx-auto">
+      <div id="galleryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-auto">
+
+        <!-- Featured: Johannesburg Workshop -->
+        <div class="gallery-item gallery-featured col-span-2 row-span-2 rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.05s" data-category="workshop" data-id="0">
+          <img class="gallery-img w-full h-80 object-cover" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80" alt="SOC Training Workshop Johannesburg"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/60 flex flex-col justify-end p-6">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-1">Workshop · Johannesburg</span>
+            <h3 class="text-white font-bold text-lg leading-tight">SOC Analyst Training — Sandton Convention Centre</h3>
+            <p class="text-slate-200 text-xs mt-1">48 analysts · October 2024</p>
+            <div class="flex items-center gap-1.5 mt-3 text-white/70 text-xs">
+              <span class="material-symbols-outlined text-sm">zoom_in</span> Click to enlarge
+            </div>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.1s" data-category="tabletop" data-id="1">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80" alt="Tabletop Incident Response Exercise"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Tabletop · Cape Town</span>
+            <h3 class="text-white font-semibold text-sm">Incident Response Tabletop Exercise</h3>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.15s" data-category="awareness" data-id="2">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=600&q=80" alt="Phishing Awareness Campaign"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Awareness · Cape Town</span>
+            <h3 class="text-white font-semibold text-sm">Phishing Awareness Campaign Launch</h3>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.2s" data-category="soc" data-id="3">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" alt="SOC Deployment Zimbabwe"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">SOC Deploy · Harare</span>
+            <h3 class="text-white font-semibold text-sm">ZimMicro Finance SOC Go-Live</h3>
+          </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.25s" data-category="conference" data-id="4">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=600&q=80" alt="SACSA 2024 Conference"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Conference · Pretoria</span>
+            <h3 class="text-white font-semibold text-sm">SACSA 2024 — OT Security Panel</h3>
+          </div>
+        </div>
+
+        <!-- Item 6 - Wide -->
+        <div class="gallery-item col-span-2 rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.3s" data-category="workshop" data-id="5">
+          <img class="gallery-img w-full h-52 object-cover" src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=900&q=80" alt="Durban Security Workshop"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-5">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Workshop · Durban</span>
+            <h3 class="text-white font-bold text-base">Executive Cybersecurity Briefing — Durban ICC</h3>
+            <p class="text-slate-300 text-xs mt-1">Finance sector executives · September 2024</p>
+          </div>
+        </div>
+
+        <!-- Item 7 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.35s" data-category="awareness" data-id="6">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1590650046871-92965baa6ef5?w=600&q=80" alt="Staff Training Session"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Training · Lusaka</span>
+            <h3 class="text-white font-semibold text-sm">Government Staff Security Training</h3>
+          </div>
+        </div>
+
+        <!-- Item 8 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.4s" data-category="tabletop" data-id="7">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80" alt="Red Team Exercise"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Red Team · Johannesburg</span>
+            <h3 class="text-white font-semibold text-sm">Red Team vs Blue Team Exercise</h3>
+          </div>
+        </div>
+
+        <!-- Item 9 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.45s" data-category="soc" data-id="8">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80" alt="Analytics Dashboard"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A500] text-[10px] font-bold uppercase tracking-widest mb-0.5">SOC Deploy · Pretoria</span>
+            <h3 class="text-white font-semibold text-sm">Sentinel Analytics Dashboard Go-Live</h3>
+          </div>
+        </div>
+
+        <!-- Item 10 - Wide -->
+        <div class="gallery-item col-span-2 rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.5s" data-category="conference" data-id="9">
+          <img class="gallery-img w-full h-52 object-cover object-top" src="https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=900&q=80" alt="AfricaCom Security Summit"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-5">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Conference · Cape Town</span>
+            <h3 class="text-white font-bold text-base">AfricaCom — Sovereign Security Track Keynote</h3>
+            <p class="text-slate-300 text-xs mt-1">November 2024 · 600 attendees</p>
+          </div>
+        </div>
+
+        <!-- Item 11 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.55s" data-category="workshop" data-id="10">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="SME Security Workshop"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Workshop · Harare</span>
+            <h3 class="text-white font-semibold text-sm">SME Security Uplift Workshop</h3>
+          </div>
+        </div>
+
+        <!-- Item 12 -->
+        <div class="gallery-item rounded-xl overflow-hidden shadow-sm relative fade-up" style="animation-delay:.6s" data-category="awareness" data-id="11">
+          <img class="gallery-img w-full h-44 object-cover" src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80" alt="Awareness Campaign"/>
+          <div class="gallery-overlay absolute inset-0 bg-[#0A2F44]/65 flex flex-col justify-end p-4">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-0.5">Awareness · Lusaka</span>
+            <h3 class="text-white font-semibold text-sm">SADC Youth Cyber Awareness Day</h3>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- No Results -->
+      <div id="noResults" class="hidden text-center py-24">
+        <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">photo_library</span>
+        <p class="text-slate-500 font-semibold">No photos in this category.</p>
+        <button onclick="setFilter('all')" class="mt-4 text-[#0A2F44] font-bold text-sm underline">Show all</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 px-8 bg-[#0A2F44]">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-extrabold text-white mb-4">Want CyberNova at your organisation?</h2>
+      <p class="text-slate-300 mb-8 text-lg">We deliver on-site training workshops, tabletop exercises, and awareness campaigns tailored to your sector and team size.</p>
+      <a href="request.html" class="bg-[#E0A800] text-[#0A2F44] px-10 py-4 rounded-lg font-bold text-base hover:brightness-105 transition-all inline-block shadow-xl">Request a Training Event</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- LIGHTBOX (FR-07) -->
+<div id="lightbox" class="hidden fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4">
+
+  <!-- Close -->
+  <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors">
+    <span class="material-symbols-outlined text-3xl">close</span>
+  </button>
+
+  <!-- Nav arrows -->
+  <button id="prevBtn" onclick="navigateLight(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-2">
+    <span class="material-symbols-outlined text-4xl">chevron_left</span>
+  </button>
+  <button id="nextBtn" onclick="navigateLight(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/60 hover:text-white transition-colors p-2">
+    <span class="material-symbols-outlined text-4xl">chevron_right</span>
+  </button>
+
+  <!-- Image -->
+  <div class="max-w-5xl w-full mx-12 lightbox-in">
+    <img id="lightboxImg" src="" alt="" class="w-full max-h-[75vh] object-contain rounded-xl shadow-2xl"/>
+    <div class="mt-4 flex justify-between items-start">
+      <div>
+        <p id="lightboxCategory" class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest mb-1"></p>
+        <h3 id="lightboxTitle" class="text-white font-bold text-lg"></h3>
+        <p id="lightboxSub" class="text-slate-400 text-sm mt-0.5"></p>
+      </div>
+      <p id="lightboxCounter" class="text-slate-500 text-xs font-mono mt-1 flex-shrink-0"></p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-slate-900 text-white py-12 px-8">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-2.5">
+      <div class="h-8 w-8 bg-[#0A2F44] border border-[#E0A800]/40 rounded-lg flex items-center justify-center"><span class="text-[#E0A800] font-black text-xs">CN</span></div>
+      <span class="font-black text-lg tracking-tighter">CyberNova</span>
+    </div>
+    <div class="flex flex-wrap gap-6 text-sm text-slate-400 justify-center">
+      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="services.html" class="hover:text-white">Services</a>
+      <a href="faq.html" class="hover:text-white">FAQ</a>
+      <a href="case-studies.html" class="hover:text-white">Case Studies</a>
+      <a href="request.html" class="hover:text-white">Contact</a>
+    </div>
+    <div class="text-slate-500 text-xs">© 2024 CyberNova Analytics Ltd.</div>
+  </div>
+</footer>
+
+<script>
+  // ── Gallery data for lightbox ────────────────────────────────
+  const galleryItems = [
+    { src: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=85', title: 'SOC Analyst Training — Sandton Convention Centre', sub: '48 analysts · October 2024', cat: 'Workshop · Johannesburg' },
+    { src: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&q=85', title: 'Incident Response Tabletop Exercise', sub: 'Senior IT teams · September 2024', cat: 'Tabletop · Cape Town' },
+    { src: 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&q=85', title: 'Phishing Awareness Campaign Launch', sub: '1,400 staff · Cape Town Municipality', cat: 'Awareness · Cape Town' },
+    { src: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&q=85', title: 'ZimMicro Finance SOC Go-Live', sub: 'Harare operations centre · August 2024', cat: 'SOC Deployment · Harare' },
+    { src: 'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=1200&q=85', title: 'SACSA 2024 — OT Security Panel', sub: 'CyberNova panellist · Pretoria', cat: 'Conference · Pretoria' },
+    { src: 'https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?w=1200&q=85', title: 'Executive Cybersecurity Briefing — Durban ICC', sub: 'Finance sector executives · September 2024', cat: 'Workshop · Durban' },
+    { src: 'https://images.unsplash.com/photo-1590650046871-92965baa6ef5?w=1200&q=85', title: 'Government Staff Security Training', sub: 'Zambian ministry staff · July 2024', cat: 'Training · Lusaka' },
+    { src: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1200&q=85', title: 'Red Team vs Blue Team Exercise', sub: 'Financial institution · Johannesburg', cat: 'Red Team · Johannesburg' },
+    { src: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85', title: 'Sentinel Analytics Dashboard Go-Live', sub: 'Power utility deployment · Pretoria', cat: 'SOC Deployment · Pretoria' },
+    { src: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=1200&q=85', title: 'AfricaCom — Sovereign Security Track Keynote', sub: 'November 2024 · 600 attendees', cat: 'Conference · Cape Town' },
+    { src: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1200&q=85', title: 'SME Security Uplift Workshop', sub: 'Local business community · Harare', cat: 'Workshop · Harare' },
+    { src: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1200&q=85', title: 'SADC Youth Cyber Awareness Day', sub: 'University students · Lusaka', cat: 'Awareness · Lusaka' },
+  ];
+
+  let currentIdx = 0;
+  let visibleIds = galleryItems.map((_, i) => i);
+
+  // ── Click handler on gallery items ──────────────────────────
+  document.querySelectorAll('.gallery-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const id = parseInt(item.dataset.id);
+      currentIdx = visibleIds.indexOf(id);
+      if (currentIdx === -1) return;
+      openLightbox(id);
+    });
+  });
+
+  function openLightbox(id) {
+    const item = galleryItems[id];
+    document.getElementById('lightboxImg').src = item.src;
+    document.getElementById('lightboxImg').alt = item.title;
+    document.getElementById('lightboxTitle').textContent = item.title;
+    document.getElementById('lightboxSub').textContent = item.sub;
+    document.getElementById('lightboxCategory').textContent = item.cat;
+    document.getElementById('lightboxCounter').textContent = `${currentIdx + 1} / ${visibleIds.length}`;
+    document.getElementById('prevBtn').style.opacity = currentIdx === 0 ? '0.3' : '1';
+    document.getElementById('nextBtn').style.opacity = currentIdx === visibleIds.length - 1 ? '0.3' : '1';
+    document.getElementById('lightbox').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function navigateLight(dir) {
+    const newIdx = currentIdx + dir;
+    if (newIdx < 0 || newIdx >= visibleIds.length) return;
+    currentIdx = newIdx;
+    const id = visibleIds[currentIdx];
+    const img = document.getElementById('lightboxImg');
+    img.style.opacity = '0';
+    setTimeout(() => {
+      openLightbox(id);
+      img.style.opacity = '1';
+    }, 150);
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('lightbox').classList.contains('hidden')) return;
+    if (e.key === 'ArrowLeft') navigateLight(-1);
+    if (e.key === 'ArrowRight') navigateLight(1);
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // Click outside to close
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+
+  // ── Filter ───────────────────────────────────────────────────
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      setFilter(pill.dataset.filter);
+    });
+  });
+
+  function setFilter(cat) {
+    const items = document.querySelectorAll('.gallery-item');
+    visibleIds = [];
+    let visible = 0;
+    items.forEach(item => {
+      const match = cat === 'all' || item.dataset.category === cat;
+      item.style.display = match ? '' : 'none';
+      if (match) { visible++; visibleIds.push(parseInt(item.dataset.id)); }
+    });
+    document.getElementById('galleryCount').textContent = `${visible} photo${visible !== 1 ? 's' : ''}`;
+    document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+
+    // Handle featured item column span on filter
+    const featured = document.querySelector('.gallery-featured');
+    if (featured) {
+      featured.style.display = (cat === 'all' || featured.dataset.category === cat) ? '' : 'none';
+    }
+  }
+</script>
+</body>
+</html>

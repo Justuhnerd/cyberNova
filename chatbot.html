@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova | AI Analyst</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+    .chat-scroll::-webkit-scrollbar { width: 4px; }
+    .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+    .chat-scroll::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
+    @keyframes bounce { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+    .dot { animation: bounce 1.2s infinite; }
+    .dot:nth-child(2) { animation-delay: 0.15s; }
+    .dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .msg-in { animation: fadeIn 0.25s ease; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased h-screen flex flex-col">
+
+<!-- NAV -->
+ <header class="bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 flex-shrink-0">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+     <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <img src="images/ logo.png" alt="CyberNova" class="h-9 w-auto" />
+      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+      <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
+      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
+      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Request Service</a>
+      <a href="chatbot.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">AI Analyst</a>
+      <a href="admin.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Admin →</a>
+    </nav>
+    <a href="request.html" class="bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">
+      Contact Security Team
+    </a>
+  </div>
+</header>
+
+<div class="flex flex-1 overflow-hidden">
+
+  <!-- LEFT PANEL -->
+  <div class="hidden lg:flex flex-col w-80 bg-[#0A2F44] p-8 flex-shrink-0">
+    <div class="mb-8">
+      <div class="w-12 h-12 bg-[#E0A800] rounded-xl flex items-center justify-center mb-4">
+        <span class="material-symbols-outlined text-[#0A2F44] text-2xl" style="font-variation-settings:'FILL' 1">smart_toy</span>
+      </div>
+      <h2 class="text-white font-black text-xl tracking-tight">Nova AI Analyst</h2>
+      <p class="text-slate-400 text-xs mt-1">Sovereign Intelligence Interface v2.4</p>
+    </div>
+
+    <div class="space-y-3 mb-8">
+      <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-400 rounded-full"></div><span class="text-slate-300 text-xs">System Status: Nominal</span></div>
+      <div class="flex items-center gap-2"><div class="w-2 h-2 bg-[#E0A800] rounded-full"></div><span class="text-slate-300 text-xs">Threat Level: Moderate</span></div>
+      <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-400 rounded-full"></div><span class="text-slate-300 text-xs">Sentinel Network: Online</span></div>
+    </div>
+
+    <div class="mb-6">
+      <p class="text-slate-400 text-xs uppercase tracking-wider font-semibold mb-3">Quick Prompts</p>
+      <div class="space-y-2">
+        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">What are the latest threats in Southern Africa?</button>
+        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">Explain what Ransomware-as-a-Service is.</button>
+        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">How does Zero Trust architecture work?</button>
+        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">What is POPIA and how does it affect us?</button>
+        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">Run a basic security health check.</button>
+      </div>
+    </div>
+
+    <div class="mt-auto pt-6 border-t border-white/10">
+      <p class="text-slate-500 text-[10px] leading-relaxed">Nova AI provides general cybersecurity guidance. For active incidents, contact our emergency line immediately.</p>
+    </div>
+  </div>
+
+  <!-- CHAT AREA -->
+  <div class="flex flex-col flex-1 bg-slate-50">
+
+    <!-- Chat Header -->
+    <div class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 bg-[#0A2F44] rounded-lg flex items-center justify-center">
+          <span class="material-symbols-outlined text-[#E0A800] text-lg" style="font-variation-settings:'FILL' 1">smart_toy</span>
+        </div>
+        <div>
+          <h3 class="font-bold text-[#0A2F44] text-sm">CyberNova AI Analyst</h3>
+          <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div><span class="text-xs text-slate-400">Active — Sentinel Interface</span></div>
+        </div>
+      </div>
+      <button onclick="clearChat()" class="text-slate-400 hover:text-slate-600 transition-colors text-xs flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">refresh</span> Clear
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-5 chat-scroll">
+      <!-- Intro AI message -->
+      <div class="flex items-start gap-3 msg-in">
+        <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
+          <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
+        </div>
+        <div class="max-w-[80%]">
+          <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
+            <p class="text-sm leading-relaxed text-slate-700">Welcome, Commander. I'm <strong>Nova</strong> — CyberNova's AI security analyst. System status is <strong class="text-green-600">Nominal</strong>. I can help you understand cybersecurity threats, explain our services, or guide you through security best practices. How can I assist today?</p>
+          </div>
+          <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · Just now</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="bg-white border-t border-slate-100 p-4 flex-shrink-0">
+      <div class="flex items-center gap-3 max-w-4xl mx-auto">
+        <div class="flex-1 relative">
+          <input id="chatInput" type="text" placeholder="Ask Nova anything about cybersecurity..."
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-4 text-sm focus:outline-none focus:border-[#0A2F44] focus:ring-2 focus:ring-[#0A2F44]/10 transition-all"
+            onkeydown="if(event.key==='Enter') sendMessage()"/>
+        </div>
+        <button onclick="sendMessage()" class="w-11 h-11 bg-[#0A2F44] text-white rounded-xl flex items-center justify-center hover:bg-slate-700 transition-colors flex-shrink-0">
+          <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">send</span>
+        </button>
+      </div>
+      <p class="text-[10px] text-slate-400 text-center mt-2">CyberNova Intelligence v2.4.1 · For emergencies call +27 11 000 0001</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const responses = {
+    "ransomware": "Ransomware-as-a-Service (RaaS) is a criminal business model where ransomware developers lease their malicious tools to affiliates in exchange for a cut of ransom payments. It's the reason ransomware attacks have exploded — the barrier to entry is near zero. Affiliates don't need technical skills; they just need access to the RaaS platform. CyberNova's Adaptive Threat Intel monitors known RaaS groups active in the SADC region, including Cl0p and LockBit affiliates targeting local infrastructure.",
+    "zero trust": "Zero Trust is a security model built on the principle of 'never trust, always verify.' Unlike traditional perimeter security (which trusts anything inside the network), Zero Trust assumes breach and verifies every request regardless of origin. It requires strict identity verification, least-privilege access, micro-segmentation, and continuous monitoring. CyberNova natively integrates Zero Trust principles across all deployments — every user, device, and workload is treated as potentially hostile until verified.",
+    "popia": "POPIA (Protection of Personal Information Act) is South Africa's comprehensive data protection law, similar to GDPR. It governs how organisations collect, process, store, and share personal information. Key obligations include appointing an Information Officer, getting explicit consent for data processing, implementing technical security measures, and reporting breaches within 72 hours. Non-compliance can result in fines up to R10 million or 10 years imprisonment. CyberNova's Sovereign Cloud Guard ensures your architecture maintains POPIA compliance at the infrastructure level.",
+    "threat": "Current high-priority threats in the Southern African region include: (1) Ransomware attacks targeting financial institutions and government departments — we've tracked a 42% increase year-on-year. (2) Business Email Compromise (BEC) scams targeting CFOs and finance teams. (3) Supply chain attacks via third-party software vendors. (4) Phishing campaigns exploiting load-shedding and banking themes. CyberNova's threat intelligence team actively tracks 14 threat actor groups known to operate in the SADC region.",
+    "health": "Based on general security benchmarks, a basic health check includes: ✓ Patch management — are all systems updated? ✓ MFA enforcement across all user accounts ✓ Privileged Access Management (PAM) controls ✓ Endpoint Detection & Response (EDR) deployment ✓ Backup integrity and offline copies ✓ Network segmentation status ✓ Employee phishing simulation scores. For a comprehensive automated assessment of your specific environment, I'd recommend submitting a Service Request so our team can run a formal vulnerability assessment.",
+    "default": [
+      "That's a great question. Cybersecurity in the Southern African context involves unique challenges around data sovereignty, regulatory compliance (POPIA, GDPR), and region-specific threat actors. CyberNova's Sovereign Protection Framework is designed specifically for these conditions. Would you like me to explain any specific aspect in more detail?",
+      "From a security perspective, I'd recommend looking at this through the lens of our four-pillar framework: Adaptive Threat Intelligence, Sovereign Cloud Guard, Rapid Incident Response, and Executive Insight. Each pillar addresses a specific dimension of your security posture. Which would you like to explore?",
+      "That's within our operational scope. CyberNova's team of regional analysts can provide detailed guidance on this. For immediate specialist input, you can submit a Service Request and our team will respond within 2 business hours. In the meantime, I can provide general guidance — what specifically would you like to know?",
+      "Interesting question. In the SADC threat landscape, this is increasingly relevant. Our Sentinel AI monitors millions of signals daily to detect patterns like this before they manifest into incidents. Would you like me to elaborate on our detection methodology or our incident response approach?"
+    ]
+  };
+
+  function getResponse(input) {
+    const lower = input.toLowerCase();
+    if (lower.includes('ransomware') || lower.includes('raas')) return responses.ransomware;
+    if (lower.includes('zero trust') || lower.includes('zerotrust')) return responses['zero trust'];
+    if (lower.includes('popia') || lower.includes('gdpr') || lower.includes('compliance')) return responses.popia;
+    if (lower.includes('threat') || lower.includes('attack') || lower.includes('southern africa') || lower.includes('sadc')) return responses.threat;
+    if (lower.includes('health') || lower.includes('check') || lower.includes('audit') || lower.includes('assessment')) return responses.health;
+    return responses.default[Math.floor(Math.random() * responses.default.length)];
+  }
+
+  function appendMessage(text, isUser) {
+    const container = document.getElementById('chatMessages');
+    const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const div = document.createElement('div');
+    div.className = `flex items-start gap-3 msg-in ${isUser ? 'justify-end' : ''}`;
+    if (isUser) {
+      div.innerHTML = `<div class="max-w-[80%]"><div class="bg-[#0A2F44] text-white px-4 py-3 rounded-xl rounded-tr-none shadow-sm"><p class="text-sm leading-relaxed">${text}</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1 text-right">You · ${now}</span></div>`;
+    } else {
+      div.innerHTML = `
+        <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
+          <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
+        </div>
+        <div class="max-w-[80%]">
+          <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
+            <p class="text-sm leading-relaxed text-slate-700">${text}</p>
+          </div>
+          <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ${now}</span>
+        </div>`;
+    }
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function showTyping() {
+    const container = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.id = 'typingIndicator';
+    div.className = 'flex items-start gap-3';
+    div.innerHTML = `
+      <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
+        <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
+      </div>
+      <div class="bg-white border border-slate-100 px-4 py-4 rounded-tl-none rounded-xl shadow-sm flex gap-1.5 items-center">
+        <div class="dot w-2 h-2 bg-slate-400 rounded-full"></div>
+        <div class="dot w-2 h-2 bg-slate-400 rounded-full"></div>
+        <div class="dot w-2 h-2 bg-slate-400 rounded-full"></div>
+      </div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function hideTyping() {
+    const el = document.getElementById('typingIndicator');
+    if (el) el.remove();
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    appendMessage(text, true);
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      appendMessage(getResponse(text), false);
+    }, 1200 + Math.random() * 800);
+  }
+
+  function sendQuickPrompt(btn) {
+    const text = btn.textContent.trim();
+    document.getElementById('chatInput').value = text;
+    sendMessage();
+  }
+
+  function clearChat() {
+    const container = document.getElementById('chatMessages');
+    container.innerHTML = '';
+    appendMessage("Session cleared. How can I assist you?", false);
+  }
+</script>
+</body>
+</html>

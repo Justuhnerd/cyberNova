@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova | Request a Service</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+    .form-group { position: relative; margin-bottom: 1.25rem; }
+    .form-label { display:block; font-size:.75rem; font-weight:700; color:#374151; margin-bottom:.375rem; text-transform:uppercase; letter-spacing:.05em; }
+    .form-input { width:100%; padding:.75rem 1rem; border:1.5px solid #e2e8f0; border-radius:.5rem; font-size:.875rem; transition:border-color .2s,box-shadow .2s; outline:none; background:white; }
+    .form-input:focus { border-color:#0A2F44; box-shadow:0 0 0 3px rgba(10,47,68,.08); }
+    .form-input.valid { border-color:#1a6c40; }
+    .form-input.invalid { border-color:#ef4444; }
+    .form-input.invalid:focus { box-shadow:0 0 0 3px rgba(239,68,68,.08); }
+    .error-msg { display:none; font-size:.7rem; color:#ef4444; margin-top:.25rem; font-weight:600; }
+    .form-input.invalid ~ .error-msg { display:block; }
+    .form-select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .75rem center; background-size:1rem; padding-right:2.5rem; }
+    .tooltip{position:relative;cursor:help;border-bottom:1px dashed #E0A800}
+    .tooltip::after{content:attr(data-tip);position:absolute;bottom:125%;left:0;background:#0A2F44;color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;font-weight:400}
+    .tooltip:hover::after{opacity:1}
+    #successBanner{display:none}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+ <header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- Logo with image + text -->
+    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <img src="images/ logo.png" alt="CyberNova" class="h-9 w-auto" />
+      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+      <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
+      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
+      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
+      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
+      <a href="chatbot.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">AI Analyst</a>
+      <a href="request.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">Contact</a>
+    </nav>
+    <a href="request.html" class="bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
+  </div>
+</header>
+
+<main class="pt-20">
+  <section class="bg-[#0A2F44] py-20 px-8 relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-[#E0A800]/5 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+    <div class="max-w-7xl mx-auto relative z-10">
+      <span class="text-[#E0A800] text-xs font-bold tracking-widest uppercase">Get Started</span>
+      <h1 class="text-5xl font-black text-white mt-3 mb-4 tracking-tight">Request a Service</h1>
+      <p class="text-slate-300 text-lg max-w-xl">Submit your security requirement and our regional specialists will respond within 2 business hours. A unique ticket reference will be issued on submission.</p>
+    </div>
+  </section>
+
+  <section class="py-16 px-8">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+
+      <!-- SIDEBAR -->
+      <div class="space-y-6">
+        <div>
+          <h3 class="text-lg font-bold text-[#0A2F44] mb-5">Contact Details</h3>
+          <div class="space-y-4">
+            <div class="flex items-start gap-3"><span class="material-symbols-outlined text-[#E0A800] text-xl mt-0.5">call</span><div><p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">Phone</p><p class="text-sm font-medium">+27 11 000 0000</p></div></div>
+            <div class="flex items-start gap-3"><span class="material-symbols-outlined text-[#E0A800] text-xl mt-0.5">mail</span><div><p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">Email</p><p class="text-sm font-medium">security@cybernova.co.za</p></div></div>
+            <div class="flex items-start gap-3"><span class="material-symbols-outlined text-[#E0A800] text-xl mt-0.5">location_on</span><div><p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">Office</p><p class="text-sm font-medium">Sandton, Johannesburg<br/>South Africa</p></div></div>
+            <div class="flex items-start gap-3"><span class="material-symbols-outlined text-[#E0A800] text-xl mt-0.5">schedule</span><div><p class="text-xs text-slate-400 uppercase tracking-wider font-semibold mb-0.5">Response Time</p><p class="text-sm font-medium">Within 2 business hours</p></div></div>
+          </div>
+        </div>
+
+        <div class="bg-[#0A2F44] p-6 rounded-xl">
+          <h4 class="text-white font-bold mb-2">Emergency Incident?</h4>
+          <p class="text-slate-300 text-sm mb-4">Active breach or <span class="tooltip" data-tip="Ransomware: malware that encrypts your data and demands payment">ransomware</span> attack? Use our 24/7 emergency line immediately.</p>
+          <a href="tel:+27110000001" class="flex items-center gap-2 bg-[#E0A800] text-[#0A2F44] px-4 py-2.5 rounded font-bold text-sm w-full justify-center hover:brightness-105 transition-all">
+            <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">crisis_alert</span> Emergency Hotline
+          </a>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl border border-slate-100">
+          <h4 class="text-[#0A2F44] font-bold mb-3 text-sm">What happens next?</h4>
+          <div class="space-y-3">
+            <div class="flex gap-3"><div class="w-6 h-6 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-xs flex-shrink-0">1</div><p class="text-xs text-slate-500">You submit this form with full details</p></div>
+            <div class="flex gap-3"><div class="w-6 h-6 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-xs flex-shrink-0">2</div><p class="text-xs text-slate-500">A unique ticket (<strong>CNS-YYYYMMDD-XXXX</strong>) is generated instantly</p></div>
+            <div class="flex gap-3"><div class="w-6 h-6 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-xs flex-shrink-0">3</div><p class="text-xs text-slate-500">Our specialist contacts you within 2 business hours to scope the engagement</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="lg:col-span-2 bg-white p-10 rounded-xl border border-slate-100 shadow-sm">
+
+        <!-- Success Banner (NFR-07) -->
+        <div id="successBanner" class="bg-green-50 border border-green-200 rounded-xl p-5 mb-8 flex items-start gap-3">
+          <span class="material-symbols-outlined text-green-600 text-2xl flex-shrink-0" style="font-variation-settings:'FILL' 1">check_circle</span>
+          <div>
+            <p class="font-black text-green-800 text-lg">Request Submitted Successfully</p>
+            <p class="text-green-700 text-sm mt-1">Your ticket reference is <span id="ticketId" class="font-mono font-black text-green-900 bg-green-100 px-2 py-0.5 rounded">CNS-20241024-0000</span></p>
+            <p class="text-green-600 text-xs mt-2">Our team will contact you within 2 business hours. Keep your ticket ID for reference.</p>
+          </div>
+        </div>
+
+        <form id="requestForm" novalidate>
+          <h2 class="text-2xl font-black text-[#0A2F44] mb-8">Service Request Form</h2>
+
+          <!-- Row 1: Name -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="form-group">
+              <label class="form-label">First Name *</label>
+              <input type="text" class="form-input" id="firstName" placeholder="Mandla" oninput="validateField(this,'name')"/>
+              <p class="error-msg">Please enter your first name.</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name *</label>
+              <input type="text" class="form-input" id="lastName" placeholder="Ndlovu" oninput="validateField(this,'name')"/>
+              <p class="error-msg">Please enter your last name.</p>
+            </div>
+          </div>
+
+          <!-- Row 2: Contact -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="form-group">
+              <label class="form-label">Work Email *</label>
+              <input type="email" class="form-input" id="email" placeholder="m.ndlovu@company.co.za" oninput="validateField(this,'email')"/>
+              <p class="error-msg">Please enter a valid email address.</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" id="phone" placeholder="+27 11 000 0000"/>
+            </div>
+          </div>
+
+          <!-- Row 3: Org + Job Title (FR-08) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="form-group">
+              <label class="form-label">Organisation *</label>
+              <input type="text" class="form-input" id="org" placeholder="Company Name" oninput="validateField(this,'name')"/>
+              <p class="error-msg">Please enter your organisation name.</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Job Title *</label>
+              <input type="text" class="form-input" id="jobTitle" placeholder="e.g. IT Manager, CISO, CFO" oninput="validateField(this,'name')"/>
+              <p class="error-msg">Please enter your job title.</p>
+            </div>
+          </div>
+
+          <!-- Row 4: Country + Sector (FR-08) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="form-group">
+              <label class="form-label">Country *</label>
+              <select class="form-input form-select" id="country" onchange="validateField(this,'select')">
+                <option value="">Select your country</option>
+                <option>South Africa</option><option>Zimbabwe</option><option>Zambia</option>
+                <option>Botswana</option><option>Mozambique</option><option>Namibia</option>
+                <option>Malawi</option><option>Tanzania</option><option>Angola</option><option>Other</option>
+              </select>
+              <p class="error-msg">Please select your country.</p>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sector *</label>
+              <select class="form-input form-select" id="sector" onchange="validateField(this,'select')">
+                <option value="">Select your sector</option>
+                <option>Government / Public Sector</option><option>Financial Services / Banking</option>
+                <option>Energy & Utilities</option><option>Healthcare</option>
+                <option>Enterprise / SME</option><option>Telecommunications</option><option>Other</option>
+              </select>
+              <p class="error-msg">Please select your sector.</p>
+            </div>
+          </div>
+
+          <!-- Threat Type (FR-08) -->
+          <div class="form-group">
+            <label class="form-label">Threat Type / Service Required *</label>
+            <select class="form-input form-select" id="threatType" onchange="validateField(this,'select')">
+              <option value="">Select threat type or service</option>
+              <option>Ransomware Response</option><option>Phishing / Social Engineering</option>
+              <option>Malware Investigation</option><option>APT / Nation-State Threat</option>
+              <option>DDoS Mitigation</option><option>Zero-Day Vulnerability</option>
+              <option>IoT Security Assessment</option><option>Insider Threat Investigation</option>
+              <option>Data Exfiltration Response</option><option>Penetration Testing</option>
+              <option>Security Awareness Training</option><option>SOC Implementation</option>
+              <option>POPIA / Compliance Audit</option><option>General Security Assessment</option>
+            </select>
+            <p class="error-msg">Please select a threat type or service.</p>
+          </div>
+
+          <!-- Urgency -->
+          <div class="form-group">
+            <label class="form-label">Urgency Level *</label>
+            <div class="grid grid-cols-3 gap-3" id="urgencyGroup">
+              <label class="cursor-pointer">
+                <input type="radio" name="urgency" value="low" class="sr-only peer"/>
+                <div class="peer-checked:bg-green-50 peer-checked:border-green-500 peer-checked:text-green-700 border-2 border-slate-200 rounded-lg p-3 text-center transition-all text-slate-500">
+                  <span class="material-symbols-outlined text-lg block mb-1">check_circle</span>
+                  <span class="text-xs font-bold">Low</span>
+                  <p class="text-[10px] mt-0.5">Planning / Advisory</p>
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="urgency" value="medium" class="sr-only peer"/>
+                <div class="peer-checked:bg-yellow-50 peer-checked:border-yellow-500 peer-checked:text-yellow-700 border-2 border-slate-200 rounded-lg p-3 text-center transition-all text-slate-500">
+                  <span class="material-symbols-outlined text-lg block mb-1">warning</span>
+                  <span class="text-xs font-bold">Medium</span>
+                  <p class="text-[10px] mt-0.5">Active Concern</p>
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="urgency" value="high" class="sr-only peer"/>
+                <div class="peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 border-2 border-slate-200 rounded-lg p-3 text-center transition-all text-slate-500">
+                  <span class="material-symbols-outlined text-lg block mb-1">crisis_alert</span>
+                  <span class="text-xs font-bold">High</span>
+                  <p class="text-[10px] mt-0.5">Active Breach</p>
+                </div>
+              </label>
+            </div>
+            <p id="urgencyError" class="error-msg" style="display:none">Please select an urgency level.</p>
+          </div>
+
+          <!-- Description (FR-08) -->
+          <div class="form-group">
+            <label class="form-label">Technical Description *</label>
+            <textarea class="form-input resize-none" rows="5" id="description" oninput="validateField(this,'text')" placeholder="Describe your security situation in as much detail as possible — current symptoms, affected systems, timeline, and any previous incident response steps taken..."></textarea>
+            <div class="flex justify-between mt-1">
+              <p class="error-msg" style="display:inline">Please provide a description (minimum 30 characters).</p>
+              <span id="charCount" class="text-[10px] text-slate-400 ml-auto block text-right">0 / 30 min</span>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3">
+            <button type="button" onclick="submitForm()" class="flex-1 bg-[#0A2F44] text-white py-4 rounded-xl font-bold text-sm hover:bg-slate-700 transition-all flex items-center justify-center gap-2">
+              <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">send</span>
+              Submit Service Request
+            </button>
+            <button type="button" onclick="resetForm()" class="px-6 py-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all flex items-center gap-1">
+              <span class="material-symbols-outlined text-base">refresh</span> Reset
+            </button>
+          </div>
+          <p class="text-xs text-slate-400 text-center mt-3">Protected under POPIA · All submissions are confidential</p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-slate-900 text-white py-12 px-8">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="font-black text-xl tracking-tighter">CyberNova</div>
+    <div class="flex gap-6 text-sm text-slate-400">
+      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="services.html" class="hover:text-white">Services</a>
+      <a href="faq.html" class="hover:text-white">FAQ</a>
+      <a href="chatbot.html" class="hover:text-white">AI Analyst</a>
+    </div>
+    <div class="text-slate-500 text-xs">© 2024 CyberNova Analytics Ltd.</div>
+  </div>
+</footer>
+
+<script>
+  // Character counter for description
+  document.getElementById('description').addEventListener('input', function() {
+    const count = this.value.length;
+    document.getElementById('charCount').textContent = `${count} / 30 min`;
+    document.getElementById('charCount').classList.toggle('text-green-600', count >= 30);
+    document.getElementById('charCount').classList.toggle('text-slate-400', count < 30);
+  });
+
+  // Real-time validation (NFR-05)
+  function validateField(el, type) {
+    let valid = false;
+    const v = el.value.trim();
+    if (type === 'name') valid = v.length >= 2;
+    else if (type === 'email') valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    else if (type === 'text') valid = v.length >= 30;
+    else if (type === 'select') valid = v !== '';
+
+    el.classList.toggle('valid', valid);
+    el.classList.toggle('invalid', !valid && v !== '');
+    return valid;
+  }
+
+  function validateAll() {
+    let ok = true;
+    const fields = [
+      {id:'firstName', type:'name'}, {id:'lastName', type:'name'},
+      {id:'email', type:'email'}, {id:'org', type:'name'},
+      {id:'jobTitle', type:'name'}, {id:'country', type:'select'},
+      {id:'sector', type:'select'}, {id:'threatType', type:'select'},
+      {id:'description', type:'text'}
+    ];
+    fields.forEach(f => {
+      const el = document.getElementById(f.id);
+      const v = validateField(el, f.type);
+      if (!v) { el.classList.add('invalid'); ok = false; }
+    });
+
+    // Urgency check
+    const urgency = document.querySelector('input[name="urgency"]:checked');
+    const urgErr = document.getElementById('urgencyError');
+    if (!urgency) { urgErr.style.display = 'block'; ok = false; }
+    else urgErr.style.display = 'none';
+
+    return ok;
+  }
+
+  function generateTicketId() {
+    const d = new Date();
+    const date = d.getFullYear().toString() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+    const num = String(Math.floor(1000 + Math.random() * 9000));
+    return `CNS-${date}-${num}`;
+  }
+
+  function submitForm() {
+    if (!validateAll()) {
+      document.querySelector('.invalid')?.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    const ticket = generateTicketId();
+    document.getElementById('ticketId').textContent = ticket;
+    const banner = document.getElementById('successBanner');
+    banner.style.display = 'flex';
+
+    // Disable form
+    document.querySelectorAll('#requestForm input, #requestForm select, #requestForm textarea, #requestForm button').forEach(el => el.disabled = true);
+    banner.scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function resetForm() {
+    document.getElementById('successBanner').style.display = 'none';
+    document.getElementById('requestForm').reset();
+    document.querySelectorAll('#requestForm input, #requestForm select, #requestForm textarea, #requestForm button').forEach(el => {
+      el.disabled = false;
+      el.classList.remove('valid','invalid');
+    });
+    document.getElementById('charCount').textContent = '0 / 30 min';
+    document.getElementById('urgencyError').style.display = 'none';
+  }
+</script>
+</body>
+</html>

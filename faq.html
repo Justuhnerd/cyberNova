@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova | Cyber Threat FAQ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+
+    /* Accordion */
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.25s ease; }
+    .faq-answer.open { max-height: 600px; }
+    .faq-chevron { transition: transform 0.25s ease; }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+    .faq-item.open { border-color: #0A2F44; }
+    .faq-item.open .faq-header { background: #f8fafc; }
+
+    /* Filter pills */
+    .filter-pill { transition: all 0.18s; cursor: pointer; }
+    .filter-pill.active { background: #0A2F44; color: white; border-color: #0A2F44; }
+
+    /* Tooltip */
+    .tip { position:relative; cursor:help; border-bottom:1px dashed #E0A800; }
+    .tip::after { content:attr(data-tip); position:absolute; bottom:125%; left:50%; transform:translateX(-50%);
+      background:#0A2F44; color:#fff; font-size:11px; padding:5px 9px; border-radius:6px;
+      white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s; z-index:50; font-weight:400; }
+    .tip:hover::after { opacity:1; }
+
+    /* Search highlight */
+    mark { background: #FEF3C7; color: #0A2F44; border-radius: 2px; padding: 0 2px; }
+
+    /* Category badge */
+    .badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; padding: 2px 8px; border-radius: 9999px; }
+
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp 0.5s ease forwards; opacity:0; }
+    .faq-item { transition: border-color 0.2s; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<!-- NAV -->
+<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <div class="h-9 w-9 bg-[#0A2F44] rounded-lg flex items-center justify-center flex-shrink-0 border-2 border-[#E0A800]/40">
+        <span class="text-[#E0A800] font-black text-sm leading-none tracking-tighter">CN</span>
+      </div>
+      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium">
+      <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
+      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
+      <a href="faq.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">FAQ</a>
+      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
+      <a href="chatbot.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">AI Analyst</a>
+      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="login.html" class="text-slate-500 text-sm font-medium hover:text-[#0A2F44] transition-colors flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">lock</span> Admin
+      </a>
+      <a href="request.html" class="bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
+    </div>
+  </div>
+</header>
+
+<main class="pt-20">
+
+  <!-- PAGE HERO -->
+  <section class="bg-[#0A2F44] py-20 px-8 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-5" style="background-image:linear-gradient(rgba(224,168,0,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(224,168,0,.3) 1px,transparent 1px);background-size:40px 40px;"></div>
+    <div class="absolute top-0 right-0 w-80 h-80 bg-[#E0A800]/5 rounded-full -translate-y-1/3 translate-x-1/4"></div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+      <span class="inline-block px-3 py-1 bg-[#E0A800]/20 text-[#E0A800] text-xs font-bold tracking-widest uppercase rounded mb-4">Education Centre</span>
+      <h1 class="text-5xl font-black text-white mt-2 mb-5 tracking-tight">Cyber Threat FAQ</h1>
+      <p class="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">Understanding the threats that target Southern African organisations is the first line of defence. Hover any <span style="border-bottom:1px dashed #E0A800;color:#E0A800">gold term</span> for an instant definition.</p>
+      <!-- Search -->
+      <div class="mt-8 max-w-xl mx-auto relative">
+        <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+        <input id="faqSearch" type="text" placeholder="Search threats, terms, questions..."
+          class="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl py-3.5 pl-12 pr-4 text-sm focus:outline-none focus:border-[#E0A800] focus:bg-white/15 transition-all"
+          oninput="filterFAQ()"/>
+        <span id="searchClear" class="hidden absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-white material-symbols-outlined text-lg" onclick="clearSearch()">close</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER PILLS -->
+  <section class="bg-white border-b border-slate-100 sticky top-[73px] z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-3 flex flex-wrap items-center gap-2">
+      <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-2">Filter:</span>
+      <button class="filter-pill active border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="all" onclick="setFilter('all', this)">All Threats</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="malware" onclick="setFilter('malware', this)">Malware</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="ransomware" onclick="setFilter('ransomware', this)">Ransomware</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="phishing" onclick="setFilter('phishing', this)">Phishing</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="ddos" onclick="setFilter('ddos', this)">DDoS</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="apt" onclick="setFilter('apt', this)">APTs</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="zeroday" onclick="setFilter('zeroday', this)">Zero-Day</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="iot" onclick="setFilter('iot', this)">IoT</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="social" onclick="setFilter('social', this)">Social Eng.</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="insider" onclick="setFilter('insider', this)">Insider</button>
+      <button class="filter-pill border border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-semibold" data-filter="exfiltration" onclick="setFilter('exfiltration', this)">Data Exfil.</button>
+    </div>
+  </section>
+
+  <!-- FAQ CONTENT -->
+  <section class="py-16 px-8">
+    <div class="max-w-4xl mx-auto">
+
+      <div id="noResults" class="hidden text-center py-20">
+        <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">search_off</span>
+        <p class="text-slate-500 font-semibold">No results found.</p>
+        <p class="text-slate-400 text-sm mt-1">Try different keywords or clear the search.</p>
+        <button onclick="clearSearch()" class="mt-4 text-[#0A2F44] font-bold text-sm underline">Clear search</button>
+      </div>
+
+      <div id="faqList" class="space-y-10">
+
+        <!-- ── MALWARE ─────────────────────────────────────────── -->
+        <div class="faq-group" data-category="malware">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-red-500 text-xl" style="font-variation-settings:'FILL' 1">bug_report</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Malware</h2>
+              <p class="text-slate-400 text-xs">Malicious software — viruses, trojans, spyware, worms</p>
+            </div>
+            <span class="ml-auto badge bg-red-50 text-red-600">High Risk</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="malware virus trojan spyware worm software">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50 transition-colors" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What is malware and how does it get onto my systems?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-3 border-t border-slate-100 pt-4">
+                  <p><strong class="text-[#0A2F44]">Malware</strong> (malicious software) is any program designed to harm, exploit, or gain unauthorised access to systems. It enters your environment through several vectors common in Southern Africa:</p>
+                  <ul class="list-none space-y-2 pl-2">
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span><strong>Phishing emails</strong> with malicious attachments or links — the most common entry point across African SMEs</span></li>
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span><strong>Pirated software</strong> distributed via USB or local file-sharing networks, frequently containing embedded <span class="tip" data-tip="Software that records keystrokes to steal passwords and credentials">keyloggers</span></span></li>
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span><strong>Drive-by downloads</strong> from compromised or fake websites</span></li>
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span><strong>Infected USB drives</strong> — a major vector in organisations with limited network access</span></li>
+                  </ul>
+                  <p class="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-800"><strong>African Context:</strong> South Africa, Zimbabwe, and Botswana see high rates of malware from pirated business software, particularly in SMEs that cannot afford licensed tools.</p>
+                </div>
+              </div>
+            </div>
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="malware types virus trojan spyware rootkit">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What are the different types of malware I should know about?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Virus</p><p class="text-xs text-slate-500">Self-replicating code that attaches to legitimate programs and spreads when files are shared.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Trojan</p><p class="text-xs text-slate-500">Disguised as legitimate software — opens a backdoor for attackers once installed.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Spyware</p><p class="text-xs text-slate-500">Silently monitors user activity, capturing passwords, browsing, and financial data.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1"><span class="tip" data-tip="Software that hides its presence on a system, giving attackers persistent access">Rootkit</span></p><p class="text-xs text-slate-500">Hides deep in the OS, giving attackers persistent, undetected administrative access.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Worm</p><p class="text-xs text-slate-500">Spreads automatically across networks without user interaction — devastating in flat network architectures.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Adware</p><p class="text-xs text-slate-500">Displays unwanted ads and may harvest browsing data. Often a precursor to more serious infections.</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="malware protection antivirus endpoint detection response">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">How does CyberNova protect against malware?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p>CyberNova deploys a layered approach combining <span class="tip" data-tip="Endpoint Detection and Response — continuous monitoring and automated response on devices">EDR</span> tooling, network traffic analysis, and behavioural AI that detects malware even without known signatures. Our Adaptive Threat Intel team maintains curated malware IOC feeds specifically covering active campaigns in the SADC region.</p>
+                  <a href="request.html" class="inline-flex items-center gap-1.5 text-[#0A2F44] font-bold text-xs mt-2 hover:underline">Request a malware assessment <span class="material-symbols-outlined text-sm">arrow_forward</span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── RANSOMWARE ──────────────────────────────────────── -->
+        <div class="faq-group" data-category="ransomware">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-red-600 text-xl" style="font-variation-settings:'FILL' 1">lock</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Ransomware</h2>
+              <p class="text-slate-400 text-xs">File encryption attacks demanding cryptocurrency payment</p>
+            </div>
+            <span class="ml-auto badge bg-red-50 text-red-600">Critical</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="ransomware encrypt payment bitcoin cryptocurrency lockbit">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What is ransomware and how does an attack unfold?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-3 border-t border-slate-100 pt-4">
+                  <p>Ransomware encrypts your files and demands payment — typically in cryptocurrency — to restore access. A typical attack follows this sequence:</p>
+                  <div class="flex flex-col gap-2 pl-2">
+                    <div class="flex gap-3 items-start"><div class="w-6 h-6 bg-[#0A2F44] rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">1</div><p><strong>Initial Access</strong> — via phishing email, exposed <span class="tip" data-tip="Remote Desktop Protocol — a common protocol for remote computer access">RDP</span>, or compromised credentials</p></div>
+                    <div class="flex gap-3 items-start"><div class="w-6 h-6 bg-[#0A2F44] rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">2</div><p><strong>Lateral Movement</strong> — attacker moves through the network, escalating privileges and identifying backup systems</p></div>
+                    <div class="flex gap-3 items-start"><div class="w-6 h-6 bg-[#0A2F44] rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">3</div><p><strong>Exfiltration</strong> — data copied out before encryption (enabling double-extortion threats)</p></div>
+                    <div class="flex gap-3 items-start"><div class="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mt-0.5">4</div><p><strong>Encryption</strong> — all accessible files encrypted, ransom note deployed</p></div>
+                  </div>
+                  <p class="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-800"><strong>African Context:</strong> LockBit, BlackCat, and cl0p affiliates actively target Southern African logistics, healthcare, and financial institutions. Average ransom demand in the region: USD $280,000.</p>
+                </div>
+              </div>
+            </div>
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="ransomware-as-a-service raas criminal business model affiliates">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What is Ransomware-as-a-Service (RaaS)?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p><span class="tip" data-tip="Ransomware-as-a-Service: a criminal subscription model">RaaS</span> is a criminal business model where ransomware developers lease their attack tools and infrastructure to affiliates in exchange for a cut of ransom payments (typically 20–30%). This is why ransomware attacks have exploded — the technical barrier is now near zero. Affiliates only need to identify victims and gain initial access.</p>
+                  <p>It mirrors legitimate SaaS: there are dashboards, customer support, negotiation portals, and even "satisfaction guarantees" to victims who pay.</p>
+                </div>
+              </div>
+            </div>
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="ransomware should i pay ransom recovery backup">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">Should we pay the ransom?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p><strong class="text-red-600">No — and here's why:</strong> Only 65% of organisations that pay actually recover all their data. Paying marks you as a "paying target" and increases likelihood of re-attack. It funds criminal operations and in some jurisdictions may have legal implications depending on which group is sanctioned.</p>
+                  <p>CyberNova's incident response team recovered Durban Freight Solutions' systems in under 18 hours without a single ransom payment through offline backup restoration and forensic decryption. <a href="case-studies.html" class="text-[#0A2F44] font-bold hover:underline">Read the case study →</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── PHISHING ────────────────────────────────────────── -->
+        <div class="faq-group" data-category="phishing">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-orange-500 text-xl" style="font-variation-settings:'FILL' 1">phishing</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Phishing</h2>
+              <p class="text-slate-400 text-xs">Deceptive messages, smishing, vishing, and BEC attacks</p>
+            </div>
+            <span class="ml-auto badge bg-orange-50 text-orange-600">Very Common</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="phishing email smishing vishing spear phishing whaling">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What are the different types of phishing attacks?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <div class="space-y-3">
+                    <div class="flex gap-3"><span class="text-[#E0A800] font-black text-sm flex-shrink-0 w-28">Email Phishing</span><p class="text-sm">Mass deceptive emails impersonating trusted brands — banks, SARS, telecoms providers. Load-shedding notifications are widely exploited in South Africa.</p></div>
+                    <div class="flex gap-3"><span class="text-[#E0A800] font-black text-sm flex-shrink-0 w-28"><span class="tip" data-tip="SMS-based phishing — fake messages from banks, couriers, or government">Smishing</span></span><p class="text-sm">SMS attacks exploiting mobile banking usage rates across SADC, often impersonating Standard Bank, FNB, or Econet.</p></div>
+                    <div class="flex gap-3"><span class="text-[#E0A800] font-black text-sm flex-shrink-0 w-28">Spear Phishing</span><p class="text-sm">Highly targeted email using personal details — LinkedIn-sourced job titles, recent contracts — to appear legitimate.</p></div>
+                    <div class="flex gap-3"><span class="text-[#E0A800] font-black text-sm flex-shrink-0 w-28"><span class="tip" data-tip="Business Email Compromise — impersonating executives to authorise fraudulent wire transfers">BEC / Whaling</span></span><p class="text-sm">Impersonating the CEO or CFO to approve fraudulent transfers. The most costly single attack type in African finance — average loss: USD $130,000 per incident.</p></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="phishing identify recognise red flags suspicious email">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">How do I recognise a phishing email?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed border-t border-slate-100 pt-4">
+                  <div class="grid grid-cols-2 gap-2">
+                    <div class="flex items-start gap-2 bg-red-50 rounded-lg p-2.5"><span class="material-symbols-outlined text-red-500 text-base flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1">warning</span><span class="text-xs">Urgent language demanding immediate action</span></div>
+                    <div class="flex items-start gap-2 bg-red-50 rounded-lg p-2.5"><span class="material-symbols-outlined text-red-500 text-base flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1">warning</span><span class="text-xs">Sender domain doesn't match the claimed organisation</span></div>
+                    <div class="flex items-start gap-2 bg-red-50 rounded-lg p-2.5"><span class="material-symbols-outlined text-red-500 text-base flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1">warning</span><span class="text-xs">Unexpected attachment or link from a known contact</span></div>
+                    <div class="flex items-start gap-2 bg-red-50 rounded-lg p-2.5"><span class="material-symbols-outlined text-red-500 text-base flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1">warning</span><span class="text-xs">Requests for credentials or banking details via email</span></div>
+                    <div class="flex items-start gap-2 bg-red-50 rounded-lg p-2.5"><span class="material-symbols-outlined text-red-500 text-base flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1">warning</span><span class="text-xs">Hover reveals a URL different from the displayed link text</span></div>
+                    <div class="flex items-start gap-2 bg-red-50 rounded-lg p-2.5"><span class="material-symbols-outlined text-red-500 text-base flex-shrink-0 mt-0.5" style="font-variation-settings:'FILL' 1">warning</span><span class="text-xs">Poor grammar or unusual formatting from a "bank"</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DDOS ───────────────────────────────────────────── -->
+        <div class="faq-group" data-category="ddos">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-yellow-600 text-xl" style="font-variation-settings:'FILL' 1">storm</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">DDoS Attacks</h2>
+              <p class="text-slate-400 text-xs">Distributed Denial of Service — flooding services to cause outages</p>
+            </div>
+            <span class="ml-auto badge bg-yellow-50 text-yellow-700">Disruptive</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="ddos distributed denial service flood volumetric bandwidth">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">How does a DDoS attack work and who launches them?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-3 border-t border-slate-100 pt-4">
+                  <p>A <span class="tip" data-tip="Distributed Denial of Service — using thousands of compromised machines to flood a target">DDoS attack</span> uses a <span class="tip" data-tip="A network of compromised computers controlled by an attacker">botnet</span> of thousands of hijacked devices to flood a target with traffic until its services become unavailable. Even well-resourced infrastructure can buckle under terabit-scale attacks.</p>
+                  <p>Typical attackers targeting Southern Africa: hacktivist groups protesting government policies, criminal organisations offering "DDoS-for-hire" services, and competitors in competitive industries.</p>
+                  <p class="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-800"><strong>Regional Impact:</strong> South African banking and e-commerce portals, Zimbabwean government services, and Zambian telecoms have all experienced significant DDoS campaigns since 2022.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── APTs ───────────────────────────────────────────── -->
+        <div class="faq-group" data-category="apt">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-purple-500 text-xl" style="font-variation-settings:'FILL' 1">radar</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Advanced Persistent Threats (APTs)</h2>
+              <p class="text-slate-400 text-xs">Nation-state and organised long-term intrusion campaigns</p>
+            </div>
+            <span class="ml-auto badge bg-purple-50 text-purple-700">Sophisticated</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="apt advanced persistent threat nation state government espionage long term">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What makes an APT different from regular attacks?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p><span class="tip" data-tip="Advanced Persistent Threat — a long-term targeted intrusion by a sophisticated actor">APTs</span> are distinguished by three characteristics: they are <strong>Advanced</strong> (using custom tooling and zero-days), <strong>Persistent</strong> (maintaining access for months or years without detection), and <strong>Targeted</strong> (focused on specific organisations, ministries, or infrastructure).</p>
+                  <p>Average dwell time for an APT in African government networks: <strong>287 days</strong> — meaning attackers remain undetected for nearly 10 months. During this time they harvest classified documents, credentials, procurement data, and diplomatic communications.</p>
+                  <p class="bg-amber-50 border border-amber-100 rounded-lg p-3 text-xs text-amber-800"><strong>African Context:</strong> APT groups attributed to foreign states have been observed targeting SADC ministries, central banks, and energy regulators since 2020. CyberNova's threat intelligence team actively tracks 6 APT groups known to operate in the region.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ZERO-DAY ────────────────────────────────────────── -->
+        <div class="faq-group" data-category="zeroday">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-blue-500 text-xl" style="font-variation-settings:'FILL' 1">emergency</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Zero-Day Exploits</h2>
+              <p class="text-slate-400 text-xs">Attacks targeting unpatched, undisclosed software vulnerabilities</p>
+            </div>
+            <span class="ml-auto badge bg-blue-50 text-blue-700">High Severity</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="zero day vulnerability exploit unpatched unknown software legacy">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What is a zero-day vulnerability and why is it so dangerous?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p>A <span class="tip" data-tip="A vulnerability that is unknown to the software vendor — no patch exists yet">zero-day</span> is a security flaw that is unknown to the software vendor, meaning there is no available patch. Attackers who discover — or purchase — zero-days can exploit them with near-100% success rates until the vendor issues a fix.</p>
+                  <p>Zero-days are traded on dark web markets for hundreds of thousands of dollars. They are primarily used by nation-state actors and sophisticated criminal groups. <strong>For Southern African organisations running legacy ERP, banking platforms, or unpatched Windows servers, zero-days represent a significant and underestimated risk.</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── IOT ────────────────────────────────────────────── -->
+        <div class="faq-group" data-category="iot">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-teal-500 text-xl" style="font-variation-settings:'FILL' 1">router</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">IoT Vulnerabilities</h2>
+              <p class="text-slate-400 text-xs">Internet of Things — smart devices as network entry points</p>
+            </div>
+            <span class="ml-auto badge bg-teal-50 text-teal-700">Growing Risk</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="iot internet of things smart devices cameras meters sensors default credentials">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">Why are IoT devices a cybersecurity risk?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p><span class="tip" data-tip="Internet of Things — network-connected physical devices like cameras, smart meters, and industrial sensors">IoT devices</span> — smart meters, IP cameras, access control systems, industrial sensors — often ship with weak default credentials, receive infrequent firmware updates, and lack built-in security controls.</p>
+                  <p>In Southern Africa, rapid deployment of smart infrastructure (prepaid smart meters, CCTV networks, industrial control systems) has outpaced security hardening. A compromised IP camera or smart meter can serve as the entry point for a broader network intrusion.</p>
+                  <p class="bg-slate-50 border rounded-lg p-3 text-xs"><strong>Quick win:</strong> Change all default passwords on IoT devices immediately. This single action eliminates the most common IoT attack vector.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── SOCIAL ENGINEERING ──────────────────────────────── -->
+        <div class="faq-group" data-category="social">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-pink-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-pink-500 text-xl" style="font-variation-settings:'FILL' 1">psychology</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Social Engineering</h2>
+              <p class="text-slate-400 text-xs">Psychological manipulation of staff to bypass technical controls</p>
+            </div>
+            <span class="ml-auto badge bg-pink-50 text-pink-600">Human Risk</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="social engineering manipulation pretexting impersonation bec cfo fraud vishing">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What is social engineering and why can't technology alone stop it?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p>Social engineering exploits human psychology rather than software vulnerabilities. No firewall stops an employee who is convinced they are speaking to the CEO. Common techniques include <span class="tip" data-tip="Creating a fabricated scenario to extract information from a target">pretexting</span>, impersonation, urgency manipulation, and <span class="tip" data-tip="Offering something valuable to gain trust or access">quid pro quo</span> attacks.</p>
+                  <p><span class="tip" data-tip="Business Email Compromise — impersonating executives to authorise fraudulent wire transfers">BEC scams</span> targeting finance teams are the most financially damaging social engineering attack in the African context. Attackers study LinkedIn, company websites, and news articles to craft convincing impersonations of executives.</p>
+                  <p>The only effective defence is a well-trained human layer — which is why CyberNova's Security Awareness Training is one of our most-requested services.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── INSIDER THREATS ─────────────────────────────────── -->
+        <div class="faq-group" data-category="insider">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-amber-600 text-xl" style="font-variation-settings:'FILL' 1">manage_accounts</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Insider Threats</h2>
+              <p class="text-slate-400 text-xs">Malicious or negligent employees, contractors, and partners</p>
+            </div>
+            <span class="ml-auto badge bg-amber-50 text-amber-700">Often Overlooked</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="insider threat employee contractor malicious negligent privileged access">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What types of insider threats exist and how do you detect them?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <div class="space-y-2">
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Malicious Insider</p><p class="text-xs text-slate-500">An employee deliberately exfiltrating data, sabotaging systems, or selling access. Most common among staff with grievances or approaching resignation.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Negligent Insider</p><p class="text-xs text-slate-500">Accidental data exposure through misconfigured cloud storage, sharing confidential files inappropriately, or falling for phishing. Accounts for 62% of insider incidents.</p></div>
+                    <div class="bg-slate-50 rounded-lg p-3"><p class="font-bold text-[#0A2F44] text-xs mb-1">Compromised Insider</p><p class="text-xs text-slate-500">A legitimate user whose credentials have been stolen — the attacker acts as the employee. Detected through behavioural analytics flagging unusual access patterns.</p></div>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-2">Detection requires <span class="tip" data-tip="User and Entity Behaviour Analytics — AI that baselines normal behaviour and flags anomalies">UEBA</span> tooling, least-privilege access controls, and thorough off-boarding processes — all components of CyberNova's sovereign protection framework.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── DATA EXFILTRATION ───────────────────────────────── -->
+        <div class="faq-group" data-category="exfiltration">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 bg-slate-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-slate-600 text-xl" style="font-variation-settings:'FILL' 1">output</span>
+            </div>
+            <div>
+              <h2 class="text-xl font-black text-[#0A2F44]">Data Exfiltration</h2>
+              <p class="text-slate-400 text-xs">Unauthorised transfer of sensitive data to external parties</p>
+            </div>
+            <span class="ml-auto badge bg-slate-100 text-slate-600">POPIA Relevant</span>
+          </div>
+          <div class="space-y-3">
+            <div class="faq-item border border-slate-200 rounded-xl overflow-hidden" data-tags="data exfiltration popia gdpr breach notification 72 hours personal information">
+              <button class="faq-header w-full flex justify-between items-center px-6 py-4 text-left hover:bg-slate-50" onclick="toggleFAQ(this)">
+                <span class="font-semibold text-[#0A2F44] text-sm">What are our obligations under POPIA when data is exfiltrated?</span>
+                <span class="material-symbols-outlined faq-chevron text-slate-400 flex-shrink-0 ml-4">expand_more</span>
+              </button>
+              <div class="faq-answer px-6">
+                <div class="pb-5 text-slate-600 text-sm leading-relaxed space-y-2 border-t border-slate-100 pt-4">
+                  <p><span class="tip" data-tip="Protection of Personal Information Act — South Africa's comprehensive data privacy law">POPIA</span> (Protection of Personal Information Act) requires South African organisations to:</p>
+                  <ul class="space-y-1.5 pl-2">
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span>Notify the <span class="tip" data-tip="Information Regulator of South Africa — the POPIA enforcement body">Information Regulator</span> <strong>as soon as reasonably possible</strong> after becoming aware of a breach</span></li>
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span>Notify all affected data subjects (individuals whose personal information was compromised)</span></li>
+                    <li class="flex gap-2"><span class="text-[#E0A800] font-bold">→</span><span>Document all breaches in a security incident register regardless of severity</span></li>
+                  </ul>
+                  <p class="bg-red-50 border border-red-100 rounded-lg p-3 text-xs text-red-800"><strong>Penalties:</strong> POPIA non-compliance can result in fines up to <strong>R10 million</strong> or <strong>10 years imprisonment</strong> for responsible parties. Detection speed is therefore not just a security objective — it's a legal one.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end faqList -->
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 px-8 bg-[#0A2F44]">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl font-extrabold text-white mb-4">Still have questions?</h2>
+      <p class="text-slate-300 mb-8">Talk to our AI analyst 24/7 or submit a service request to speak with a specialist.</p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <a href="chatbot.html" class="bg-[#E0A800] text-[#0A2F44] px-8 py-3.5 rounded-lg font-bold text-sm hover:brightness-105 transition-all flex items-center gap-2">
+          <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">smart_toy</span> Ask Nova AI
+        </a>
+        <a href="request.html" class="border border-white/30 text-white px-8 py-3.5 rounded-lg font-semibold text-sm hover:bg-white/10 transition-all flex items-center gap-2">
+          <span class="material-symbols-outlined text-base">mail</span> Contact a Specialist
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-slate-900 text-white py-12 px-8">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+    <div class="flex items-center gap-2.5">
+      <div class="h-8 w-8 bg-[#0A2F44] border border-[#E0A800]/40 rounded-lg flex items-center justify-center"><span class="text-[#E0A800] font-black text-xs">CN</span></div>
+      <span class="font-black text-lg tracking-tighter">CyberNova</span>
+    </div>
+    <div class="flex flex-wrap gap-6 text-sm text-slate-400 justify-center">
+      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="services.html" class="hover:text-white">Services</a>
+      <a href="case-studies.html" class="hover:text-white">Case Studies</a>
+      <a href="chatbot.html" class="hover:text-white">AI Analyst</a>
+      <a href="request.html" class="hover:text-white">Contact</a>
+    </div>
+    <div class="text-slate-500 text-xs">© 2024 CyberNova Analytics Ltd.</div>
+  </div>
+</footer>
+
+<a href="chatbot.html" class="fixed bottom-8 right-8 w-14 h-14 bg-[#0A2F44] text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 transition-all hover:scale-110 group z-50 border-2 border-[#E0A800]/30">
+  <span class="material-symbols-outlined text-2xl group-hover:rotate-12 transition-transform" style="font-variation-settings:'FILL' 1">smart_toy</span>
+  <div class="absolute right-full mr-4 bg-white text-[#0A2F44] px-4 py-2 rounded shadow-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Nova Assistant Online</div>
+</a>
+
+<script>
+  // Accordion
+  function toggleFAQ(btn) {
+    const item = btn.closest('.faq-item');
+    const answer = item.querySelector('.faq-answer');
+    const isOpen = item.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-item.open').forEach(el => {
+      el.classList.remove('open');
+      el.querySelector('.faq-answer').classList.remove('open');
+    });
+    // Open this if it was closed
+    if (!isOpen) {
+      item.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+  // Filter by category
+  let activeFilter = 'all';
+  function setFilter(cat, btn) {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    filterFAQ();
+  }
+
+  // Search + filter combined
+  function filterFAQ() {
+    const query = document.getElementById('faqSearch').value.toLowerCase().trim();
+    const clearBtn = document.getElementById('searchClear');
+    clearBtn.classList.toggle('hidden', query === '');
+
+    let visibleCount = 0;
+    document.querySelectorAll('.faq-group').forEach(group => {
+      const cat = group.dataset.category;
+      const catMatch = activeFilter === 'all' || cat === activeFilter;
+      if (!catMatch) { group.style.display = 'none'; return; }
+
+      let groupVisible = false;
+      group.querySelectorAll('.faq-item').forEach(item => {
+        const tags = (item.dataset.tags || '').toLowerCase();
+        const text = item.textContent.toLowerCase();
+        const match = query === '' || tags.includes(query) || text.includes(query);
+        item.style.display = match ? '' : 'none';
+        if (match) groupVisible = true;
+      });
+      group.style.display = groupVisible ? '' : 'none';
+      if (groupVisible) visibleCount++;
+    });
+
+    document.getElementById('noResults').classList.toggle('hidden', visibleCount > 0);
+  }
+
+  function clearSearch() {
+    document.getElementById('faqSearch').value = '';
+    filterFAQ();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova Analytics | Sovereign Sentinel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    html,body{overflow-x:hidden;font-family:'Inter',sans-serif;}
+    .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+
+    /* ── Hamburger ─────────────────────────────────────────── */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
+    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
+    .hamburger span:nth-child(1){margin-bottom:5px;}
+    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
+
+    /* ── Overlay ───────────────────────────────────────────── */
+    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
+
+    /* ── Drawer ────────────────────────────────────────────── */
+    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
+    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
+    .mobile-nav-drawer.open{transform:translateX(0);}
+    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
+    .mobile-nav-links{flex:1;padding:10px 0;}
+    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
+    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
+    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
+    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
+    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(1){transition-delay:.07s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(2){transition-delay:.12s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(3){transition-delay:.17s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(4){transition-delay:.22s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(5){transition-delay:.27s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(6){transition-delay:.32s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(7){transition-delay:.37s}
+    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
+    .drawer-footer .cta-primary{display:block;background:#E0A800;color:#0A2F44;text-align:center;padding:13px 20px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;transition:filter .2s;}
+    .drawer-footer .cta-primary:hover{filter:brightness(1.07);}
+    .drawer-footer .cta-secondary{display:flex;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;}
+    .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
+    body.nav-open{overflow:hidden;}
+
+    @media(max-width:767px){
+      .hamburger{display:flex;}
+      .desktop-nav{display:none!important;}
+      .desktop-cta{display:none!important;}
+      .desktop-admin-link{display:none!important;}
+    }
+    @media(max-width:640px){
+      .hero-btns{flex-direction:column!important;}
+      .hero-btns a{width:100%!important;text-align:center!important;}
+      .stats-grid{grid-template-columns:1fr 1fr!important;}
+      .threat-grid,.pillar-grid,.case-grid,.testimonials-grid{grid-template-columns:1fr!important;}
+      .cta-btn{display:block!important;width:100%!important;text-align:center!important;}
+      .footer-grid{grid-template-columns:1fr!important;gap:2rem!important;}
+    }
+
+    /* ── Page-specific ─────────────────────────────────────── */
+    .hero-overlay{background:linear-gradient(135deg,rgba(10,47,68,.96) 0%,rgba(10,47,68,.72) 100%);}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    .fade-up{animation:fadeUp .7s ease forwards;opacity:0;}
+    .fade-up-1{animation-delay:.1s}.fade-up-2{animation-delay:.25s}.fade-up-3{animation-delay:.4s}.fade-up-4{animation-delay:.55s}
+    .threat-card{transition:all .22s;border-left:3px solid transparent;}
+    .threat-card:hover{border-left-color:#E0A800;transform:translateX(4px);box-shadow:0 4px 20px rgba(10,47,68,.08);}
+    .star{color:#E0A800;}
+    .pillar-card{transition:all .22s;}
+    .pillar-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(10,47,68,.12);}
+    .pillar-card:hover .p-icon{background-color:#1a6c40;}
+    .p-icon{transition:background-color .22s;}
+    .tooltip{position:relative;cursor:help;border-bottom:1px dashed #E0A800;}
+    .tooltip::after{content:attr(data-tip);position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#0A2F44;color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;font-weight:400;}
+    .tooltip:hover::after{opacity:1;}
+    .grid-bg{background-image:linear-gradient(rgba(10,47,68,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(10,47,68,.04) 1px,transparent 1px);background-size:40px 40px;}
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
+  <div class="drawer-header"><p>Navigation</p></div>
+  <div class="mobile-nav-links">
+    <a href="index.html" class="active"><span class="nav-icon">home</span>Home</a>
+    <a href="services.html"><span class="nav-icon">shield</span>Services</a>
+    <a href="faq.html"><span class="nav-icon">help</span>FAQ</a>
+    <a href="case-studies.html"><span class="nav-icon">folder_open</span>Case Studies</a>
+    <a href="chatbot.html"><span class="nav-icon">smart_toy</span>AI Analyst</a>
+    <a href="gallery.html"><span class="nav-icon">photo_library</span>Gallery</a>
+    <a href="request.html"><span class="nav-icon">mail</span>Contact</a>
+  </div>
+  <div class="drawer-footer">
+    <a href="request.html" class="cta-primary">Get Protected</a>
+    <a href="login.html" class="cta-secondary"><span class="material-symbols-outlined" style="font-size:14px">lock</span>Admin Login</a>
+  </div>
+</nav>
+
+<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
+      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+    </a>
+    <nav class="desktop-nav hidden md:flex items-center gap-7 text-sm font-medium">
+      <a href="index.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">Home</a>
+      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
+      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
+      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
+      <a href="chatbot.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">AI Analyst</a>
+      <a href="gallery.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Gallery</a>
+      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
+    </nav>
+    <div class="flex items-center gap-2">
+      <a href="login.html" class="desktop-admin-link hidden md:flex text-slate-500 text-sm font-medium hover:text-[#0A2F44] items-center gap-1"><span class="material-symbols-outlined text-base">lock</span>Admin</a>
+      <a href="request.html" class="desktop-cta hidden md:inline-block bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
+      <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="relative min-h-[88vh] flex items-center pt-20 overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1800&q=80" alt="SOC" class="w-full h-full object-cover"/>
+      <div class="absolute inset-0 hero-overlay"></div>
+    </div>
+    <div class="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-8 py-16 sm:py-24">
+      <div class="max-w-4xl space-y-6">
+        <span class="fade-up fade-up-1 inline-block px-3 py-1 bg-[#E0A800]/20 text-[#E0A800] text-xs font-bold tracking-widest uppercase rounded">Southern Africa · Regional Sovereignty</span>
+        <h1 class="fade-up fade-up-2 text-4xl sm:text-5xl md:text-7xl font-black text-white tracking-tight leading-[1.05]">The Sovereign Sentinel: <span class="text-[#E0A800]">AI-Driven</span> Cybersecurity for a Resilient Southern Africa</h1>
+        <p class="fade-up fade-up-3 text-base sm:text-lg text-slate-200 max-w-2xl font-light leading-relaxed">Predictive analytics and sovereign intelligence protecting government, finance, and enterprise infrastructure across the region — 24/7.</p>
+        <div class="hero-btns fade-up fade-up-4 flex flex-col sm:flex-row gap-3 pt-2">
+          <a href="request.html" class="bg-[#E0A800] text-[#0A2F44] px-8 py-4 rounded font-bold text-base hover:brightness-105 transition-all shadow-lg">Get in Touch</a>
+          <a href="faq.html" class="border border-white/30 text-white bg-white/5 backdrop-blur-sm px-8 py-4 rounded font-semibold text-base hover:bg-white/15 transition-all">Learn About Cyber Threats</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="bg-[#0A2F44] py-10 px-4 sm:px-8">
+    <div class="stats-grid max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div><div class="text-2xl sm:text-3xl font-black text-[#E0A800]">42%</div><p class="text-slate-300 text-xs mt-1 uppercase tracking-wider">Rise in Regional Attacks</p></div>
+      <div><div class="text-2xl sm:text-3xl font-black text-[#E0A800]">180d</div><p class="text-slate-300 text-xs mt-1 uppercase tracking-wider">Avg. Breach Detection</p></div>
+      <div><div class="text-2xl sm:text-3xl font-black text-[#E0A800]">68%</div><p class="text-slate-300 text-xs mt-1 uppercase tracking-wider">Data Sovereignty Gaps</p></div>
+      <div><div class="text-2xl sm:text-3xl font-black text-[#E0A800]">99.9%</div><p class="text-slate-300 text-xs mt-1 uppercase tracking-wider">CyberNova Uptime SLA</p></div>
+    </div>
+  </section>
+
+  <!-- THREAT LANDSCAPE -->
+  <section class="py-16 sm:py-24 px-4 sm:px-8 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-4">
+        <span class="text-[#E0A800] text-xs font-bold uppercase tracking-widest">Know Your Enemy</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0A2F44] mt-3 mb-4 tracking-tight">The Cyber Threat Landscape</h2>
+        <p class="text-slate-500 text-base sm:text-lg">Understanding threats targeting Southern African organisations is the first line of defence.</p>
+      </div>
+      <p class="text-center mb-10"><a href="faq.html" class="text-[#0A2F44] font-bold text-sm inline-flex items-center gap-1 hover:gap-3 transition-all">Full threat education centre <span class="material-symbols-outlined text-base">arrow_forward</span></a></p>
+      <div class="threat-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-red-500 text-xl" style="font-variation-settings:'FILL' 1">bug_report</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Software designed to disrupt, damage, or gain unauthorised access">Malware</span></h3><p class="text-slate-500 text-sm leading-relaxed">Malicious software including viruses, trojans, and spyware. A leading threat against African SMEs with limited endpoint protection.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-red-600 text-xl" style="font-variation-settings:'FILL' 1">lock</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Encrypts victim files and demands payment to restore access">Ransomware</span></h3><p class="text-slate-500 text-sm leading-relaxed">Encrypts organisational data and demands cryptocurrency payment. <span class="tooltip" data-tip="Ransomware-as-a-Service: criminal business model leasing attack tools">RaaS</span> operations target Southern African logistics, health, and finance sectors.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-orange-500 text-xl" style="font-variation-settings:'FILL' 1">phishing</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Deceptive messages tricking users into revealing credentials">Phishing</span></h3><p class="text-slate-500 text-sm leading-relaxed">Deceptive emails, <span class="tooltip" data-tip="SMS-based phishing attacks">smishing</span>, or calls impersonating trusted entities. Load-shedding and banking themes are prevalent in South Africa.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-yellow-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-yellow-600 text-xl" style="font-variation-settings:'FILL' 1">storm</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Distributed Denial of Service: overwhelms servers with traffic">DDoS Attacks</span></h3><p class="text-slate-500 text-sm leading-relaxed">Floods infrastructure with traffic to render services unavailable. African financial institutions and government portals face increasing DDoS campaigns.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-purple-500 text-xl" style="font-variation-settings:'FILL' 1">radar</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Advanced Persistent Threat: long-term targeted intrusion by nation-state actors">APTs</span></h3><p class="text-slate-500 text-sm leading-relaxed">Nation-state groups maintaining long-term covert network presence. APTs targeting African government ministries have risen sharply since 2022.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-blue-500 text-xl" style="font-variation-settings:'FILL' 1">emergency</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="A vulnerability unknown to the vendor with no available patch">Zero-Day Exploits</span></h3><p class="text-slate-500 text-sm leading-relaxed">Attacks exploiting unknown vulnerabilities before patches exist. Critical for organisations running legacy ERP and banking systems common in the SADC region.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-teal-500 text-xl" style="font-variation-settings:'FILL' 1">router</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Internet of Things: network-connected physical devices">IoT Vulnerabilities</span></h3><p class="text-slate-500 text-sm leading-relaxed">Smart meters and IP cameras with weak credentials create entry points. Africa's rapid IoT rollout outpaces security hardening.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-pink-500 text-xl" style="font-variation-settings:'FILL' 1">psychology</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1">Social Engineering</h3><p class="text-slate-500 text-sm leading-relaxed">Manipulating staff through impersonation and urgency. <span class="tooltip" data-tip="Business Email Compromise: impersonating executives to authorise fraudulent transfers">BEC scams</span> targeting CFOs are among the highest-cost attacks in African finance.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-amber-600 text-xl" style="font-variation-settings:'FILL' 1">manage_accounts</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1">Insider Threats</h3><p class="text-slate-500 text-sm leading-relaxed">Malicious or negligent employees with legitimate access. High-privilege accounts in government and banking present the greatest insider risk exposure.</p></div></div></div>
+        <div class="threat-card bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-100 sm:col-span-2 lg:col-span-1"><div class="flex items-start gap-4"><div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0"><span class="material-symbols-outlined text-slate-600 text-xl" style="font-variation-settings:'FILL' 1">output</span></div><div><h3 class="font-bold text-[#0A2F44] mb-1"><span class="tooltip" data-tip="Unauthorised transfer of sensitive data to an external party">Data Exfiltration</span></h3><p class="text-slate-500 text-sm leading-relaxed">Unauthorised transfer of customer records or financial data. <span class="tooltip" data-tip="Protection of Personal Information Act — South Africa's data privacy law">POPIA</span> mandates breach notification within 72 hours.</p></div></div></div>
+      </div>
+      <div class="mt-10 text-center"><a href="faq.html" class="inline-flex items-center gap-2 bg-[#0A2F44] text-white px-6 sm:px-8 py-3.5 rounded-lg font-bold text-sm hover:bg-slate-700 transition-all"><span class="material-symbols-outlined text-lg">school</span>Full Threat Education Centre</a></div>
+    </div>
+  </section>
+
+  <!-- PILLARS -->
+  <section class="py-16 sm:py-24 px-4 sm:px-8 bg-slate-50 grid-bg">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+        <span class="text-[#E0A800] text-xs font-bold uppercase tracking-widest">Our Approach</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0A2F44] mt-3 mb-4 tracking-tight">Sovereign Protection Framework</h2>
+        <p class="text-slate-500 text-base sm:text-lg">Four pillars of AI-native defence built for the Southern African threat landscape.</p>
+      </div>
+      <div class="pillar-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="pillar-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="p-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-5"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">search_insights</span></div><h3 class="text-lg font-bold text-[#0A2F44] mb-2">Adaptive Threat Intel</h3><p class="text-slate-500 text-sm leading-relaxed">Continuous monitoring specialised in African attack vectors and regional dark web activity.</p></div>
+        <div class="pillar-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="p-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-5"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">cloud_done</span></div><h3 class="text-lg font-bold text-[#0A2F44] mb-2">Sovereign Cloud Guard</h3><p class="text-slate-500 text-sm leading-relaxed">Strict data residency and POPIA compliance within regional borders.</p></div>
+        <div class="pillar-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="p-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-5"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">bolt</span></div><h3 class="text-lg font-bold text-[#0A2F44] mb-2">Rapid Incident Response</h3><p class="text-slate-500 text-sm leading-relaxed">MTTD under 5 minutes with automated ML containment protocols.</p></div>
+        <div class="pillar-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="p-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-5"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">leaderboard</span></div><h3 class="text-lg font-bold text-[#0A2F44] mb-2">Executive Insight Panel</h3><p class="text-slate-500 text-sm leading-relaxed">Board-ready reporting translating technical risk into actionable strategic decisions.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CASE STUDIES TEASER -->
+  <section class="py-16 sm:py-24 px-4 sm:px-8 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
+        <div><span class="text-[#E0A800] text-xs font-bold uppercase tracking-widest">Proven Results</span><h2 class="text-3xl sm:text-4xl font-extrabold text-[#0A2F44] mt-3 mb-2">Case Studies</h2><p class="text-slate-500">Real engagements. Measurable outcomes.</p></div>
+        <a href="case-studies.html" class="text-[#0A2F44] font-bold text-sm flex items-center gap-1 hover:gap-3 transition-all whitespace-nowrap">All case studies <span class="material-symbols-outlined text-base">arrow_forward</span></a>
+      </div>
+      <div class="case-grid grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden"><div class="bg-[#0A2F44] px-6 py-3"><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-wider">Financial · Zimbabwe</span></div><div class="p-6"><h4 class="font-bold text-[#0A2F44] mb-3">SOC Implementation — Microfinance</h4><p class="text-sm text-slate-500 mb-4 leading-relaxed">A Zimbabwean microfinance institution with 40,000 clients had no security monitoring. Transaction fraud went undetected for weeks.</p><p class="text-xs font-bold text-[#1a6c40] uppercase tracking-wider">↓ 94% reduction in fraud incidents</p></div></div>
+        <div class="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden"><div class="bg-[#0A2F44] px-6 py-3"><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-wider">Government · Cape Town</span></div><div class="p-6"><h4 class="font-bold text-[#0A2F44] mb-3">Phishing Simulation Campaign</h4><p class="text-sm text-slate-500 mb-4 leading-relaxed">Staff had an 82% click-through rate on phishing emails. Security culture was non-existent at all levels of the municipality.</p><p class="text-xs font-bold text-[#1a6c40] uppercase tracking-wider">↓ Click rate reduced to 11%</p></div></div>
+        <div class="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden"><div class="bg-[#0A2F44] px-6 py-3"><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-wider">Logistics · Durban</span></div><div class="p-6"><h4 class="font-bold text-[#0A2F44] mb-3">Ransomware Incident Response</h4><p class="text-sm text-slate-500 mb-4 leading-relaxed">LockBit ransomware encrypted all operational systems 72 hours before a critical port shipment window.</p><p class="text-xs font-bold text-[#1a6c40] uppercase tracking-wider">✓ Restored in 18hrs, zero ransom paid</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="py-16 sm:py-24 px-4 sm:px-8 bg-[#0A2F44]">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-10 sm:mb-14"><span class="text-[#E0A800] text-xs font-bold uppercase tracking-widest">Client Voices</span><h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">What Our Clients Say</h2></div>
+      <div class="testimonials-grid grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white/5 border border-white/10 p-6 sm:p-8 rounded-xl"><div class="flex gap-0.5 mb-4"><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span></div><p class="text-slate-300 text-sm leading-relaxed mb-6">"CyberNova responded to our ransomware incident faster than I thought possible. They had us operational in under 18 hours. Their knowledge of the local threat landscape is unmatched."</p><div class="flex items-center gap-3"><div class="w-10 h-10 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm flex-shrink-0">TM</div><div><p class="text-white text-sm font-semibold">Thandeka Mokoena</p><p class="text-slate-400 text-xs">COO · Durban Freight Solutions</p></div></div></div>
+        <div class="bg-white/5 border border-white/10 p-6 sm:p-8 rounded-xl"><div class="flex gap-0.5 mb-4"><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span></div><p class="text-slate-300 text-sm leading-relaxed mb-6">"The phishing simulation exposed serious gaps we didn't know existed. Six months later, our staff are genuinely security-conscious. The training was practical and culturally appropriate."</p><div class="flex items-center gap-3"><div class="w-10 h-10 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm flex-shrink-0">KD</div><div><p class="text-white text-sm font-semibold">Kobus de Villiers</p><p class="text-slate-400 text-xs">IT Director · Cape Town Municipality</p></div></div></div>
+        <div class="bg-white/5 border border-white/10 p-6 sm:p-8 rounded-xl"><div class="flex gap-0.5 mb-4"><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="star material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">star</span><span class="material-symbols-outlined text-lg text-slate-500">star</span></div><p class="text-slate-300 text-sm leading-relaxed mb-6">"As a microfinance institution we couldn't afford enterprise security. CyberNova built us a SOC that scales with our budget. Fraud reduction paid for the engagement in two months."</p><div class="flex items-center gap-3"><div class="w-10 h-10 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm flex-shrink-0">FN</div><div><p class="text-white text-sm font-semibold">Farai Ncube</p><p class="text-slate-400 text-xs">CEO · ZimMicro Finance Ltd</p></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 sm:py-20 px-4 sm:px-8 bg-[#E0A800]">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0A2F44] mb-5">Ready to Strengthen Your Digital Sovereignty?</h2>
+      <p class="text-[#0A2F44]/75 mb-8 sm:mb-10 text-base sm:text-lg font-medium">Connect with our regional security specialists for a comprehensive threat assessment.</p>
+      <a href="request.html" class="cta-btn bg-[#0A2F44] text-white px-10 py-4 rounded-lg font-bold text-base sm:text-lg hover:bg-slate-800 transition-all hover:-translate-y-1 inline-block shadow-xl">Contact Our Security Team</a>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-slate-900 text-white py-12 sm:py-16 px-4 sm:px-8">
+  <div class="footer-grid max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
+    <div><div class="font-black text-2xl tracking-tighter mb-4">CyberNova</div><p class="text-slate-400 text-sm leading-relaxed">Empowering the Southern African digital frontier with uncompromised AI security.</p></div>
+    <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Solutions</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="services.html" class="hover:text-white">Services</a></li><li><a href="case-studies.html" class="hover:text-white">Case Studies</a></li><li><a href="faq.html" class="hover:text-white">Threat FAQ</a></li><li><a href="chatbot.html" class="hover:text-white">AI Analyst</a></li></ul></div>
+    <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Company</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="request.html" class="hover:text-white">Contact</a></li><li><a href="login.html" class="hover:text-white">Admin Login</a></li></ul></div>
+    <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Legal</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="#" class="hover:text-white">Privacy Policy</a></li><li><a href="#" class="hover:text-white">POPIA Compliance</a></li><li><a href="#" class="hover:text-white">Terms of Service</a></li></ul></div>
+  </div>
+  <div class="max-w-7xl mx-auto mt-10 pt-8 border-t border-slate-800 text-slate-500 text-xs">© 2024 CyberNova Analytics Ltd. All rights reserved. Southern Africa Region.</div>
+</footer>
+
+<a href="chatbot.html" class="fixed bottom-6 sm:bottom-8 right-4 sm:right-8 w-12 sm:w-14 h-12 sm:h-14 bg-[#0A2F44] text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 transition-all hover:scale-110 group z-40 border-2 border-[#E0A800]/30">
+  <span class="material-symbols-outlined text-xl sm:text-2xl group-hover:rotate-12 transition-transform" style="font-variation-settings:'FILL' 1">smart_toy</span>
+  <div class="absolute right-full mr-4 bg-white text-[#0A2F44] px-4 py-2 rounded shadow-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">Nova Assistant Online</div>
+</a>
+
+<script>
+(function(){
+  var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay');
+  if(!btn||!drawer||!overlay)return;
+  function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');}
+  function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');}
+  btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();});
+  overlay.addEventListener('click',c);
+  drawer.querySelectorAll('a').forEach(function(a){a.addEventListener('click',c);});
+  window.addEventListener('resize',function(){if(window.innerWidth>=768)c();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')c();});
+})();
+</script>
+</body>
+</html>

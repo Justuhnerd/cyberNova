@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hamburger Test – No Overlay</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Inter', sans-serif;
+      background: #f8fafc;
+      overflow-x: hidden;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Fix white column / horizontal scroll */
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    body.nav-open {
+      overflow: hidden;
+      position: fixed;
+      width: 100%;
+    }
+
+    /* Header – pure white */
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: white;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border-bottom: 1px solid #e2e8f0;
+      z-index: 50;
+    }
+
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+    }
+
+    .logo-text {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #0A2F44;
+    }
+
+    /* Desktop nav */
+    .desktop-nav {
+      display: none;
+      gap: 2rem;
+    }
+
+    .desktop-nav a {
+      text-decoration: none;
+      color: #64748b;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .desktop-nav a:hover,
+    .desktop-nav a.active {
+      color: #0A2F44;
+      border-bottom: 2px solid #E0A800;
+      padding-bottom: 2px;
+    }
+
+    /* Hamburger button */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 44px;
+      height: 44px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 200;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #0A2F44;
+      border-radius: 2px;
+      transition: transform 0.35s, opacity 0.25s, width 0.3s;
+    }
+
+    .hamburger span:nth-child(1) { margin-bottom: 5px; }
+    .hamburger span:nth-child(3) { margin-top: 5px; width: 16px; }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .hamburger.open span:nth-child(3) {
+      width: 24px;
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* Mobile drawer (no overlay) */
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(320px, 85vw);
+      background: #0A2F44;
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      flex-direction: column;
+      padding-top: 73px;
+      overflow-y: auto;
+    }
+
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .drawer-header p {
+      color: rgba(255,255,255,0.45);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .mobile-nav-links {
+      flex: 1;
+      padding: 12px 0;
+    }
+
+    .mobile-nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      color: rgba(255,255,255,0.75);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      border-left: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .mobile-nav-links a:hover,
+    .mobile-nav-links a.active {
+      color: white;
+      background: rgba(255,255,255,0.06);
+      border-left-color: #E0A800;
+    }
+
+    .mobile-nav-links a .nav-icon {
+      font-size: 18px;
+      opacity: 0.6;
+    }
+
+    .drawer-footer {
+      padding: 20px 28px 32px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .drawer-footer .cta-primary {
+      background: #E0A800;
+      color: #0A2F44;
+      text-align: center;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .drawer-footer .cta-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: rgba(255,255,255,0.5);
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    /* Force hamburger on mobile */
+    @media (max-width: 767px) {
+      .hamburger {
+        display: flex !important;
+      }
+      .desktop-nav {
+        display: none !important;
+      }
+    }
+
+    /* Page content */
+    .content {
+      padding-top: 85px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #0A2F44;
+    }
+    p {
+      margin-top: 1rem;
+      color: #334155;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Mobile drawer (no overlay) -->
+<nav id="mobileDrawer" class="mobile-drawer">
+  <div class="drawer-header">
+    <p>Navigation</p>
+  </div>
+  <div class="mobile-nav-links">
+    <a href="#" class="active"><span class="nav-icon">🏠</span> Home</a>
+    <a href="#"><span class="nav-icon">🛡️</span> Services</a>
+    <a href="#"><span class="nav-icon">❓</span> FAQ</a>
+    <a href="#"><span class="nav-icon">📂</span> Case Studies</a>
+    <a href="#"><span class="nav-icon">🤖</span> AI Analyst</a>
+    <a href="#"><span class="nav-icon">📷</span> Gallery</a>
+    <a href="#"><span class="nav-icon">✉️</span> Contact</a>
+  </div>
+  <div class="drawer-footer">
+    <a href="#" class="cta-primary">Get Protected</a>
+    <a href="#" class="cta-secondary">🔒 Admin Login</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo-area">
+      <span class="logo-text">CyberNova</span>
+    </a>
+    <nav class="desktop-nav">
+      <a href="#" class="active">Home</a>
+      <a href="#">Services</a>
+      <a href="#">FAQ</a>
+      <a href="#">Case Studies</a>
+      <a href="#">AI Analyst</a>
+      <a href="#">Contact</a>
+    </nav>
+    <button id="hamburgerBtn" class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<main class="content">
+  <h1>Hamburger Test – No Overlay</h1>
+  <p>Resize your browser below 768px (or open on mobile). The hamburger icon (☰) appears at top right. Click it – the drawer slides in from the right. Click any link inside, press Escape, or resize back to desktop to close.</p>
+  <p style="margin-top: 1rem;">✅ No white column on the left. ✅ No overlay div. ✅ Pure white navbar.</p>
+</main>
+
+<script>
+  (function() {
+    const hamburger = document.getElementById('hamburgerBtn');
+    const drawer = document.getElementById('mobileDrawer');
+
+    if (!hamburger || !drawer) {
+      console.error('Missing elements');
+      return;
+    }
+
+    function openNav() {
+      hamburger.classList.add('open');
+      hamburger.setAttribute('aria-expanded', 'true');
+      drawer.classList.add('open');
+      document.body.classList.add('nav-open');
+    }
+
+    function closeNav() {
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      drawer.classList.remove('open');
+      document.body.classList.remove('nav-open');
+    }
+
+    hamburger.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (drawer.classList.contains('open')) {
+        closeNav();
+      } else {
+        openNav();
+      }
+    });
+
+    // Close when any link inside drawer is clicked
+    const drawerLinks = drawer.querySelectorAll('a');
+    drawerLinks.forEach(link => {
+      link.addEventListener('click', closeNav);
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeNav();
+    });
+
+    // Close on resize to desktop
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 768) closeNav();
+    });
+  })();
+</script>
+</body>
+</html>
