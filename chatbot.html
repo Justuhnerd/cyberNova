@@ -8,8 +8,53 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
   <style>
-    body { font-family: 'Inter', sans-serif; }
-    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+    /* Base & shared */
+    html,body{overflow-x:hidden;font-family:'Inter',sans-serif;}
+    .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+
+    /* ── Hamburger & mobile drawer (from services) ──────────── */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
+    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
+    .hamburger span:nth-child(1){margin-bottom:5px;}
+    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
+
+    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
+
+    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
+    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
+    .mobile-nav-drawer.open{transform:translateX(0);}
+    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
+    .mobile-nav-links{flex:1;padding:10px 0;}
+    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
+    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
+    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
+    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
+    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(1){transition-delay:.07s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(2){transition-delay:.12s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(3){transition-delay:.17s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(4){transition-delay:.22s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(5){transition-delay:.27s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(6){transition-delay:.32s}
+    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
+    .drawer-footer .cta-primary{display:block;background:#E0A800;color:#0A2F44;text-align:center;padding:13px 20px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;transition:filter .2s;}
+    .drawer-footer .cta-primary:hover{filter:brightness(1.07);}
+    .drawer-footer .cta-secondary{display:flex;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;}
+    .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
+    body.nav-open{overflow:hidden;}
+
+    @media(max-width:767px){
+      .hamburger{display:flex;}
+      .desktop-nav{display:none!important;}
+      .desktop-cta{display:none!important;}
+    }
+
+    /* Chat specific styles */
     .chat-scroll::-webkit-scrollbar { width: 4px; }
     .chat-scroll::-webkit-scrollbar-track { background: transparent; }
     .chat-scroll::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
@@ -23,29 +68,51 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased h-screen flex flex-col">
 
-<!-- NAV -->
- <header class="bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 flex-shrink-0">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-     <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
-      <img src="images/ logo.png" alt="CyberNova" class="h-9 w-auto" />
+<!-- MOBILE OVERLAY & DRAWER (identical to services/faq) -->
+<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
+  <div class="drawer-header"><p>Navigation</p></div>
+  <div class="mobile-nav-links">
+    <a href="index.html"><span class="nav-icon">home</span>Home</a>
+    <a href="services.html"><span class="nav-icon">shield</span>Services</a>
+    <a href="faq.html"><span class="nav-icon">help</span>FAQ</a>
+    <a href="case-studies.html"><span class="nav-icon">folder_open</span>Case Studies</a>
+    <a href="chatbot.html" class="active"><span class="nav-icon">smart_toy</span>AI Analyst</a>
+    <a href="request.html"><span class="nav-icon">mail</span>Contact</a>
+  </div>
+  <div class="drawer-footer">
+    <a href="request.html" class="cta-primary">Contact Security Team</a>
+    <a href="login.html" class="cta-secondary"><span class="material-symbols-outlined" style="font-size:14px">lock</span>Admin Login</a>
+  </div>
+</nav>
+
+<!-- HEADER: updated with hamburger + desktop nav, matches services style -->
+<header class="bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 flex-shrink-0">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%20viewBox%3D%220%200%2036%2036%22%3E%3Crect%20width%3D%2236%22%20height%3D%2236%22%20fill%3D%22%230A2F44%22%20rx%3D%226%22%2F%3E%3Ctext%20x%3D%2218%22%20y%3D%2224%22%20text-anchor%3D%22middle%22%20fill%3D%22%23E0A800%22%20font-weight%3D%22bold%22%20font-size%3D%2214%22%3ECN%3C%2Ftext%3E%3C%2Fsvg%3E';"/>
       <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
     </a>
-    <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+    <nav class="desktop-nav hidden md:flex items-center gap-8 text-sm font-medium">
       <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
       <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
-      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Request Service</a>
+      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
+      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
       <a href="chatbot.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">AI Analyst</a>
-      <a href="admin.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Admin →</a>
+      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
     </nav>
-    <a href="request.html" class="bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">
-      Contact Security Team
-    </a>
+    <div class="flex items-center gap-2">
+      <a href="request.html" class="desktop-cta hidden md:inline-block bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
+      <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </header>
 
 <div class="flex flex-1 overflow-hidden">
 
-  <!-- LEFT PANEL -->
+  <!-- LEFT PANEL (desktop only) -->
   <div class="hidden lg:flex flex-col w-80 bg-[#0A2F44] p-8 flex-shrink-0">
     <div class="mb-8">
       <div class="w-12 h-12 bg-[#E0A800] rounded-xl flex items-center justify-center mb-4">
@@ -129,7 +196,23 @@
   </div>
 </div>
 
+<!-- Floating chatbot button not needed on this page (already the chat interface) -->
+
 <script>
+  // Hamburger logic (identical to services page)
+  (function(){
+    var btn = document.getElementById('hamburger'), drawer = document.getElementById('mobileNavDrawer'), overlay = document.getElementById('mobileNavOverlay');
+    if(!btn||!drawer||!overlay) return;
+    function openNav(){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); drawer.classList.add('open'); overlay.classList.add('visible'); document.body.classList.add('nav-open'); }
+    function closeNav(){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); drawer.classList.remove('open'); overlay.classList.remove('visible'); document.body.classList.remove('nav-open'); }
+    btn.addEventListener('click', function(){ drawer.classList.contains('open') ? closeNav() : openNav(); });
+    overlay.addEventListener('click', closeNav);
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    window.addEventListener('resize', function(){ if(window.innerWidth >= 768) closeNav(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
+  })();
+
+  // Chat logic (fully preserved)
   const responses = {
     "ransomware": "Ransomware-as-a-Service (RaaS) is a criminal business model where ransomware developers lease their malicious tools to affiliates in exchange for a cut of ransom payments. It's the reason ransomware attacks have exploded — the barrier to entry is near zero. Affiliates don't need technical skills; they just need access to the RaaS platform. CyberNova's Adaptive Threat Intel monitors known RaaS groups active in the SADC region, including Cl0p and LockBit affiliates targeting local infrastructure.",
     "zero trust": "Zero Trust is a security model built on the principle of 'never trust, always verify.' Unlike traditional perimeter security (which trusts anything inside the network), Zero Trust assumes breach and verifies every request regardless of origin. It requires strict identity verification, least-privilege access, micro-segmentation, and continuous monitoring. CyberNova natively integrates Zero Trust principles across all deployments — every user, device, and workload is treated as potentially hostile until verified.",
@@ -138,7 +221,7 @@
     "health": "Based on general security benchmarks, a basic health check includes: ✓ Patch management — are all systems updated? ✓ MFA enforcement across all user accounts ✓ Privileged Access Management (PAM) controls ✓ Endpoint Detection & Response (EDR) deployment ✓ Backup integrity and offline copies ✓ Network segmentation status ✓ Employee phishing simulation scores. For a comprehensive automated assessment of your specific environment, I'd recommend submitting a Service Request so our team can run a formal vulnerability assessment.",
     "default": [
       "That's a great question. Cybersecurity in the Southern African context involves unique challenges around data sovereignty, regulatory compliance (POPIA, GDPR), and region-specific threat actors. CyberNova's Sovereign Protection Framework is designed specifically for these conditions. Would you like me to explain any specific aspect in more detail?",
-      "From a security perspective, I'd recommend looking at this through the lens of our four-pillar framework: Adaptive Threat Intelligence, Sovereign Cloud Guard, Rapid Incident Response, and Executive Insight. Each pillar addresses a specific dimension of your security posture. Which would you like to explore?",
+      "From a security perspective, I'd recommend looking at this through the lens of our four-pillar framework: Adaptive Threat Intelligence, Sovereign Cloud Guard, Rapid Incident Response, and Executive Insight. Each pillar addresses a different dimension of your security posture. Which would you like to explore?",
       "That's within our operational scope. CyberNova's team of regional analysts can provide detailed guidance on this. For immediate specialist input, you can submit a Service Request and our team will respond within 2 business hours. In the meantime, I can provide general guidance — what specifically would you like to know?",
       "Interesting question. In the SADC threat landscape, this is increasingly relevant. Our Sentinel AI monitors millions of signals daily to detect patterns like this before they manifest into incidents. Would you like me to elaborate on our detection methodology or our incident response approach?"
     ]
@@ -160,7 +243,7 @@
     const div = document.createElement('div');
     div.className = `flex items-start gap-3 msg-in ${isUser ? 'justify-end' : ''}`;
     if (isUser) {
-      div.innerHTML = `<div class="max-w-[80%]"><div class="bg-[#0A2F44] text-white px-4 py-3 rounded-xl rounded-tr-none shadow-sm"><p class="text-sm leading-relaxed">${text}</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1 text-right">You · ${now}</span></div>`;
+      div.innerHTML = `<div class="max-w-[80%]"><div class="bg-[#0A2F44] text-white px-4 py-3 rounded-xl rounded-tr-none shadow-sm"><p class="text-sm leading-relaxed">${escapeHtml(text)}</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1 text-right">You · ${now}</span></div>`;
     } else {
       div.innerHTML = `
         <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
@@ -168,13 +251,24 @@
         </div>
         <div class="max-w-[80%]">
           <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
-            <p class="text-sm leading-relaxed text-slate-700">${text}</p>
+            <p class="text-sm leading-relaxed text-slate-700">${escapeHtml(text)}</p>
           </div>
           <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ${now}</span>
         </div>`;
     }
     container.appendChild(div);
     container.scrollTop = container.scrollHeight;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+      return c;
+    });
   }
 
   function showTyping() {
@@ -222,7 +316,21 @@
   function clearChat() {
     const container = document.getElementById('chatMessages');
     container.innerHTML = '';
-    appendMessage("Session cleared. How can I assist you?", false);
+    // Re-add welcome message
+    const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const welcomeDiv = document.createElement('div');
+    welcomeDiv.className = 'flex items-start gap-3 msg-in';
+    welcomeDiv.innerHTML = `
+      <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
+        <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
+      </div>
+      <div class="max-w-[80%]">
+        <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
+          <p class="text-sm leading-relaxed text-slate-700">Session cleared. How can I assist you today?</p>
+        </div>
+        <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ${now}</span>
+      </div>`;
+    container.appendChild(welcomeDiv);
   }
 </script>
 </body>

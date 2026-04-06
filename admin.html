@@ -14,14 +14,13 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // ⚠️ REPLACE WITH YOUR FIREBASE CONFIG
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
+      apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
+      authDomain: "cybernova-3f09c.firebaseapp.com",
+      projectId: "cybernova-3f09c",
+      storageBucket: "cybernova-3f09c.firebasestorage.app",
+      messagingSenderId: "153861855601",
+      appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
     };
 
     const app = initializeApp(firebaseConfig);
@@ -36,6 +35,11 @@
         document.getElementById('adminInitial').textContent = user.email[0].toUpperCase();
         document.getElementById('pageContent').classList.remove('hidden');
         document.getElementById('loadingScreen').classList.add('hidden');
+        // Also set in mobile drawer if exists
+        const mobileAdminEmail = document.getElementById('mobileAdminEmail');
+        const mobileAdminInitial = document.getElementById('mobileAdminInitial');
+        if (mobileAdminEmail) mobileAdminEmail.textContent = user.email;
+        if (mobileAdminInitial) mobileAdminInitial.textContent = user.email[0].toUpperCase();
       }
     });
 
@@ -63,6 +67,50 @@
     .form-input:focus { border-color:#0A2F44; box-shadow:0 0 0 3px rgba(10,47,68,.06); }
     @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     .slide-in{animation:slideIn .25s ease}
+
+    /* Hamburger & mobile drawer (from services) */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
+    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
+    .hamburger span:nth-child(1){margin-bottom:5px;}
+    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
+
+    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
+
+    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
+    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
+    .mobile-nav-drawer.open{transform:translateX(0);}
+    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
+    .mobile-nav-links{flex:1;padding:10px 0;}
+    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
+    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
+    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
+    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
+    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(1){transition-delay:.07s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(2){transition-delay:.12s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(3){transition-delay:.17s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(4){transition-delay:.22s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(5){transition-delay:.27s}
+    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(6){transition-delay:.32s}
+    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
+    .drawer-footer .cta-primary{display:block;background:#E0A800;color:#0A2F44;text-align:center;padding:13px 20px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;transition:filter .2s;}
+    .drawer-footer .cta-primary:hover{filter:brightness(1.07);}
+    .drawer-footer .cta-secondary{display:flex;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;}
+    .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
+    body.nav-open{overflow:hidden;}
+
+    @media(max-width:767px){
+      .hamburger{display:flex;}
+      .desktop-sidebar{display:none !important;}
+      .ml-64{margin-left:0 !important;}
+      .main-with-sidebar{width:100% !important;}
+      .admin-header-desktop-nav{display:none !important;}
+    }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
@@ -78,8 +126,32 @@
   </div>
 </div>
 
-<!-- SIDEBAR -->
-<aside class="h-screen w-64 bg-[#0A2F44] flex flex-col p-5 fixed left-0 top-0 z-40">
+<!-- MOBILE OVERLAY & DRAWER -->
+<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
+  <div class="drawer-header"><p>Admin Navigation</p></div>
+  <div class="mobile-nav-links">
+    <a href="admin.html"><span class="nav-icon">dashboard</span>Dashboard</a>
+    <a href="#" onclick="switchMobileTab('requests'); return false;"><span class="nav-icon">mark_as_unread</span>Requests</a>
+    <a href="analytics.html"><span class="nav-icon">analytics</span>Analytics</a>
+    <a href="#" onclick="switchMobileTab('content'); return false;"><span class="nav-icon">edit_note</span>Content Mgmt</a>
+    <a href="#" onclick="switchMobileTab('audit'); return false;"><span class="nav-icon">fact_check</span>Audit Trail</a>
+    <div class="border-t border-white/10 my-2"></div>
+    <a href="index.html"><span class="nav-icon">open_in_new</span>Public Site</a>
+  </div>
+  <div class="drawer-footer">
+    <div class="flex items-center gap-3 px-3 py-2 mb-2">
+      <div id="mobileAdminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
+      <div class="min-w-0"><p id="mobileAdminEmail" class="text-white text-xs font-semibold truncate">Loading...</p><p class="text-slate-400 text-[10px]">Administrator</p></div>
+    </div>
+    <button onclick="handleLogout()" class="w-full sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg hover:text-red-400 hover:bg-red-400/10 transition-colors">
+      <span class="material-symbols-outlined text-lg">logout</span><span>Logout</span>
+    </button>
+  </div>
+</nav>
+
+<!-- DESKTOP SIDEBAR (hidden on mobile) -->
+<aside class="desktop-sidebar h-screen w-64 bg-[#0A2F44] flex flex-col p-5 fixed left-0 top-0 z-40">
   <div class="mb-8 px-2 pt-2">
     <h1 class="text-lg font-black text-white tracking-tighter">CyberNova</h1>
     <p class="text-[10px] text-[#E0A800] font-bold tracking-widest uppercase mt-0.5">Admin Panel</p>
@@ -88,7 +160,7 @@
     <a href="admin.html" class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg">
       <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">dashboard</span><span>Dashboard</span>
     </a>
-    <a href="admin.html#requests" onclick="showTab('requests')" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
+    <a href="#" onclick="showTab('dashboard'); return false;" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
       <span class="material-symbols-outlined text-lg">mark_as_unread</span><span>Requests</span>
       <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">84</span>
     </a>
@@ -118,11 +190,23 @@
   </div>
 </aside>
 
-<!-- MAIN CONTENT -->
-<div id="pageContent" class="hidden flex-1 ml-64">
+<!-- TOP HEADER (with hamburger) -->
+<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
+    <a href="admin.html" class="flex items-center gap-2.5 flex-shrink-0">
+      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
+      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+    </a>
+    <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
+<!-- MAIN CONTENT (margin-left adjusted for sidebar, removed on mobile) -->
+<div id="pageContent" class="hidden ml-64 lg:ml-64 main-with-sidebar">
   <!-- DASHBOARD TAB -->
-  <div id="tab-dashboard" class="p-8">
+  <div id="tab-dashboard" class="p-8 pt-24 lg:pt-8">
     <header class="flex justify-between items-start mb-8">
       <div>
         <h2 class="text-2xl font-black tracking-tight text-[#0A2F44] mb-1">Admin Dashboard</h2>
@@ -197,16 +281,13 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
-            <tr>
-              <th class="px-5 py-4">Ticket ID</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Client</th>
-              <th class="px-5 py-4">Country</th><th class="px-5 py-4">Threat Level</th><th class="px-5 py-4">Status</th><th class="px-5 py-4 text-right">Action</th>
-            </tr>
+            <tr><th class="px-5 py-4">Ticket ID</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Client</th><th class="px-5 py-4">Country</th><th class="px-5 py-4">Threat Level</th><th class="px-5 py-4">Status</th><th class="px-5 py-4 text-right">Action</th></tr>
           </thead>
           <tbody class="text-sm divide-y divide-slate-50" id="tableBody">
-            <tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241024-9821</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 24, 2024</td><td class="px-5 py-4 font-medium text-sm">Aether Global Ltd</td><td class="px-5 py-4 text-slate-400 text-xs">South Africa</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>High</span></td><td class="px-5 py-4 text-slate-500 italic text-xs">Active Mitigation</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
-            <tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241023-7720</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 23, 2024</td><td class="px-5 py-4 font-medium text-sm">Nova Strategic</td><td class="px-5 py-4 text-slate-400 text-xs">Zimbabwe</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>Medium</span></td><td class="px-5 py-4 text-slate-500 italic text-xs">Under Review</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
-            <tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241023-4109</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 23, 2024</td><td class="px-5 py-4 font-medium text-sm">Helios Dynamics</td><td class="px-5 py-4 text-slate-400 text-xs">Botswana</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Low</span></td><td class="px-5 py-4 text-green-600 font-semibold text-xs">Resolved</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
-            <tr class="hover:bg-slate-50 transition-colors"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241022-2291</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 22, 2024</td><td class="px-5 py-4 font-medium text-sm">Sovereign Cloud</td><td class="px-5 py-4 text-slate-400 text-xs">Zambia</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>High</span></td><td class="px-5 py-4 text-red-600 font-semibold text-xs">Escalated</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241024-9821</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 24, 2024</td><td class="px-5 py-4 font-medium text-sm">Aether Global Ltd</td><td class="px-5 py-4 text-slate-400 text-xs">South Africa</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>High</span></td><td class="px-5 py-4 text-slate-500 italic text-xs">Active Mitigation</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241023-7720</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 23, 2024</td><td class="px-5 py-4 font-medium text-sm">Nova Strategic</td><td class="px-5 py-4 text-slate-400 text-xs">Zimbabwe</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-yellow-400 rounded-full"></span>Medium</span></td><td class="px-5 py-4 text-slate-500 italic text-xs">Under Review</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241023-4109</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 23, 2024</td><td class="px-5 py-4 font-medium text-sm">Helios Dynamics</td><td class="px-5 py-4 text-slate-400 text-xs">Botswana</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>Low</span></td><td class="px-5 py-4 text-green-600 font-semibold text-xs">Resolved</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241022-2291</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 22, 2024</td><td class="px-5 py-4 font-medium text-sm">Sovereign Cloud</td><td class="px-5 py-4 text-slate-400 text-xs">Zambia</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-bold uppercase"><span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>High</span></td><td class="px-5 py-4 text-red-600 font-semibold text-xs">Escalated</td><td class="px-5 py-4 text-right"><button class="text-[#0A2F44] text-xs font-bold hover:underline">View</button></td></tr>
           </tbody>
         </table>
       </div>
@@ -222,29 +303,23 @@
   </div>
 
   <!-- CONTENT MANAGEMENT TAB (FR-13) -->
-  <div id="tab-content" class="p-8 hidden">
+  <div id="tab-content" class="p-8 pt-24 lg:pt-8 hidden">
     <div class="mb-6">
       <h2 class="text-2xl font-black text-[#0A2F44] mb-1">Content Management</h2>
       <p class="text-slate-500 text-sm">Publish, edit, and archive case studies, blog posts, testimonials, and gallery items.</p>
     </div>
-
-    <!-- Content Type Tabs -->
     <div class="flex gap-2 mb-6">
       <button onclick="switchContent('case-studies')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 bg-[#0A2F44] text-white" id="ct-case-studies">Case Studies</button>
       <button onclick="switchContent('testimonials')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-testimonials">Testimonials</button>
       <button onclick="switchContent('blog')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-blog">Blog Posts</button>
       <button onclick="switchContent('gallery')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-gallery">Gallery</button>
     </div>
-
-    <!-- Add New Button -->
     <div class="flex justify-between items-center mb-4">
       <p class="text-xs text-slate-400" id="contentCount">3 items</p>
       <button onclick="openAddModal()" class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700 transition-colors">
         <span class="material-symbols-outlined text-base">add</span> Add New
       </button>
     </div>
-
-    <!-- Content Table -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
       <table class="w-full text-left">
         <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
@@ -253,8 +328,6 @@
         <tbody id="contentTableBody" class="text-sm divide-y divide-slate-50"></tbody>
       </table>
     </div>
-
-    <!-- Undo Banner (NFR-03) -->
     <div id="undoBanner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-4 z-50 slide-in">
       <span id="undoMsg" class="text-sm font-medium"></span>
       <button onclick="undoAction()" class="text-[#E0A800] text-sm font-bold hover:underline">Undo</button>
@@ -263,7 +336,7 @@
   </div>
 
   <!-- AUDIT TRAIL TAB (FR-14) -->
-  <div id="tab-audit" class="p-8 hidden">
+  <div id="tab-audit" class="p-8 pt-24 lg:pt-8 hidden">
     <div class="mb-6 flex justify-between items-start">
       <div>
         <h2 class="text-2xl font-black text-[#0A2F44] mb-1">Audit Trail</h2>
@@ -281,8 +354,7 @@
       <div id="auditEmpty" class="p-10 text-center text-slate-400 text-sm">No audit entries yet. Actions will appear here as you manage content.</div>
     </div>
   </div>
-
-</div><!-- end pageContent -->
+</div>
 
 <!-- ADD CONTENT MODAL -->
 <div id="addModal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
@@ -307,247 +379,98 @@
 </div>
 
 <script>
-  // ── Clock ──────────────────────────────────────────────────
+  // Hamburger logic (same as other pages)
+  (function(){
+    var btn = document.getElementById('hamburger'), drawer = document.getElementById('mobileNavDrawer'), overlay = document.getElementById('mobileNavOverlay');
+    if(!btn||!drawer||!overlay) return;
+    function openNav(){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); drawer.classList.add('open'); overlay.classList.add('visible'); document.body.classList.add('nav-open'); }
+    function closeNav(){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); drawer.classList.remove('open'); overlay.classList.remove('visible'); document.body.classList.remove('nav-open'); }
+    btn.addEventListener('click', function(){ drawer.classList.contains('open') ? closeNav() : openNav(); });
+    overlay.addEventListener('click', closeNav);
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    window.addEventListener('resize', function(){ if(window.innerWidth >= 768) closeNav(); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
+  })();
+
+  // Clock
   function updateClock() {
     const el = document.getElementById('currentTime');
     if (el) el.textContent = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg', dateStyle:'medium', timeStyle:'short'});
   }
   updateClock(); setInterval(updateClock, 30000);
 
-  // ── Charts ─────────────────────────────────────────────────
+  // Charts
   const chartData = {
     7:  {labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], data:[8,15,12,20,16,9,12]},
     14: {labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri','Sat','Sun'], data:[5,9,11,7,13,6,8,8,15,12,20,16,9,12]},
     30: {labels:Array.from({length:30},(_,i)=>`D${i+1}`), data:Array.from({length:30},()=>Math.floor(4+Math.random()*18))}
   };
-
   const threatChart = new Chart(document.getElementById('threatChart').getContext('2d'), {
     type:'line',
     data:{labels:chartData[7].labels, datasets:[{label:'Threats',data:chartData[7].data, borderColor:'#0A2F44', backgroundColor:'rgba(10,47,68,.06)', borderWidth:2.5, pointBackgroundColor:'#E0A800', pointBorderColor:'#0A2F44', pointRadius:5, tension:0.4, fill:true}]},
     options:{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, grid:{color:'rgba(0,0,0,.04)'}}, x:{grid:{display:false}}}}
   });
+  function updateThreatChart(days) { const d = chartData[days]; threatChart.data.labels = d.labels; threatChart.data.datasets[0].data = d.data; threatChart.update(); }
+  new Chart(document.getElementById('doughnutChart').getContext('2d'), { type:'doughnut', data:{labels:['Ransomware','Phishing','APT','Other'], datasets:[{data:[34,28,22,16], backgroundColor:['#ef4444','#E0A800','#0A2F44','#94a3b8'], borderWidth:0, hoverOffset:8}]}, options:{responsive:true, cutout:'72%', plugins:{legend:{display:false}}} });
 
-  function updateThreatChart(days) {
-    const d = chartData[days];
-    threatChart.data.labels = d.labels;
-    threatChart.data.datasets[0].data = d.data;
-    threatChart.update();
-  }
+  // Table filters
+  function filterTable(val) { document.querySelectorAll('#tableBody tr').forEach(r => { r.style.display = r.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none'; }); }
+  function filterByLevel(val) { document.querySelectorAll('#tableBody tr').forEach(r => { r.style.display = (!val || r.textContent.toLowerCase().includes(val)) ? '' : 'none'; }); }
 
-  new Chart(document.getElementById('doughnutChart').getContext('2d'), {
-    type:'doughnut',
-    data:{labels:['Ransomware','Phishing','APT','Other'], datasets:[{data:[34,28,22,16], backgroundColor:['#ef4444','#E0A800','#0A2F44','#94a3b8'], borderWidth:0, hoverOffset:8}]},
-    options:{responsive:true, cutout:'72%', plugins:{legend:{display:false}}}
-  });
-
-  // ── Table filters ──────────────────────────────────────────
-  function filterTable(val) {
-    document.querySelectorAll('#tableBody tr').forEach(r => {
-      r.style.display = r.textContent.toLowerCase().includes(val.toLowerCase()) ? '' : 'none';
-    });
-  }
-  function filterByLevel(val) {
-    document.querySelectorAll('#tableBody tr').forEach(r => {
-      r.style.display = (!val || r.textContent.toLowerCase().includes(val)) ? '' : 'none';
-    });
-  }
-
-  // ── Tab navigation ─────────────────────────────────────────
+  // Tab navigation (desktop & mobile)
   function showTab(name) {
-    ['dashboard','content','audit'].forEach(t => {
-      document.getElementById('tab-'+t).classList.add('hidden');
-    });
+    ['dashboard','content','audit'].forEach(t => { document.getElementById('tab-'+t).classList.add('hidden'); });
     document.getElementById('tab-'+name).classList.remove('hidden');
     if (name === 'audit') renderAudit();
     if (name === 'content') renderContentTable();
   }
-
-  // ── Content Management (FR-13) ─────────────────────────────
-  let currentContentType = 'case-studies';
-  let lastDeleted = null;
-
-  const contentStore = {
-    'case-studies': [
-      {id:1, title:'SOC Implementation — ZimMicro Finance', category:'Financial / Zimbabwe', status:'Published', modified:'2024-10-20'},
-      {id:2, title:'Phishing Simulation — Cape Town Municipality', category:'Government / South Africa', status:'Published', modified:'2024-10-18'},
-      {id:3, title:'Ransomware Response — Durban Freight Solutions', category:'Logistics / South Africa', status:'Published', modified:'2024-10-15'}
-    ],
-    'testimonials': [
-      {id:1, title:'Thandeka Mokoena — Durban Freight Solutions', category:'5 Stars', status:'Published', modified:'2024-10-20'},
-      {id:2, title:'Kobus de Villiers — Cape Town Municipality', category:'5 Stars', status:'Published', modified:'2024-10-18'}
-    ],
-    'blog': [
-      {id:1, title:'Understanding Ransomware-as-a-Service in Africa', category:'Threat Education', status:'Published', modified:'2024-10-22'},
-      {id:2, title:'POPIA Compliance Checklist for SMEs', category:'Compliance', status:'Draft', modified:'2024-10-19'}
-    ],
-    'gallery': [
-      {id:1, title:'SOC Training Workshop — Johannesburg', category:'Training Events', status:'Published', modified:'2024-10-10'}
-    ]
-  };
-
-  function switchContent(type) {
-    currentContentType = type;
-    ['case-studies','testimonials','blog','gallery'].forEach(t => {
-      const btn = document.getElementById('ct-'+t);
-      btn.classList.remove('bg-[#0A2F44]','text-white');
-      btn.classList.add('text-slate-600');
-    });
-    const activeBtn = document.getElementById('ct-'+type);
-    activeBtn.classList.add('bg-[#0A2F44]','text-white');
-    activeBtn.classList.remove('text-slate-600');
-    renderContentTable();
+  function switchMobileTab(name) {
+    showTab(name);
+    // Close drawer after navigation
+    document.getElementById('mobileNavDrawer').classList.remove('open');
+    document.getElementById('mobileNavOverlay').classList.remove('visible');
+    document.body.classList.remove('nav-open');
+    const btn = document.getElementById('hamburger');
+    if(btn) btn.classList.remove('open');
   }
 
+  // Content Management (same as original)
+  let currentContentType = 'case-studies';
+  let lastDeleted = null;
+  const contentStore = {
+    'case-studies': [{id:1, title:'SOC Implementation — ZimMicro Finance', category:'Financial / Zimbabwe', status:'Published', modified:'2024-10-20'},{id:2, title:'Phishing Simulation — Cape Town Municipality', category:'Government / South Africa', status:'Published', modified:'2024-10-18'},{id:3, title:'Ransomware Response — Durban Freight Solutions', category:'Logistics / South Africa', status:'Published', modified:'2024-10-15'}],
+    'testimonials': [{id:1, title:'Thandeka Mokoena — Durban Freight Solutions', category:'5 Stars', status:'Published', modified:'2024-10-20'},{id:2, title:'Kobus de Villiers — Cape Town Municipality', category:'5 Stars', status:'Published', modified:'2024-10-18'}],
+    'blog': [{id:1, title:'Understanding Ransomware-as-a-Service in Africa', category:'Threat Education', status:'Published', modified:'2024-10-22'},{id:2, title:'POPIA Compliance Checklist for SMEs', category:'Compliance', status:'Draft', modified:'2024-10-19'}],
+    'gallery': [{id:1, title:'SOC Training Workshop — Johannesburg', category:'Training Events', status:'Published', modified:'2024-10-10'}]
+  };
+  function switchContent(type) {
+    currentContentType = type;
+    ['case-studies','testimonials','blog','gallery'].forEach(t => { const btn = document.getElementById('ct-'+t); btn.classList.remove('bg-[#0A2F44]','text-white'); btn.classList.add('text-slate-600'); });
+    const activeBtn = document.getElementById('ct-'+type); activeBtn.classList.add('bg-[#0A2F44]','text-white'); activeBtn.classList.remove('text-slate-600');
+    renderContentTable();
+  }
   function renderContentTable() {
     const items = contentStore[currentContentType] || [];
     document.getElementById('contentCount').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
-    const tbody = document.getElementById('contentTableBody');
-    tbody.innerHTML = items.map(item => `
-      <tr class="hover:bg-slate-50 transition-colors">
-        <td class="px-5 py-4 font-medium text-[#0A2F44]">${item.title}</td>
-        <td class="px-5 py-4 text-slate-400 text-xs">${item.category}</td>
-        <td class="px-5 py-4">
-          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${item.status==='Published'?'bg-green-50 text-green-700':item.status==='Draft'?'bg-yellow-50 text-yellow-700':'bg-slate-100 text-slate-500'}">${item.status}</span>
-        </td>
-        <td class="px-5 py-4 text-slate-400 text-xs font-mono">${item.modified}</td>
-        <td class="px-5 py-4 text-right">
-          <button onclick="editItem(${item.id})" class="text-[#0A2F44] text-xs font-bold hover:underline mr-3">Edit</button>
-          <button onclick="archiveItem(${item.id})" class="text-slate-400 text-xs font-bold hover:underline mr-3">Archive</button>
-          <button onclick="deleteItem(${item.id})" class="text-red-400 text-xs font-bold hover:underline">Delete</button>
-        </td>
-      </tr>
-    `).join('');
+    document.getElementById('contentTableBody').innerHTML = items.map(item => `<tr class="hover:bg-slate-50"><td class="px-5 py-4 font-medium text-[#0A2F44]">${item.title}</td><td class="px-5 py-4 text-slate-400 text-xs">${item.category}</td><td class="px-5 py-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${item.status==='Published'?'bg-green-50 text-green-700':item.status==='Draft'?'bg-yellow-50 text-yellow-700':'bg-slate-100 text-slate-500'}">${item.status}</span></td><td class="px-5 py-4 text-slate-400 text-xs font-mono">${item.modified}</td><td class="px-5 py-4 text-right"><button onclick="editItem(${item.id})" class="text-[#0A2F44] text-xs font-bold hover:underline mr-3">Edit</button><button onclick="archiveItem(${item.id})" class="text-slate-400 text-xs font-bold hover:underline mr-3">Archive</button><button onclick="deleteItem(${item.id})" class="text-red-400 text-xs font-bold hover:underline">Delete</button></td></tr>`).join('');
   }
-
-  function openAddModal() {
-    document.getElementById('modalTitle').textContent = `Add ${currentContentType.replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase()).slice(0,-1)}`;
-    document.getElementById('newTitle').value = '';
-    document.getElementById('newCategory').value = '';
-    document.getElementById('newContent').value = '';
-    document.getElementById('addModal').classList.remove('hidden');
-  }
+  function openAddModal() { document.getElementById('modalTitle').textContent = `Add ${currentContentType.replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase()).slice(0,-1)}`; document.getElementById('newTitle').value = ''; document.getElementById('newCategory').value = ''; document.getElementById('newContent').value = ''; document.getElementById('addModal').classList.remove('hidden'); }
   function closeModal() { document.getElementById('addModal').classList.add('hidden'); }
-
-  function saveContent() {
-    const title = document.getElementById('newTitle').value.trim();
-    if (!title) { alert('Title is required'); return; }
-    const newItem = {
-      id: Date.now(),
-      title,
-      category: document.getElementById('newCategory').value || 'General',
-      status: document.getElementById('newStatus').value,
-      modified: new Date().toISOString().split('T')[0]
-    };
-    contentStore[currentContentType].unshift(newItem);
-    logAudit(currentContentType, `Published: "${title}"`, 'publish');
-    renderContentTable();
-    closeModal();
-    showUndo(`"${title}" published.`);
-  }
-
-  function editItem(id) {
-    const items = contentStore[currentContentType];
-    const item = items.find(i => i.id === id);
-    if (!item) return;
-    const newTitle = prompt('Edit title:', item.title);
-    if (newTitle && newTitle.trim()) {
-      const old = item.title;
-      item.title = newTitle.trim();
-      item.modified = new Date().toISOString().split('T')[0];
-      logAudit(currentContentType, `Edited: "${old}" → "${item.title}"`, 'edit');
-      renderContentTable();
-      showUndo(`Item updated.`);
-    }
-  }
-
-  function archiveItem(id) {
-    const item = contentStore[currentContentType].find(i => i.id === id);
-    if (!item) return;
-    item.status = item.status === 'Archived' ? 'Published' : 'Archived';
-    logAudit(currentContentType, `${item.status === 'Archived' ? 'Archived' : 'Unarchived'}: "${item.title}"`, 'archive');
-    renderContentTable();
-    showUndo(`"${item.title}" ${item.status === 'Archived' ? 'archived' : 'restored'}.`);
-  }
-
-  function deleteItem(id) {
-    const items = contentStore[currentContentType];
-    const idx = items.findIndex(i => i.id === id);
-    if (idx === -1) return;
-    lastDeleted = {type: currentContentType, item: items[idx], idx};
-    logAudit(currentContentType, `Deleted: "${items[idx].title}"`, 'delete');
-    items.splice(idx, 1);
-    renderContentTable();
-    showUndo(`"${lastDeleted.item.title}" deleted.`);
-  }
-
-  // ── Undo (NFR-03) ──────────────────────────────────────────
+  function saveContent() { const title = document.getElementById('newTitle').value.trim(); if(!title){alert('Title required');return;} const newItem={id:Date.now(),title,category:document.getElementById('newCategory').value||'General',status:document.getElementById('newStatus').value,modified:new Date().toISOString().split('T')[0]}; contentStore[currentContentType].unshift(newItem); logAudit(currentContentType,`Published: "${title}"`,'publish'); renderContentTable(); closeModal(); showUndo(`"${title}" published.`); }
+  function editItem(id) { const item = contentStore[currentContentType].find(i=>i.id===id); if(!item)return; const newTitle=prompt('Edit title:',item.title); if(newTitle&&newTitle.trim()){ const old=item.title; item.title=newTitle.trim(); item.modified=new Date().toISOString().split('T')[0]; logAudit(currentContentType,`Edited: "${old}" → "${item.title}"`,'edit'); renderContentTable(); showUndo(`Item updated.`); } }
+  function archiveItem(id) { const item = contentStore[currentContentType].find(i=>i.id===id); if(!item)return; item.status = item.status==='Archived'?'Published':'Archived'; logAudit(currentContentType,`${item.status==='Archived'?'Archived':'Unarchived'}: "${item.title}"`,'archive'); renderContentTable(); showUndo(`"${item.title}" ${item.status==='Archived'?'archived':'restored'}.`); }
+  function deleteItem(id) { const items = contentStore[currentContentType]; const idx = items.findIndex(i=>i.id===id); if(idx===-1)return; lastDeleted={type:currentContentType,item:items[idx],idx}; logAudit(currentContentType,`Deleted: "${items[idx].title}"`,'delete'); items.splice(idx,1); renderContentTable(); showUndo(`"${lastDeleted.item.title}" deleted.`); }
   let undoTimer = null;
-  function showUndo(msg) {
-    document.getElementById('undoMsg').textContent = msg;
-    document.getElementById('undoBanner').classList.remove('hidden');
-    if (undoTimer) clearTimeout(undoTimer);
-    undoTimer = setTimeout(() => dismissUndo(), 6000);
-  }
-  function dismissUndo() {
-    document.getElementById('undoBanner').classList.add('hidden');
-    lastDeleted = null;
-  }
-  function undoAction() {
-    if (lastDeleted) {
-      contentStore[lastDeleted.type].splice(lastDeleted.idx, 0, lastDeleted.item);
-      logAudit(lastDeleted.type, `Undo delete: "${lastDeleted.item.title}"`, 'undo');
-      renderContentTable();
-      lastDeleted = null;
-    }
-    dismissUndo();
-  }
+  function showUndo(msg) { document.getElementById('undoMsg').textContent = msg; document.getElementById('undoBanner').classList.remove('hidden'); if(undoTimer) clearTimeout(undoTimer); undoTimer = setTimeout(()=>dismissUndo(),6000); }
+  function dismissUndo() { document.getElementById('undoBanner').classList.add('hidden'); lastDeleted=null; }
+  function undoAction() { if(lastDeleted){ contentStore[lastDeleted.type].splice(lastDeleted.idx,0,lastDeleted.item); logAudit(lastDeleted.type,`Undo delete: "${lastDeleted.item.title}"`,'undo'); renderContentTable(); lastDeleted=null; } dismissUndo(); }
 
-  // ── Audit Trail (FR-14) ────────────────────────────────────
+  // Audit Trail
   const auditLog = JSON.parse(sessionStorage.getItem('cn_audit') || '[]');
+  window.logAudit = function(category, action, type) { const entry = { ts: new Date().toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'short',timeStyle:'medium'}), actor: document.getElementById('adminEmail')?.textContent || 'admin', category, action, type }; auditLog.unshift(entry); sessionStorage.setItem('cn_audit', JSON.stringify(auditLog.slice(0,200))); };
+  function renderAudit() { const tbody = document.getElementById('auditTableBody'); const empty = document.getElementById('auditEmpty'); if(auditLog.length===0){ empty.classList.remove('hidden'); tbody.innerHTML=''; return; } empty.classList.add('hidden'); const typeColors={publish:'bg-green-50 text-green-700',edit:'bg-blue-50 text-blue-700',archive:'bg-yellow-50 text-yellow-700',delete:'bg-red-50 text-red-700',undo:'bg-purple-50 text-purple-700',logout:'bg-slate-50 text-slate-600'}; tbody.innerHTML = auditLog.map(e=>`<tr><td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">${e.ts}</td><td class="px-5 py-3.5 text-slate-700 font-medium">${e.actor}</td><td class="px-5 py-3.5 text-slate-400 capitalize">${e.category}</td><td class="px-5 py-3.5 text-slate-600">${e.action}</td><td class="px-5 py-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${typeColors[e.type]||'bg-slate-50 text-slate-500'}">${e.type}</span></td></tr>`).join(''); }
+  function clearAudit() { if(confirm('Clear all audit entries from this session?')){ auditLog.length=0; sessionStorage.removeItem('cn_audit'); renderAudit(); } }
 
-  function logAudit(category, action, type) {
-    const entry = {
-      ts: new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg', dateStyle:'short', timeStyle:'medium'}),
-      actor: document.getElementById('adminEmail')?.textContent || 'admin',
-      category,
-      action,
-      type
-    };
-    auditLog.unshift(entry);
-    sessionStorage.setItem('cn_audit', JSON.stringify(auditLog.slice(0,200)));
-  }
-
-  function renderAudit() {
-    const tbody = document.getElementById('auditTableBody');
-    const empty = document.getElementById('auditEmpty');
-    if (auditLog.length === 0) {
-      empty.classList.remove('hidden'); tbody.innerHTML = ''; return;
-    }
-    empty.classList.add('hidden');
-    const typeColors = {publish:'bg-green-50 text-green-700', edit:'bg-blue-50 text-blue-700', archive:'bg-yellow-50 text-yellow-700', delete:'bg-red-50 text-red-700', undo:'bg-purple-50 text-purple-700', logout:'bg-slate-50 text-slate-600'};
-    tbody.innerHTML = auditLog.map(e => `
-      <tr class="hover:bg-slate-50">
-        <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">${e.ts}</td>
-        <td class="px-5 py-3.5 text-slate-700 font-medium">${e.actor}</td>
-        <td class="px-5 py-3.5 text-slate-400 capitalize">${e.category}</td>
-        <td class="px-5 py-3.5 text-slate-600">${e.action}</td>
-        <td class="px-5 py-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${typeColors[e.type]||'bg-slate-50 text-slate-500'}">${e.type}</span></td>
-      </tr>
-    `).join('');
-  }
-
-  function clearAudit() {
-    if (confirm('Clear all audit entries from this session?')) {
-      auditLog.length = 0;
-      sessionStorage.removeItem('cn_audit');
-      renderAudit();
-    }
-  }
-
-  // Expose logAudit globally for Firebase module
-  window.logAudit = logAudit;
-
-  // Init content table
   renderContentTable();
 </script>
 </body>
