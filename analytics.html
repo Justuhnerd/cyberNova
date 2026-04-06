@@ -8,16 +8,59 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+
+  <!-- Firebase Auth Guard (same as admin dashboard) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
+      authDomain: "cybernova-3f09c.firebaseapp.com",
+      projectId: "cybernova-3f09c",
+      storageBucket: "cybernova-3f09c.firebasestorage.app",
+      messagingSenderId: "153861855601",
+      appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        // Desktop topnav admin info
+        document.getElementById('adminEmail').textContent = user.email;
+        document.getElementById('adminInitial').textContent = user.email[0].toUpperCase();
+        // Mobile drawer admin info
+        const mobileAdminEmail = document.getElementById('mobileAdminEmail');
+        const mobileAdminInitial = document.getElementById('mobileAdminInitial');
+        if (mobileAdminEmail) mobileAdminEmail.textContent = user.email;
+        if (mobileAdminInitial) mobileAdminInitial.textContent = user.email[0].toUpperCase();
+
+        document.getElementById('pageContent').classList.remove('hidden');
+        document.getElementById('loadingScreen').classList.add('hidden');
+      }
+    });
+
+    window.handleLogout = async function() {
+      if (confirm('Are you sure you want to log out?')) {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      }
+    };
+  </script>
+
   <style>
     body { font-family: 'Inter', sans-serif; }
     .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
-    .sidebar-link { transition: all 0.18s; }
-    .sidebar-link:hover { background: rgba(224,168,0,0.1); color: #E0A800; transform: translateX(3px); }
-    .sidebar-active { background: rgba(224,168,0,0.15); color: #E0A800 !important; border-left: 3px solid #E0A800; }
+
+    /* preserved analytics styles */
     .kpi-card { transition: transform 0.2s, box-shadow 0.2s; }
     .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(10,47,68,0.1); }
 
-    /* Hamburger & mobile drawer (from services) */
+    /* Mobile drawer (unchanged) */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
     .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
     .hamburger span:nth-child(1){margin-bottom:5px;}
@@ -53,18 +96,83 @@
     .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
     body.nav-open{overflow:hidden;}
 
-    @media(max-width:767px){
-      .hamburger{display:flex;}
-      .desktop-sidebar{display:none !important;}
-      .ml-64{margin-left:0 !important;}
-      .main-analytics{padding: 1rem !important; padding-top: 5rem !important;}
-      .kpi-card{padding: 1rem !important;}
+    /* Desktop top nav styles (exactly like admin dashboard) */
+    .topnav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      border-radius: 6px;
+      text-decoration: none;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: color .18s, background .18s;
+      white-space: nowrap;
+      position: relative;
+    }
+    .topnav-link:hover {
+      color: #0A2F44;
+      background: rgba(10,47,68,.06);
+    }
+    .topnav-link.topnav-active {
+      color: #E0A800;
+      background: rgba(224,168,0,.1);
+    }
+    .topnav-link.topnav-active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 12px;
+      right: 12px;
+      height: 2px;
+      background: #E0A800;
+      border-radius: 2px 2px 0 0;
+    }
+    .topnav-link .material-symbols-outlined {
+      font-size: 16px;
+      font-variation-settings: 'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;
+    }
+    .topnav-divider {
+      width: 1px;
+      height: 20px;
+      background: #e2e8f0;
+      flex-shrink: 0;
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 1023px) {
+      .hamburger { display: flex; }
+      .desktop-topnav-links { display: none !important; }
+      .desktop-topnav-admin { display: none !important; }
+    }
+    @media (min-width: 1024px) {
+      .hamburger { display: none !important; }
+      .desktop-sidebar { display: none !important; }
+      .main-analytics { margin-left: 0 !important; padding-top: 1.5rem !important; }
     }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
 
-<!-- MOBILE OVERLAY & DRAWER -->
+<!-- Loading Screen -->
+<div id="loadingScreen" class="fixed inset-0 bg-[#0A2F44] flex items-center justify-center z-50">
+  <div class="text-center">
+    <div class="text-3xl font-black text-white tracking-tighter mb-2">CyberNova</div>
+    <div class="flex items-center justify-center gap-2 text-slate-400 text-sm">
+      <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+      </svg>
+      Verifying session...
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE OVERLAY & DRAWER (unchanged) -->
 <div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
 <nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
   <div class="drawer-header"><p>Admin Navigation</p></div>
@@ -73,186 +181,202 @@
     <a href="admin.html#requests"><span class="nav-icon">mark_as_unread</span>Requests</a>
     <a href="analytics.html" class="active"><span class="nav-icon">analytics</span>Analytics</a>
     <a href="#"><span class="nav-icon">security</span>Solutions Overview</a>
-    <a href="#"><span class="nav-icon">layers</span>Content Management</a>
+    <a href="admin.html#content"><span class="nav-icon">layers</span>Content Management</a>
     <div class="border-t border-white/10 my-2"></div>
     <a href="index.html"><span class="nav-icon">open_in_new</span>Public Site</a>
   </div>
   <div class="drawer-footer">
     <div class="flex items-center gap-3 px-3 py-2 mb-2">
-      <div class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
-      <div><p class="text-white text-xs font-semibold">Admin User</p><p class="text-slate-400 text-[10px]">admin@cybernova.co.za</p></div>
+      <div id="mobileAdminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
+      <div class="min-w-0">
+        <p id="mobileAdminEmail" class="text-white text-xs font-semibold truncate">Loading...</p>
+        <p class="text-slate-400 text-[10px]">Administrator</p>
+      </div>
     </div>
-    <a href="index.html" class="w-full sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg hover:text-red-400 hover:bg-red-400/10 transition-colors">
+    <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg hover:text-red-400 hover:bg-red-400/10 transition-colors">
       <span class="material-symbols-outlined text-lg">logout</span><span>Logout</span>
-    </a>
+    </button>
   </div>
 </nav>
 
-<!-- DESKTOP SIDEBAR (hidden on mobile) -->
-<aside class="desktop-sidebar h-screen w-64 bg-[#0A2F44] flex flex-col p-5 fixed left-0 top-0 z-40">
-  <div class="mb-8 px-2 pt-2">
-    <h1 class="text-lg font-black text-white tracking-tighter">CyberNova</h1>
-    <p class="text-[10px] text-[#E0A800] font-bold tracking-widest uppercase opacity-80 mt-0.5">Admin Panel</p>
-  </div>
-  <nav class="flex-1 space-y-1">
-    <a href="admin.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
-      <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">dashboard</span><span>Dashboard</span>
-    </a>
-    <a href="admin.html#requests" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
-      <span class="material-symbols-outlined text-lg">mark_as_unread</span><span>Requests</span>
-      <span class="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">84</span>
-    </a>
-    <a href="analytics.html" class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg">
-      <span class="material-symbols-outlined text-lg">analytics</span><span>Analytics</span>
-    </a>
-    <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
-      <span class="material-symbols-outlined text-lg">security</span><span>Solutions Overview</span>
-    </a>
-    <a href="#" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
-      <span class="material-symbols-outlined text-lg">layers</span><span>Content Management</span>
-    </a>
-    <div class="pt-4 mt-4 border-t border-white/10">
-      <p class="text-[10px] text-slate-500 uppercase tracking-widest px-3 mb-2">Public Site</p>
-      <a href="index.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg">
-        <span class="material-symbols-outlined text-lg">open_in_new</span><span>View Public Site</span>
-      </a>
-    </div>
-  </nav>
-  <div class="pt-4 border-t border-white/10">
-    <div class="flex items-center gap-3 px-3 py-2 mb-2">
-      <div class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
-      <div><p class="text-white text-xs font-semibold">Admin User</p><p class="text-slate-400 text-[10px]">work e</p></div>
-    </div>
-    <a href="index.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg hover:text-red-400 hover:bg-red-400/10">
-      <span class="material-symbols-outlined text-lg">logout</span><span>Logout</span>
-    </a>
-  </div>
-</aside>
+<!-- DESKTOP SIDEBAR (hidden on lg+, kept for DOM compatibility) -->
+<aside class="desktop-sidebar h-screen w-64 bg-[#0A2F44] flex flex-col p-5 fixed left-0 top-0 z-40" aria-hidden="true"></aside>
 
-<!-- TOP HEADER (with hamburger, visible on mobile only) -->
-<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
+<!-- ═══════════════════════════════════════════
+     UNIFIED HEADER
+     - Mobile: logo + hamburger only
+     - Desktop (lg+): logo + topnav links + admin info
+════════════════════════════════════════════ -->
+<header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="px-4 sm:px-6 lg:px-8 flex items-center gap-4 h-16">
+
+    <!-- Logo (always visible) -->
+    <a href="admin.html" class="flex items-center gap-2.5 flex-shrink-0" aria-label="CyberNova Admin">
       <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
-      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
+      <div class="hidden sm:block">
+        <span class="text-lg font-black tracking-tighter text-[#0A2F44] leading-none block">CyberNova</span>
+        <span class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</span>
+      </div>
     </a>
-    <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
+
+    <!-- Desktop nav links (hidden below lg) -->
+    <nav class="desktop-topnav-links flex items-center gap-0.5 flex-1 ml-4" aria-label="Admin navigation">
+      <a href="admin.html" class="topnav-link">
+        <span class="material-symbols-outlined">dashboard</span>Dashboard
+      </a>
+      <a href="admin.html#requests" class="topnav-link">
+        <span class="material-symbols-outlined">mark_as_unread</span>Requests
+        <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">84</span>
+      </a>
+      <a href="analytics.html" class="topnav-link topnav-active">
+        <span class="material-symbols-outlined">analytics</span>Analytics
+      </a>
+      <a href="#" class="topnav-link">
+        <span class="material-symbols-outlined">security</span>Solutions Overview
+      </a>
+      <a href="admin.html#content" class="topnav-link">
+        <span class="material-symbols-outlined">layers</span>Content Mgmt
+      </a>
+      <div class="topnav-divider mx-2"></div>
+      <a href="index.html" class="topnav-link text-slate-400">
+        <span class="material-symbols-outlined">open_in_new</span>Public Site
+      </a>
+    </nav>
+
+    <!-- Desktop admin info + logout (hidden below lg) -->
+    <div class="desktop-topnav-admin flex items-center gap-3 ml-auto flex-shrink-0">
+      <div class="flex items-center gap-2.5 max-w-[180px]">
+        <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm flex-shrink-0">A</div>
+        <div class="min-w-0">
+          <p id="adminEmail" class="text-xs font-semibold text-[#0A2F44] truncate leading-tight">Loading...</p>
+          <p class="text-[10px] text-slate-400 leading-tight">Administrator</p>
+        </div>
+      </div>
+      <div class="topnav-divider"></div>
+      <button onclick="handleLogout()" class="topnav-link text-slate-400 hover:text-red-500 hover:bg-red-50 px-2" aria-label="Logout">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span class="text-xs">Logout</span>
+      </button>
+    </div>
+
+    <!-- Hamburger (mobile only) -->
+    <button id="hamburger" class="hamburger ml-auto" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- MAIN CONTENT (with responsive padding) -->
-<main class="flex-1 ml-64 main-analytics p-8 pt-24 lg:pt-8">
-  <header class="flex flex-wrap justify-between items-start gap-4 mb-8">
-    <div>
-      <h2 class="text-2xl font-black tracking-tight text-[#0A2F44] mb-1">Analytics Dashboard</h2>
-      <p class="text-slate-500 text-sm">Comprehensive threat intelligence and operational metrics — <span class="font-mono" id="currentTime"></span></p>
-    </div>
-    <div class="flex items-center gap-3">
-      <select id="periodSelect" class="bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg focus:outline-none text-slate-600 font-medium">
-        <option value="30">Last 30 Days</option>
-        <option value="90">Last Quarter</option>
-        <option value="180">Last 6 Months</option>
-        <option value="365">Last Year</option>
-      </select>
-      <button class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors">
-        <span class="material-symbols-outlined text-base">download</span> Export Report
-      </button>
-    </div>
-  </header>
-
-  <!-- KPI ROW -->
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-    <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Threats</p>
-      <h3 class="text-2xl font-black text-[#0A2F44]">1,247</h3>
-      <p class="text-xs text-red-500 mt-1 font-medium">↑ 18% vs last period</p>
-    </div>
-    <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Avg MTTD</p>
-      <h3 class="text-2xl font-black text-[#0A2F44]">4.2m</h3>
-      <p class="text-xs text-green-600 mt-1 font-medium">↓ 11% improvement</p>
-    </div>
-    <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Resolved</p>
-      <h3 class="text-2xl font-black text-[#0A2F44]">1,183</h3>
-      <p class="text-xs text-green-600 mt-1 font-medium">94.9% resolution rate</p>
-    </div>
-    <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Client Requests</p>
-      <h3 class="text-2xl font-black text-[#0A2F44]">318</h3>
-      <p class="text-xs text-slate-400 mt-1 font-medium">Across all sectors</p>
-    </div>
-    <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Network SLA</p>
-      <h3 class="text-2xl font-black text-[#0A2F44]">99.8%</h3>
-      <p class="text-xs text-green-600 mt-1 font-medium">Above 99.9% target</p>
-    </div>
-  </div>
-
-  <!-- MAIN CHARTS ROW 1 -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
-      <div class="flex justify-between items-center mb-5">
-        <div><h4 class="text-sm font-bold text-[#0A2F44]">Threat Volume Over Time</h4><p class="text-xs text-slate-400 mt-0.5">Daily threat detections vs resolutions</p></div>
-        <div class="flex gap-4 text-xs"><span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#0A2F44] inline-block rounded"></span>Detected</span><span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#1a6c40] inline-block rounded"></span>Resolved</span></div>
+<!-- MAIN CONTENT (no left margin on desktop) -->
+<div id="pageContent" class="hidden">
+  <main class="flex-1 main-analytics p-6 lg:p-8 pt-24 lg:pt-24">
+    <header class="flex flex-wrap justify-between items-start gap-4 mb-8">
+      <div>
+        <h2 class="text-2xl font-black tracking-tight text-[#0A2F44] mb-1">Analytics Dashboard</h2>
+        <p class="text-slate-500 text-sm">Comprehensive threat intelligence and operational metrics — <span class="font-mono" id="currentTime"></span></p>
       </div>
-      <canvas id="areaChart" height="110"></canvas>
-    </div>
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Requests by Sector</h4><p class="text-xs text-slate-400 mt-0.5">Client distribution</p></div>
-      <canvas id="sectorPie" height="170"></canvas>
-      <div class="mt-4 grid grid-cols-2 gap-1.5"><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-[#0A2F44] rounded-sm"></span>Government 31%</div><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-[#E0A800] rounded-sm"></span>Finance 27%</div><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-[#1a6c40] rounded-sm"></span>Enterprise 24%</div><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-slate-400 rounded-sm"></span>Energy 18%</div></div>
-    </div>
-  </div>
+      <div class="flex items-center gap-3">
+        <select id="periodSelect" class="bg-white border border-slate-200 text-sm px-3 py-2 rounded-lg focus:outline-none text-slate-600 font-medium">
+          <option value="30">Last 30 Days</option>
+          <option value="90">Last Quarter</option>
+          <option value="180">Last 6 Months</option>
+          <option value="365">Last Year</option>
+        </select>
+        <button class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-slate-700 transition-colors">
+          <span class="material-symbols-outlined text-base">download</span> Export Report
+        </button>
+      </div>
+    </header>
 
-  <!-- CHARTS ROW 2 -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
-      <div class="flex justify-between items-center mb-5"><div><h4 class="text-sm font-bold text-[#0A2F44]">Monthly Service Requests</h4><p class="text-xs text-slate-400 mt-0.5">Grouped by threat severity</p></div></div>
-      <canvas id="barChart" height="110"></canvas>
+    <!-- KPI ROW -->
+    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+      <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Total Threats</p>
+        <h3 class="text-2xl font-black text-[#0A2F44]">1,247</h3>
+        <p class="text-xs text-red-500 mt-1 font-medium">↑ 18% vs last period</p>
+      </div>
+      <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Avg MTTD</p>
+        <h3 class="text-2xl font-black text-[#0A2F44]">4.2m</h3>
+        <p class="text-xs text-green-600 mt-1 font-medium">↓ 11% improvement</p>
+      </div>
+      <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Resolved</p>
+        <h3 class="text-2xl font-black text-[#0A2F44]">1,183</h3>
+        <p class="text-xs text-green-600 mt-1 font-medium">94.9% resolution rate</p>
+      </div>
+      <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Client Requests</p>
+        <h3 class="text-2xl font-black text-[#0A2F44]">318</h3>
+        <p class="text-xs text-slate-400 mt-1 font-medium">Across all sectors</p>
+      </div>
+      <div class="kpi-card bg-white p-5 rounded-xl shadow-sm">
+        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Network SLA</p>
+        <h3 class="text-2xl font-black text-[#0A2F44]">99.8%</h3>
+        <p class="text-xs text-green-600 mt-1 font-medium">Above 99.9% target</p>
+      </div>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Response Time Distribution</h4><p class="text-xs text-slate-400 mt-0.5">Avg. time-to-respond (minutes)</p></div>
-      <canvas id="responseBar" height="170"></canvas>
-    </div>
-  </div>
 
-  <!-- CHARTS ROW 3 -->
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Network Uptime</h4><p class="text-xs text-slate-400 mt-0.5">Weekly SLA compliance (%)</p></div>
-      <canvas id="uptimeChart" height="150"></canvas>
+    <!-- MAIN CHARTS (preserved) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-center mb-5">
+          <div><h4 class="text-sm font-bold text-[#0A2F44]">Threat Volume Over Time</h4><p class="text-xs text-slate-400 mt-0.5">Daily threat detections vs resolutions</p></div>
+          <div class="flex gap-4 text-xs"><span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#0A2F44] inline-block rounded"></span>Detected</span><span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#1a6c40] inline-block rounded"></span>Resolved</span></div>
+        </div>
+        <canvas id="areaChart" height="110"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm">
+        <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Requests by Sector</h4><p class="text-xs text-slate-400 mt-0.5">Client distribution</p></div>
+        <canvas id="sectorPie" height="170"></canvas>
+        <div class="mt-4 grid grid-cols-2 gap-1.5"><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-[#0A2F44] rounded-sm"></span>Government 31%</div><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-[#E0A800] rounded-sm"></span>Finance 27%</div><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-[#1a6c40] rounded-sm"></span>Enterprise 24%</div><div class="flex items-center gap-1.5 text-[10px] text-slate-500"><span class="w-2 h-2 bg-slate-400 rounded-sm"></span>Energy 18%</div></div>
+      </div>
     </div>
-    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
-      <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Attack Type Trend — 6 Months</h4><p class="text-xs text-slate-400 mt-0.5">Monthly comparison by attack vector</p></div>
-      <canvas id="stackedBar" height="110"></canvas>
-    </div>
-  </div>
 
-  <!-- INSIGHTS TABLE -->
-  <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-    <div class="p-6 border-b border-slate-100"><h4 class="text-sm font-bold text-[#0A2F44]">Top Clients by Risk Exposure</h4></div>
-    <div class="overflow-x-auto">
-      <table class="w-full text-left">
-        <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
-          <tr><th class="px-6 py-3">Client</th><th class="px-6 py-3">Sector</th><th class="px-6 py-3">Threats (30d)</th><th class="px-6 py-3">Risk Score</th><th class="px-6 py-3">Trend</th><th class="px-6 py-3">SLA</th></tr>
-        </thead>
-        <tbody class="text-sm divide-y divide-slate-50">
-          <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Aether Global Ltd</td><td class="px-6 py-4 text-slate-400">Finance</td><td class="px-6 py-4 font-mono font-bold text-red-600">47</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-red-500 rounded-full" style="width:87%"></div></div><span class="text-xs font-bold text-red-600">87</span></div></td><td class="px-6 py-4 text-red-500 text-xs font-bold">↑ HIGH</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">99.8%</td></tr>
-          <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Sovereign Cloud</td><td class="px-6 py-4 text-slate-400">Government</td><td class="px-6 py-4 font-mono font-bold text-red-600">38</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-red-400 rounded-full" style="width:72%"></div></div><span class="text-xs font-bold text-red-500">72</span></div></td><td class="px-6 py-4 text-red-500 text-xs font-bold">↑ HIGH</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">99.6%</td></tr>
-          <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Nova Strategic</td><td class="px-6 py-4 text-slate-400">Enterprise</td><td class="px-6 py-4 font-mono font-bold text-yellow-600">21</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-yellow-400 rounded-full" style="width:54%"></div></div><span class="text-xs font-bold text-yellow-600">54</span></div></td><td class="px-6 py-4 text-yellow-500 text-xs font-bold">→ MED</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">100%</td></tr>
-          <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Helios Dynamics</td><td class="px-6 py-4 text-slate-400">Energy</td><td class="px-6 py-4 font-mono font-bold text-green-600">9</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-green-500 rounded-full" style="width:22%"></div></div><span class="text-xs font-bold text-green-600">22</span></div></td><td class="px-6 py-4 text-green-500 text-xs font-bold">↓ LOW</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">100%</td></tr>
-          <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Meridian Finance</td><td class="px-6 py-4 text-slate-400">Finance</td><td class="px-6 py-4 font-mono font-bold text-green-600">6</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-green-400 rounded-full" style="width:14%"></div></div><span class="text-xs font-bold text-green-600">14</span></div></td><td class="px-6 py-4 text-green-500 text-xs font-bold">↓ LOW</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">100%</td></tr>
-        </tbody>
-      </table>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-center mb-5"><div><h4 class="text-sm font-bold text-[#0A2F44]">Monthly Service Requests</h4><p class="text-xs text-slate-400 mt-0.5">Grouped by threat severity</p></div></div>
+        <canvas id="barChart" height="110"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-sm">
+        <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Response Time Distribution</h4><p class="text-xs text-slate-400 mt-0.5">Avg. time-to-respond (minutes)</p></div>
+        <canvas id="responseBar" height="170"></canvas>
+      </div>
     </div>
-  </div>
-</main>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+      <div class="bg-white p-6 rounded-xl shadow-sm">
+        <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Network Uptime</h4><p class="text-xs text-slate-400 mt-0.5">Weekly SLA compliance (%)</p></div>
+        <canvas id="uptimeChart" height="150"></canvas>
+      </div>
+      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
+        <div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Attack Type Trend — 6 Months</h4><p class="text-xs text-slate-400 mt-0.5">Monthly comparison by attack vector</p></div>
+        <canvas id="stackedBar" height="110"></canvas>
+      </div>
+    </div>
+
+    <!-- INSIGHTS TABLE -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+      <div class="p-6 border-b border-slate-100"><h4 class="text-sm font-bold text-[#0A2F44]">Top Clients by Risk Exposure</h4></div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+            <tr><th class="px-6 py-3">Client</th><th class="px-6 py-3">Sector</th><th class="px-6 py-3">Threats (30d)</th><th class="px-6 py-3">Risk Score</th><th class="px-6 py-3">Trend</th><th class="px-6 py-3">SLA</th></tr>
+          </thead>
+          <tbody class="text-sm divide-y divide-slate-50">
+            <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Aether Global Ltd</td><td class="px-6 py-4 text-slate-400">Finance</td><td class="px-6 py-4 font-mono font-bold text-red-600">47</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-red-500 rounded-full" style="width:87%"></div></div><span class="text-xs font-bold text-red-600">87</span></div></td><td class="px-6 py-4 text-red-500 text-xs font-bold">↑ HIGH</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">99.8%</td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Sovereign Cloud</td><td class="px-6 py-4 text-slate-400">Government</td><td class="px-6 py-4 font-mono font-bold text-red-600">38</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-red-400 rounded-full" style="width:72%"></div></div><span class="text-xs font-bold text-red-500">72</span></div></td><td class="px-6 py-4 text-red-500 text-xs font-bold">↑ HIGH</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">99.6%</td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Nova Strategic</td><td class="px-6 py-4 text-slate-400">Enterprise</td><td class="px-6 py-4 font-mono font-bold text-yellow-600">21</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-yellow-400 rounded-full" style="width:54%"></div></div><span class="text-xs font-bold text-yellow-600">54</span></div></td><td class="px-6 py-4 text-yellow-500 text-xs font-bold">→ MED</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">100%</td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Helios Dynamics</td><td class="px-6 py-4 text-slate-400">Energy</td><td class="px-6 py-4 font-mono font-bold text-green-600">9</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-green-500 rounded-full" style="width:22%"></div></div><span class="text-xs font-bold text-green-600">22</span></div></td><td class="px-6 py-4 text-green-500 text-xs font-bold">↓ LOW</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">100%</td></tr>
+            <tr class="hover:bg-slate-50"><td class="px-6 py-4 font-medium">Meridian Finance</td><td class="px-6 py-4 text-slate-400">Finance</td><td class="px-6 py-4 font-mono font-bold text-green-600">6</td><td class="px-6 py-4"><div class="flex items-center gap-2"><div class="h-1.5 w-24 bg-slate-100 rounded-full"><div class="h-full bg-green-400 rounded-full" style="width:14%"></div></div><span class="text-xs font-bold text-green-600">14</span></div></td><td class="px-6 py-4 text-green-500 text-xs font-bold">↓ LOW</td><td class="px-6 py-4 text-green-600 text-xs font-semibold">100%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
 
 <script>
-  // Hamburger logic (same as other pages)
+  // Hamburger logic (unchanged)
   (function(){
     var btn = document.getElementById('hamburger'), drawer = document.getElementById('mobileNavDrawer'), overlay = document.getElementById('mobileNavOverlay');
     if(!btn||!drawer||!overlay) return;
@@ -261,7 +385,7 @@
     btn.addEventListener('click', function(){ drawer.classList.contains('open') ? closeNav() : openNav(); });
     overlay.addEventListener('click', closeNav);
     drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
-    window.addEventListener('resize', function(){ if(window.innerWidth >= 768) closeNav(); });
+    window.addEventListener('resize', function(){ if(window.innerWidth >= 1024) closeNav(); });
     document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
   })();
 
@@ -269,27 +393,22 @@
   function updateClock() { document.getElementById('currentTime').textContent = new Date().toLocaleString('en-ZA', {timeZone:'Africa/Johannesburg', dateStyle:'medium', timeStyle:'short'}); }
   updateClock(); setInterval(updateClock, 30000);
 
+  // Charts (preserved exactly)
   const months = ['May','Jun','Jul','Aug','Sep','Oct'];
   const weeks = ['Wk1','Wk2','Wk3','Wk4','Wk5','Wk6','Wk7','Wk8','Wk9','Wk10','Wk11','Wk12'];
 
-  // Area Chart
   new Chart(document.getElementById('areaChart').getContext('2d'), {
     type: 'line', data: { labels: weeks, datasets: [{ label: 'Detected', data: [42,38,55,61,48,72,65,58,80,74,69,85], borderColor: '#0A2F44', backgroundColor: 'rgba(10,47,68,0.07)', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#0A2F44', tension: 0.4, fill: true }, { label: 'Resolved', data: [40,36,52,57,45,68,61,54,75,70,65,80], borderColor: '#1a6c40', backgroundColor: 'rgba(26,108,64,0.06)', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#1a6c40', tension: 0.4, fill: true }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } } }
   });
 
-  // Sector Pie
   new Chart(document.getElementById('sectorPie').getContext('2d'), { type: 'doughnut', data: { labels: ['Government','Finance','Enterprise','Energy'], datasets: [{ data: [31,27,24,18], backgroundColor: ['#0A2F44','#E0A800','#1a6c40','#94a3b8'], borderWidth: 0, hoverOffset: 8 }] }, options: { responsive: true, cutout: '68%', plugins: { legend: { display: false } } } });
 
-  // Bar Chart - Monthly Requests
   new Chart(document.getElementById('barChart').getContext('2d'), { type: 'bar', data: { labels: months, datasets: [{ label: 'High', data: [18,22,15,28,24,31], backgroundColor: '#ef4444', borderRadius: 4 }, { label: 'Medium', data: [24,28,32,26,35,29], backgroundColor: '#E0A800', borderRadius: 4 }, { label: 'Low', data: [12,16,18,14,20,18], backgroundColor: '#1a6c40', borderRadius: 4 }] }, options: { responsive: true, plugins: { legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 8 } } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { font: { size: 11 } } }, y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } } } } });
 
-  // Response Time Horizontal Bar
   new Chart(document.getElementById('responseBar').getContext('2d'), { type: 'bar', data: { labels: ['< 1 min','1–5 min','5–15 min','15–60 min','> 1 hr'], datasets: [{ label: 'Incidents', data: [142,389,278,104,25], backgroundColor: ['#1a6c40','#0A2F44','#E0A800','#f97316','#ef4444'], borderRadius: 4 }] }, options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } }, y: { grid: { display: false }, ticks: { font: { size: 11 } } } } } });
 
-  // Uptime Line
   new Chart(document.getElementById('uptimeChart').getContext('2d'), { type: 'line', data: { labels: ['Wk1','Wk2','Wk3','Wk4','Wk5','Wk6','Wk7','Wk8'], datasets: [{ label: 'Uptime %', data: [99.9,100,99.8,100,99.9,100,99.8,99.9], borderColor: '#1a6c40', backgroundColor: 'rgba(26,108,64,0.08)', borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#E0A800', tension: 0.4, fill: true }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 99.5, max: 100.1, ticks: { font: { size: 11 }, callback: v => v+'%' } }, x: { grid: { display: false }, ticks: { font: { size: 11 } } } } } });
 
-  // Stacked Bar - Attack Types
   new Chart(document.getElementById('stackedBar').getContext('2d'), { type: 'bar', data: { labels: months, datasets: [{ label: 'Ransomware', data: [28,35,22,40,38,45], backgroundColor: '#ef4444', borderRadius: 3 }, { label: 'Phishing', data: [22,26,30,24,32,28], backgroundColor: '#f97316', borderRadius: 3 }, { label: 'APT', data: [18,15,22,19,25,20], backgroundColor: '#0A2F44', borderRadius: 3 }, { label: 'Supply Chain', data: [8,12,9,14,10,16], backgroundColor: '#E0A800', borderRadius: 3 }, { label: 'DDoS', data: [6,8,5,7,9,11], backgroundColor: '#94a3b8', borderRadius: 3 }] }, options: { responsive: true, plugins: { legend: { position: 'top', labels: { font: { size: 11 }, usePointStyle: true, pointStyleWidth: 8 } } }, scales: { x: { stacked: true, grid: { display: false }, ticks: { font: { size: 11 } } }, y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 11 } } } } } });
 </script>
 </body>
