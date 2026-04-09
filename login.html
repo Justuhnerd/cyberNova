@@ -8,72 +8,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
 
-  <!-- ============================================================
-    FIREBASE SETUP — YOU MUST COMPLETE THESE 3 STEPS:
 
-    STEP 1: Go to https://console.firebase.google.com
-    STEP 2: Create a new project → click "Web" app → register app
-    STEP 3: Go to Authentication → Sign-in method → Enable "Email/Password"
-    STEP 4: Authentication → Users → Add user (create your admin email + password)
-    STEP 5: Replace the firebaseConfig object below with YOUR project's config
-            (found in Project Settings → Your apps → Firebase SDK snippet)
-  ============================================================ -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
-  authDomain: "cybernova-3f09c.firebaseapp.com",
-  projectId: "cybernova-3f09c",
-  storageBucket: "cybernova-3f09c.firebasestorage.app",
-  messagingSenderId: "153861855601",
-  appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
-  measurementId: "G-HDGG6RQXXR"   // optional
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
+    authDomain: "cybernova-3f09c.firebaseapp.com",
+    projectId: "cybernova-3f09c",
+    storageBucket: "cybernova-3f09c.firebasestorage.app",
+    messagingSenderId: "153861855601",
+    appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  await setPersistence(auth, browserLocalPersistence);
 
-    // If already logged in → go straight to admin
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.location.href = 'admin.html';
-      }
-    });
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      window.location.href = 'admin.html';
+    }
+  });
 
-    // Login handler
-    window.handleLogin = async function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const errorEl = document.getElementById('loginError');
-      const btnEl = document.getElementById('loginBtn');
-      const spinEl = document.getElementById('loginSpinner');
+  window.handleLogin = async function(e) {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const errorEl = document.getElementById('loginError');
+    const btnEl = document.getElementById('loginBtn');
+    const spinEl = document.getElementById('loginSpinner');
 
-      errorEl.classList.add('hidden');
-      btnEl.disabled = true;
-      spinEl.classList.remove('hidden');
+    errorEl.classList.add('hidden');
+    btnEl.disabled = true;
+    spinEl.classList.remove('hidden');
 
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        // onAuthStateChanged above will redirect
-      } catch (err) {
-        let msg = 'Login failed. Please try again.';
-        if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-          msg = 'Invalid email or password.';
-        } else if (err.code === 'auth/too-many-requests') {
-          msg = 'Too many failed attempts. Try again later.';
-        } else if (err.code === 'auth/network-request-failed') {
-          msg = 'Network error. Check your connection.';
-        }
-        errorEl.textContent = msg;
-        errorEl.classList.remove('hidden');
-        btnEl.disabled = false;
-        spinEl.classList.add('hidden');
-      }
-    };
-  </script>
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // onAuthStateChanged will redirect
+    } catch (err) {
+      let msg = 'Login failed. Please try again.';
+      if (err.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
+      else if (err.code === 'auth/too-many-requests') msg = 'Too many failed attempts. Try again later.';
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+      btnEl.disabled = false;
+      spinEl.classList.add('hidden');
+    }
+  };
+</script> 
 
   <style>
     body { font-family: 'Inter', sans-serif; }
@@ -110,12 +94,7 @@ const firebaseConfig = {
         <span class="material-symbols-outlined text-red-500 text-base" style="font-variation-settings:'FILL' 1">error</span>
         <span></span>
       </div>
-
-      <!-- Firebase Config Warning — remove after setup -->
-      <div id="configWarning" class="bg-amber-50 border border-amber-200 text-amber-800 text-xs px-4 py-3 rounded-lg mb-5">
-        <strong>⚠️ Setup required:</strong> Replace the Firebase config in <code class="font-mono bg-amber-100 px-1">login.html</code> with your project credentials before this login will work. See comments in the source code.
-      </div>
-
+  
       <form onsubmit="handleLogin(event)" novalidate>
         <div class="mb-5">
           <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">Email Address</label>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova | Audit Trail</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <script src="js/admin-nav.js"></script>
+
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
+      authDomain: "cybernova-3f09c.firebaseapp.com",
+      projectId: "cybernova-3f09c",
+      storageBucket: "cybernova-3f09c.firebasestorage.app",
+      messagingSenderId: "153861855601",
+      appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        document.getElementById('adminEmail').textContent = user.email;
+        document.getElementById('adminInitial').textContent = user.email[0].toUpperCase();
+        const mobileAdminEmail = document.getElementById('mobileAdminEmail');
+        const mobileAdminInitial = document.getElementById('mobileAdminInitial');
+        if (mobileAdminEmail) mobileAdminEmail.textContent = user.email;
+        if (mobileAdminInitial) mobileAdminInitial.textContent = user.email[0].toUpperCase();
+        document.getElementById('pageContent').classList.remove('hidden');
+        document.getElementById('loadingScreen').classList.add('hidden');
+      }
+    });
+
+    window.handleLogout = async function() {
+      if (confirm('Are you sure you want to log out?')) {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      }
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+
+    /* Mobile drawer */
+    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
+    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
+    .hamburger span:nth-child(1){margin-bottom:5px;}
+    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
+    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
+    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
+    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
+    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
+    .mobile-nav-drawer.open{transform:translateX(0);}
+    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
+    .mobile-nav-links{flex:1;padding:10px 0;}
+    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
+    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
+    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
+    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
+    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
+    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
+    body.nav-open{overflow:hidden;}
+
+    /* Desktop topnav */
+    .topnav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      border-radius: 6px;
+      text-decoration: none;
+      background: transparent;
+      transition: color .18s, background .18s;
+      white-space: nowrap;
+      position: relative;
+    }
+    .topnav-link:hover { color: #0A2F44; background: rgba(10,47,68,.06); }
+    .topnav-link.topnav-active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .topnav-link.topnav-active::after { content:''; position:absolute; bottom:-1px; left:12px; right:12px; height:2px; background:#E0A800; border-radius:2px 2px 0 0; }
+    .topnav-link .material-symbols-outlined { font-size:16px; font-variation-settings:'FILL' 1; }
+    .topnav-divider { width:1px; height:20px; background:#e2e8f0; }
+
+    @media (max-width: 1023px) {
+      .hamburger { display: flex; }
+      .desktop-topnav-links { display: none !important; }
+      .desktop-topnav-admin { display: none !important; }
+    }
+    @media (min-width: 1024px) {
+      .hamburger { display: none !important; }
+      .page-main { margin-left: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+
+<!-- Loading Screen -->
+<div id="loadingScreen" class="fixed inset-0 bg-[#0A2F44] flex items-center justify-center z-50">
+  <div class="text-center"><div class="text-3xl font-black text-white tracking-tighter mb-2">CyberNova</div><div class="flex items-center justify-center gap-2 text-slate-400 text-sm"><svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Verifying session...</div></div>
+</div>
+
+<!-- Mobile Drawer -->
+<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
+<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
+  <div class="drawer-header"><p>Admin Navigation</p></div>
+  <div class="mobile-nav-links">
+    <a href="admin.html"><span class="nav-icon">dashboard</span>Dashboard</a>
+    <a href="requests.html"><span class="nav-icon">mark_as_unread</span>Requests</a>
+    <a href="analytics.html"><span class="nav-icon">analytics</span>Analytics</a>
+    <a href="traffic-analytics.html"><span class="nav-icon">traffic</span>Traffic Analytics</a>
+    <a href="content.html"><span class="nav-icon">edit_note</span>Content Mgmt</a>
+    <a href="audit.html" class="active"><span class="nav-icon">fact_check</span>Audit Trail</a>
+    <div class="border-t border-white/10 my-2"></div>
+    <a href="index.html"><span class="nav-icon">open_in_new</span>Public Site</a>
+  </div>
+  <div class="drawer-footer">
+    <div class="flex items-center gap-3 px-3 py-2 mb-2"><div id="mobileAdminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div><div><p id="mobileAdminEmail" class="text-white text-xs font-semibold">Loading...</p><p class="text-slate-400 text-[10px]">Administrator</p></div></div>
+    <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg hover:text-red-400 hover:bg-red-400/10"><span class="material-symbols-outlined text-lg">logout</span><span>Logout</span></button>
+  </div>
+</nav>
+<!-- Unified Admin Header (stacked brand, non‑overlapping) -->
+<header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+  <div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-8 h-16">
+    <!-- Logo + stacked brand -->
+    <a href="admin.html" class="flex items-center gap-3 flex-shrink-0">
+      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
+      <div class="leading-tight">
+        <div class="text-base sm:text-lg font-black tracking-tighter text-[#0A2F44]">CyberNova</div>
+        <div class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</div>
+      </div>
+    </a>
+
+    <!-- Desktop navigation (scrollable if needed) -->
+    <div class="hidden lg:flex items-center gap-2 overflow-x-auto flex-1 min-w-0 justify-center">
+      <nav class="desktop-topnav-links flex items-center gap-0.5">
+        <a href="admin.html" class="topnav-link" id="nav-dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a href="requests.html" class="topnav-link" id="nav-requests"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
+        <a href="analytics.html" class="topnav-link" id="nav-analytics"><span class="material-symbols-outlined">analytics</span>Analytics</a>
+        <a href="traffic-analytics.html" class="topnav-link" id="nav-traffic"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
+        <a href="content.html" class="topnav-link" id="nav-content"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
+        <a href="audit.html" class="topnav-link" id="nav-audit"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
+        <div class="topnav-divider mx-2"></div>
+        <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
+      </nav>
+    </div>
+
+    <!-- Admin info + logout (always on right) -->
+    <div class="desktop-topnav-admin flex items-center gap-2 lg:gap-3 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
+        <div class="hidden sm:block">
+          <p id="adminEmail" class="text-xs font-semibold text-[#0A2F44] truncate max-w-[120px]">Loading...</p>
+          <p class="text-[10px] text-slate-400">Administrator</p>
+        </div>
+      </div>
+      <div class="topnav-divider hidden sm:block"></div>
+      <button onclick="handleLogout()" class="topnav-link text-slate-400 hover:text-red-500 hover:bg-red-50 flex-shrink-0">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span class="text-xs hidden sm:inline">Logout</span>
+      </button>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button id="hamburger" class="hamburger ml-auto lg:hidden" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Main Content -->
+<div id="pageContent" class="hidden page-main">
+  <div class="p-6 lg:p-8 pt-24 lg:pt-24">
+    <div class="mb-6 flex justify-between items-start">
+      <div><h2 class="text-2xl font-black text-[#0A2F44] mb-1">Audit Trail</h2><p class="text-slate-500 text-sm">All content changes logged with actor, action, and timestamp.</p></div>
+      <button onclick="clearAudit()" class="text-xs text-slate-400 hover:text-red-500 transition-colors border border-slate-200 px-3 py-1.5 rounded-lg">Clear Log</button>
+    </div>
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden overflow-x-auto">
+      <table class="w-full text-left min-w-[600px]">
+        <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider"><tr><th class="px-5 py-4">Timestamp</th><th class="px-5 py-4">Actor</th><th class="px-5 py-4">Category</th><th class="px-5 py-4">Action</th><th class="px-5 py-4">Item</th></tr></thead>
+        <tbody id="auditTableBody" class="text-sm divide-y divide-slate-50 font-mono text-xs"></tbody>
+      </table>
+      <div id="auditEmpty" class="p-10 text-center text-slate-400 text-sm">No audit entries yet. Actions will appear here as you manage content.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Hamburger
+  (function(){ var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay'); if(!btn||!drawer||!overlay)return; function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');} function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');} btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();}); overlay.addEventListener('click',c); drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c)); window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();}); document.addEventListener('keydown',function(e){if(e.key==='Escape')c();}); })();
+
+  const auditLog = JSON.parse(sessionStorage.getItem('cn_audit') || '[]');
+  function renderAudit() {
+    const tbody = document.getElementById('auditTableBody');
+    const empty = document.getElementById('auditEmpty');
+    if (auditLog.length === 0) { empty.classList.remove('hidden'); tbody.innerHTML = ''; return; }
+    empty.classList.add('hidden');
+    const typeColors = { publish:'bg-green-50 text-green-700', edit:'bg-blue-50 text-blue-700', archive:'bg-yellow-50 text-yellow-700', delete:'bg-red-50 text-red-700', undo:'bg-purple-50 text-purple-700', logout:'bg-slate-50 text-slate-600' };
+    tbody.innerHTML = auditLog.map(e => `<tr><td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">${e.ts}</td><td class="px-5 py-3.5 text-slate-700 font-medium">${e.actor}</td><td class="px-5 py-3.5 text-slate-400 capitalize">${e.category}</td><td class="px-5 py-3.5 text-slate-600">${e.action}</td><td class="px-5 py-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${typeColors[e.type] || 'bg-slate-50 text-slate-500'}">${e.type}</span></td></tr>`).join('');
+  }
+  function clearAudit() { if(confirm('Clear all audit entries from this session?')) { auditLog.length = 0; sessionStorage.removeItem('cn_audit'); renderAudit(); } }
+  renderAudit();
+</script>
+</body>
+</html>

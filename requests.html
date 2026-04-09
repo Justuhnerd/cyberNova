@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-
+  <script src="js/admin-nav.js"></script>
   <!-- Firebase Auth Guard -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -46,6 +46,7 @@
         window.location.href = 'login.html';
       }
     };
+
   </script>
 
   <style>
@@ -119,6 +120,15 @@
     }
     .status-badge { @apply px-2.5 py-1 rounded-full text-[10px] font-bold uppercase; }
     .modal-transition { transition: opacity 0.2s ease, visibility 0.2s; }
+
+      .main-requests {
+  padding-top: 90px !important; 
+}
+@media (min-width: 1024px) {
+  .main-requests {
+    padding-top: 80px !important;
+  }
+}
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
@@ -136,6 +146,7 @@
     <a href="admin.html"><span class="nav-icon">dashboard</span>Dashboard</a>
     <a href="requests.html" class="active"><span class="nav-icon">mark_as_unread</span>Requests</a>
     <a href="analytics.html"><span class="nav-icon">analytics</span>Analytics</a>
+    <a href="traffic-analytics.html"><span class="nav-icon">traffic</span>Traffic Analytics</a>
     <a href="admin.html#content"><span class="nav-icon">edit_note</span>Content Mgmt</a>
     <a href="admin.html#audit"><span class="nav-icon">fact_check</span>Audit Trail</a>
     <div class="border-t border-white/10 my-2"></div>
@@ -153,28 +164,52 @@
 <!-- Desktop Sidebar (hidden on lg, kept for compatibility) -->
 <aside class="desktop-sidebar h-screen w-64 bg-[#0A2F44] fixed left-0 top-0 z-40 hidden lg:hidden"></aside>
 
-<!-- Unified Header -->
+ <!-- Unified Admin Header (stacked brand, non‑overlapping) -->
 <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
-  <div class="px-4 sm:px-6 lg:px-8 flex items-center gap-4 h-16">
-    <a href="admin.html" class="flex items-center gap-2.5 flex-shrink-0">
+  <div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-8 h-16">
+    <!-- Logo + stacked brand -->
+    <a href="admin.html" class="flex items-center gap-3 flex-shrink-0">
       <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
-      <div class="hidden sm:block"><span class="text-lg font-black tracking-tighter text-[#0A2F44] leading-none block">CyberNova</span><span class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</span></div>
+      <div class="leading-tight">
+        <div class="text-base sm:text-lg font-black tracking-tighter text-[#0A2F44]">CyberNova</div>
+        <div class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</div>
+      </div>
     </a>
-    <nav class="desktop-topnav-links flex items-center gap-0.5 flex-1 ml-4">
-      <a href="admin.html" class="topnav-link"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-      <a href="requests.html" class="topnav-link topnav-active"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
-      <a href="analytics.html" class="topnav-link"><span class="material-symbols-outlined">analytics</span>Analytics</a>
-      <a href="admin.html#content" class="topnav-link"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
-      <a href="admin.html#audit" class="topnav-link"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
-      <div class="topnav-divider mx-2"></div>
-      <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
-    </nav>
-    <div class="desktop-topnav-admin flex items-center gap-3 ml-auto">
-      <div class="flex items-center gap-2.5"><div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div><div><p id="adminEmail" class="text-xs font-semibold text-[#0A2F44]">Loading...</p><p class="text-[10px] text-slate-400">Administrator</p></div></div>
-      <div class="topnav-divider"></div>
-      <button onclick="handleLogout()" class="topnav-link text-slate-400 hover:text-red-500 hover:bg-red-50"><span class="material-symbols-outlined text-base">logout</span><span class="text-xs">Logout</span></button>
+
+    <!-- Desktop navigation (scrollable if needed) -->
+    <div class="hidden lg:flex items-center gap-2 overflow-x-auto flex-1 min-w-0 justify-center">
+      <nav class="desktop-topnav-links flex items-center gap-0.5">
+        <a href="admin.html" class="topnav-link" id="nav-dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a href="requests.html" class="topnav-link" id="nav-requests"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
+        <a href="analytics.html" class="topnav-link" id="nav-analytics"><span class="material-symbols-outlined">analytics</span>Analytics</a>
+        <a href="traffic-analytics.html" class="topnav-link" id="nav-traffic"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
+        <a href="content.html" class="topnav-link" id="nav-content"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
+        <a href="audit.html" class="topnav-link" id="nav-audit"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
+        <div class="topnav-divider mx-2"></div>
+        <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
+      </nav>
     </div>
-    <button id="hamburger" class="hamburger ml-auto" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+
+    <!-- Admin info + logout (always on right) -->
+    <div class="desktop-topnav-admin flex items-center gap-2 lg:gap-3 flex-shrink-0">
+      <div class="flex items-center gap-2">
+        <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
+        <div class="hidden sm:block">
+          <p id="adminEmail" class="text-xs font-semibold text-[#0A2F44] truncate max-w-[120px]">Loading...</p>
+          <p class="text-[10px] text-slate-400">Administrator</p>
+        </div>
+      </div>
+      <div class="topnav-divider hidden sm:block"></div>
+      <button onclick="handleLogout()" class="topnav-link text-slate-400 hover:text-red-500 hover:bg-red-50 flex-shrink-0">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span class="text-xs hidden sm:inline">Logout</span>
+      </button>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button id="hamburger" class="hamburger ml-auto lg:hidden" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
 
@@ -361,6 +396,9 @@
 
   // Initial render
   filterRequests();
+
+
+  
 </script>
 </body>
 </html>
