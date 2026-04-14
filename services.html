@@ -3,119 +3,232 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CyberNova | Services & Solutions</title>
+  <title>CyberNova | Services &amp; Solutions</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
   <style>
-    html,body{overflow-x:hidden;font-family:'Inter',sans-serif;}
-    .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+    /* ── Reset ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; }
 
-    /* ── Hamburger ─────────────────────────────────────────── */
-    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
-    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
-    .hamburger span:nth-child(1){margin-bottom:5px;}
-    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
-    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
-    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
+    /* ══════════════════════════════════════════════════════
+       PUBLIC NAV — shared across all public pages
+       Differentiator from admin: gold 3px top stripe +
+       "Public site" pill when admin session is active.
+    ══════════════════════════════════════════════════════ */
 
-    /* ── Overlay ───────────────────────────────────────────── */
-    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
-    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
-
-    /* ── Drawer ────────────────────────────────────────────── */
-    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
-    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
-    .mobile-nav-drawer.open{transform:translateX(0);}
-    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
-    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
-    .mobile-nav-links{flex:1;padding:10px 0;}
-    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
-    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
-    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
-    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
-    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(1){transition-delay:.07s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(2){transition-delay:.12s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(3){transition-delay:.17s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(4){transition-delay:.22s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(5){transition-delay:.27s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(6){transition-delay:.32s}
-    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
-    .drawer-footer .cta-primary{display:block;background:#E0A800;color:#0A2F44;text-align:center;padding:13px 20px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;transition:filter .2s;}
-    .drawer-footer .cta-primary:hover{filter:brightness(1.07);}
-    .drawer-footer .cta-secondary{display:flex;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;}
-    .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
-    body.nav-open{overflow:hidden;}
-
-    @media(max-width:767px){
-      .hamburger{display:flex;}
-      .desktop-nav{display:none!important;}
-      .desktop-cta{display:none!important;}
-      .desktop-admin-link{display:none!important;}
-    }
-    @media(max-width:640px){
-      .services-grid{grid-template-columns:1fr!important;}
-      .sectors-grid{grid-template-columns:1fr 1fr!important;}
-      .cta-btn{display:block!important;width:100%!important;text-align:center!important;}
-      .footer-grid{grid-template-columns:1fr!important;gap:2rem!important;}
+    /* Gold accent stripe — admin pages do NOT have this */
+    .pub-header-stripe {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; background: #E0A800; z-index: 60;
     }
 
-    /* ── Page-specific ─────────────────────────────────────── */
-    .service-card{transition:all .25s;}
-    .service-card:hover{transform:translateY(-6px);box-shadow:0 16px 40px rgba(10,47,68,.12);}
-    .service-card:hover .card-icon{background-color:#1a6c40;}
-    .card-icon{transition:background-color .25s;}
-    .tag{background:rgba(10,47,68,.07);color:#0A2F44;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-    .fade-up{animation:fadeUp .7s ease forwards;}
-    .grid-bg{background-image:linear-gradient(rgba(10,47,68,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(10,47,68,.04) 1px,transparent 1px);background-size:40px 40px;}
+    /* Main header bar */
+    .pub-header {
+      position: fixed; top: 3px; left: 0; right: 0;
+      background: rgba(10,47,68,.97);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(224,168,0,.18);
+      z-index: 50; transition: box-shadow .25s;
+    }
+    /* Scroll shadow — only appears after 8px scroll */
+    .pub-header.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.25); }
+
+    .pub-header-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 1.25rem;
+      height: 62px; display: flex; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+
+    /* Logo */
+    .pub-logo { display: flex; align-items: center; gap: .625rem; text-decoration: none; flex-shrink: 0; }
+    .pub-logo img { height: 36px; width: auto; }
+    .pub-logo-text { font-size: 1.125rem; font-weight: 800; letter-spacing: -.04em; color: #fff; line-height: 1; }
+    .pub-logo-text span { color: #E0A800; }
+
+    /* Desktop nav links */
+    .pub-nav { display: none; align-items: center; gap: .25rem; }
+    @media (min-width: 900px) { .pub-nav { display: flex; } }
+    .pub-nav a {
+      text-decoration: none; font-size: .8125rem; font-weight: 500;
+      color: rgba(255,255,255,.62); padding: .35rem .7rem; border-radius: 6px;
+      transition: color .18s, background .18s; position: relative;
+    }
+    .pub-nav a:hover { color: #fff; background: rgba(255,255,255,.07); }
+    /* Active state set by JS via data-page matching */
+    .pub-nav a.active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .pub-nav a.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 50%;
+      transform: translateX(-50%); width: 16px; height: 2px;
+      border-radius: 1px; background: #E0A800;
+    }
+
+    /* Right-side action group */
+    .pub-actions { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
+
+    /* "Public site" pill — only visible when CyberNovaDB detects admin session */
+    .pub-site-badge {
+      display: none; align-items: center; gap: .25rem;
+      font-size: .6875rem; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: #E0A800;
+      background: rgba(224,168,0,.12); border: 1px solid rgba(224,168,0,.28);
+      border-radius: 20px; padding: .2rem .6rem;
+    }
+    .pub-site-badge .material-symbols-outlined { font-size: 13px; }
+    .pub-site-badge.visible { display: flex; }
+
+    /* Admin login link (desktop only) */
+    .pub-admin-link {
+      display: none; align-items: center; gap: .25rem;
+      font-size: .8rem; font-weight: 500; color: rgba(255,255,255,.5);
+      text-decoration: none; padding: .3rem .55rem; border-radius: 6px;
+      transition: color .18s, background .18s;
+    }
+    .pub-admin-link .material-symbols-outlined { font-size: 15px; }
+    .pub-admin-link:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.06); }
+    @media (min-width: 900px) { .pub-admin-link { display: flex; } }
+
+    /* Gold CTA — pops against dark header */
+    .pub-cta {
+      display: none; background: #E0A800; color: #0A2F44;
+      font-size: .8125rem; font-weight: 700; padding: .45rem 1.05rem;
+      border-radius: 6px; text-decoration: none;
+      transition: background .18s, transform .12s; white-space: nowrap;
+    }
+    .pub-cta:hover { background: #f0b800; transform: translateY(-1px); }
+    @media (min-width: 900px) { .pub-cta { display: inline-block; } }
+
+    /* Hamburger button — morphs to X */
+    .pub-hamburger {
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 5px; width: 36px; height: 36px; cursor: pointer;
+      background: none; border: none; padding: 6px;
+      border-radius: 6px; transition: background .18s;
+    }
+    .pub-hamburger:hover { background: rgba(255,255,255,.08); }
+    .pub-hamburger span {
+      display: block; height: 2px; background: rgba(255,255,255,.75);
+      border-radius: 2px; transform-origin: center;
+      transition: transform .28s cubic-bezier(.4,0,.2,1), opacity .2s, width .2s;
+    }
+    .pub-hamburger span:nth-child(1) { width: 22px; }
+    .pub-hamburger span:nth-child(2) { width: 16px; }
+    .pub-hamburger span:nth-child(3) { width: 22px; }
+    /* X state */
+    .pub-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); width: 22px; }
+    .pub-hamburger.open span:nth-child(2) { opacity: 0; }
+    .pub-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); width: 22px; }
+    @media (min-width: 900px) { .pub-hamburger { display: none; } }
+
+    /* Mobile drawer — slides down from top */
+    .pub-drawer {
+      position: fixed; top: 65px; left: 0; right: 0;
+      background: #0A2F44; border-bottom: 2px solid rgba(224,168,0,.3);
+      z-index: 49; transform: translateY(-110%); opacity: 0;
+      transition: transform .32s cubic-bezier(.4,0,.2,1), opacity .22s;
+      pointer-events: none;
+    }
+    .pub-drawer.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .pub-drawer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 1.25rem 1.25rem 1.5rem;
+      display: flex; flex-direction: column; gap: .25rem;
+    }
+    .pub-drawer a {
+      text-decoration: none; font-size: .9375rem; font-weight: 500;
+      color: rgba(255,255,255,.65); padding: .6rem .75rem; border-radius: 7px;
+      display: flex; align-items: center; gap: .5rem;
+      transition: color .15s, background .15s;
+    }
+    .pub-drawer a:hover { color: #fff; background: rgba(255,255,255,.07); }
+    .pub-drawer a.active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .pub-drawer-divider { height: 1px; background: rgba(255,255,255,.08); margin: .5rem 0; }
+    .pub-drawer-cta {
+      margin-top: .5rem; display: block; text-align: center;
+      background: #E0A800; color: #0A2F44; font-weight: 700;
+      font-size: .9rem; padding: .7rem; border-radius: 7px; text-decoration: none;
+    }
+
+    /* Pushes page body below the fixed header */
+    .pub-page-offset { height: 65px; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body>
 
-<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
-<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
-  <div class="drawer-header"><p>Navigation</p></div>
-  <div class="mobile-nav-links">
-    <a href="index.html"><span class="nav-icon">home</span>Home</a>
-    <a href="services.html" class="active"><span class="nav-icon">shield</span>Services</a>
-    <a href="faq.html"><span class="nav-icon">help</span>FAQ</a>
-    <a href="case-studies.html"><span class="nav-icon">folder_open</span>Case Studies</a>
-    <a href="chatbot.html"><span class="nav-icon">smart_toy</span>AI Analyst</a>
-    <a href="request.html"><span class="nav-icon">mail</span>Contact</a>
-  </div>
-  <div class="drawer-footer">
-    <a href="request.html" class="cta-primary">Contact Security Team</a>
-    <a href="login.html" class="cta-secondary"><span class="material-symbols-outlined" style="font-size:14px">lock</span>Admin Login</a>
-  </div>
-</nav>
+  <!-- ══ GOLD TOP STRIPE — public pages only ══════════════ -->
+  <div class="pub-header-stripe" aria-hidden="true"></div>
 
-<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
-      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
-      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
-    </a>
-    <nav class="desktop-nav hidden md:flex items-center gap-8 text-sm font-medium">
-      <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
-      <a href="services.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">Services</a>
-      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
-      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
-      <a href="chatbot.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">AI Analyst</a>
-      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
-    </nav>
-    <div class="flex items-center gap-2">
-      <a href="request.html" class="desktop-cta hidden md:inline-block bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Contact Security Team</a>
-      <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+  <!-- ══ HEADER ════════════════════════════════════════════ -->
+  <header class="pub-header" id="pubHeader">
+    <div class="pub-header-inner">
+
+      <!-- Logo: uses images/logo.png -->
+      <a href="index.html" class="pub-logo" aria-label="CyberNova home">
+        <img src="images/logo.png" alt="CyberNova Analytics"/>
+        <span class="pub-logo-text">Cyber<span>Nova</span></span>
+      </a>
+
+      <!-- Desktop nav — data-page matched by JS to current filename -->
+      <nav class="pub-nav" aria-label="Main navigation">
+        <a href="index.html"        data-page="index">Home</a>
+        <a href="services.html"     data-page="services">Services</a>
+        <a href="faq.html"          data-page="faq">FAQ</a>
+        <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+        <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+        <a href="gallery.html"      data-page="gallery">Gallery</a>
+        <a href="request.html"      data-page="request">Contact</a>
+      </nav>
+
+      <div class="pub-actions">
+        <!-- Pill: only shows when admin is browsing the public site -->
+        <span class="pub-site-badge" id="pubSiteBadge" aria-live="polite">
+          <span class="material-symbols-outlined" aria-hidden="true">public</span>
+          Public site
+        </span>
+
+        <a href="login.html" class="pub-admin-link" aria-label="Admin login">
+          <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+          Admin
+        </a>
+
+        <a href="request.html" class="pub-cta">Get Protected</a>
+
+        <!-- Hamburger: morphs to X via .open class -->
+        <button class="pub-hamburger" id="pubHamburger"
+                aria-label="Toggle navigation" aria-expanded="false"
+                aria-controls="pubDrawer">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+
     </div>
-  </div>
-</header>
+  </header>
 
-<main class="pt-20">
+  <!-- ══ MOBILE DRAWER ════════════════════════════════════ -->
+  <nav class="pub-drawer" id="pubDrawer" aria-label="Mobile navigation">
+    <div class="pub-drawer-inner">
+      <a href="index.html"        data-page="index">Home</a>
+      <a href="services.html"     data-page="services">Services</a>
+      <a href="faq.html"          data-page="faq">FAQ</a>
+      <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+      <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+      <a href="gallery.html"      data-page="gallery">Gallery</a>
+      <a href="request.html"      data-page="request">Contact</a>
+      <div class="pub-drawer-divider"></div>
+      <a href="login.html" data-page="login">
+        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">lock</span>
+        Admin Login
+      </a>
+      <a href="request.html" class="pub-drawer-cta">Get Protected</a>
+    </div>
+  </nav>
+
+  <!-- Spacer so content clears fixed header -->
+  <div class="pub-page-offset" aria-hidden="true"></div>
+
+<!-- ══ PAGE CONTENT ══════════════════════════════════════ -->
+<main>
   <!-- PAGE HERO -->
   <section class="bg-[#0A2F44] py-14 sm:py-20 px-4 sm:px-8 relative overflow-hidden">
     <div class="absolute top-0 right-0 w-96 h-96 bg-[#E0A800]/5 rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
@@ -127,15 +240,15 @@
   </section>
 
   <!-- SERVICES GRID -->
-  <section class="py-16 sm:py-24 px-4 sm:px-8 grid-bg">
+  <section class="py-16 sm:py-24 px-4 sm:px-8">
     <div class="max-w-7xl mx-auto">
-      <div class="services-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-        <div class="service-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="card-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">search_insights</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Adaptive Threat Intelligence</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Continuous monitoring and predictive modelling specialised in African attack vectors. Our threat intel team tracks regional dark web activity and nation-state actor movements 24/7.</p><div class="flex flex-wrap gap-2"><span class="tag text-xs px-2.5 py-1 rounded font-medium">Dark Web Monitoring</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">APT Tracking</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">IOC Feeds</span></div></div>
-        <div class="service-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="card-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">cloud_done</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Sovereign Cloud Guard</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Maintain strict data residency and compliance within regional borders. We secure hybrid and multi-cloud architectures while ensuring POPIA and GDPR alignment.</p><div class="flex flex-wrap gap-2"><span class="tag text-xs px-2.5 py-1 rounded font-medium">POPIA Compliant</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">Hybrid Cloud</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">Data Residency</span></div></div>
-        <div class="service-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="card-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">bolt</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Rapid Incident Response</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Automated containment protocols that leverage ML to isolate threats in milliseconds. Our MTTD is under 5 minutes with a dedicated regional response team on standby.</p><div class="flex flex-wrap gap-2"><span class="tag text-xs px-2.5 py-1 rounded font-medium">ML Containment</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">MTTD &lt; 5 min</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">24/7 SOC</span></div></div>
-        <div class="service-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="card-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">leaderboard</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Executive Insight Panel</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Board-ready reporting that translates complex threat data into actionable strategic risk assessments. Custom dashboards for CISOs, CFOs, and board-level oversight.</p><div class="flex flex-wrap gap-2"><span class="tag text-xs px-2.5 py-1 rounded font-medium">Risk Reporting</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">CISO Dashboards</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">Board Briefs</span></div></div>
-        <div class="service-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="card-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">manage_accounts</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Penetration Testing</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Comprehensive red-team exercises and penetration testing services. We simulate real-world attack scenarios against your infrastructure to expose vulnerabilities before attackers do.</p><div class="flex flex-wrap gap-2"><span class="tag text-xs px-2.5 py-1 rounded font-medium">Red Teaming</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">Vuln Assessment</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">OWASP</span></div></div>
-        <div class="service-card bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="card-icon w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">school</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Security Awareness Training</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Human-layer defence through phishing simulations, security culture programmes, and role-based training tailored to the regional threat context.</p><div class="flex flex-wrap gap-2"><span class="tag text-xs px-2.5 py-1 rounded font-medium">Phishing Sims</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">Role-Based</span><span class="tag text-xs px-2.5 py-1 rounded font-medium">Culture Audits</span></div></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">search_insights</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Adaptive Threat Intelligence</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Continuous monitoring and predictive modelling specialised in African attack vectors. Our threat intel team tracks regional dark web activity and nation-state actor movements 24/7.</p><div class="flex flex-wrap gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Dark Web Monitoring</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">APT Tracking</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">IOC Feeds</span></div></div>
+        <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">cloud_done</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Sovereign Cloud Guard</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Maintain strict data residency and compliance within regional borders. We secure hybrid and multi-cloud architectures while ensuring POPIA and GDPR alignment.</p><div class="flex flex-wrap gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">POPIA Compliant</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Hybrid Cloud</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Data Residency</span></div></div>
+        <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">bolt</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Rapid Incident Response</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Automated containment protocols that leverage ML to isolate threats in milliseconds. Our MTTD is under 5 minutes with a dedicated regional response team on standby.</p><div class="flex flex-wrap gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">ML Containment</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">MTTD &lt; 5 min</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">24/7 SOC</span></div></div>
+        <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">leaderboard</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Executive Insight Panel</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Board-ready reporting that translates complex threat data into actionable strategic risk assessments. Custom dashboards for CISOs, CFOs, and board-level oversight.</p><div class="flex flex-wrap gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Risk Reporting</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">CISO Dashboards</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Board Briefs</span></div></div>
+        <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">manage_accounts</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Penetration Testing</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Comprehensive red-team exercises and penetration testing services. We simulate real-world attack scenarios against your infrastructure to expose vulnerabilities before attackers do.</p><div class="flex flex-wrap gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Red Teaming</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Vuln Assessment</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">OWASP</span></div></div>
+        <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-100"><div class="w-14 h-14 bg-[#0A2F44] rounded-xl flex items-center justify-center mb-6"><span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1">school</span></div><h3 class="text-xl font-bold text-[#0A2F44] mb-3">Security Awareness Training</h3><p class="text-slate-500 text-sm leading-relaxed mb-6">Human-layer defence through phishing simulations, security culture programmes, and role-based training tailored to the regional threat context.</p><div class="flex flex-wrap gap-2"><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Phishing Sims</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Role-Based</span><span class="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded font-medium">Culture Audits</span></div></div>
       </div>
     </div>
   </section>
@@ -147,7 +260,7 @@
         <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0A2F44] mb-4">Sectors We Protect</h2>
         <p class="text-slate-500 text-base sm:text-lg">Purpose-built solutions for the region's highest-stakes industries.</p>
       </div>
-      <div class="sectors-grid grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
         <div class="bg-slate-50 p-5 sm:p-6 rounded-xl text-center border border-slate-100"><span class="material-symbols-outlined text-[#0A2F44] text-3xl sm:text-4xl mb-3 block" style="font-variation-settings:'FILL' 1">account_balance</span><h4 class="font-bold text-[#0A2F44] text-sm">Government</h4></div>
         <div class="bg-slate-50 p-5 sm:p-6 rounded-xl text-center border border-slate-100"><span class="material-symbols-outlined text-[#0A2F44] text-3xl sm:text-4xl mb-3 block" style="font-variation-settings:'FILL' 1">account_balance_wallet</span><h4 class="font-bold text-[#0A2F44] text-sm">Financial Services</h4></div>
         <div class="bg-slate-50 p-5 sm:p-6 rounded-xl text-center border border-slate-100"><span class="material-symbols-outlined text-[#0A2F44] text-3xl sm:text-4xl mb-3 block" style="font-variation-settings:'FILL' 1">electric_bolt</span><h4 class="font-bold text-[#0A2F44] text-sm">Energy &amp; Utilities</h4></div>
@@ -161,17 +274,17 @@
     <div class="max-w-4xl mx-auto text-center">
       <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0A2F44] mb-5">Need a Custom Security Package?</h2>
       <p class="text-[#0A2F44]/75 mb-8 sm:mb-10 text-base sm:text-lg font-medium">Our team will scope a solution tailored to your organisation's risk profile and regulatory requirements.</p>
-      <a href="request.html" class="cta-btn bg-[#0A2F44] text-white px-8 sm:px-12 py-4 sm:py-5 rounded-lg font-bold text-base sm:text-lg hover:bg-slate-800 transition-all hover:-translate-y-1 inline-block shadow-xl">Submit a Service Request</a>
+      <a href="request.html" class="bg-[#0A2F44] text-white px-8 sm:px-12 py-4 sm:py-5 rounded-lg font-bold text-base sm:text-lg hover:bg-slate-800 transition-all hover:-translate-y-1 inline-block shadow-xl">Submit a Service Request</a>
     </div>
   </section>
 </main>
 
 <footer class="bg-slate-900 text-white py-12 sm:py-16 px-4 sm:px-8">
-  <div class="footer-grid max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
     <div><div class="font-black text-2xl tracking-tighter mb-4">CyberNova</div><p class="text-slate-400 text-sm leading-relaxed">Empowering the Southern African digital frontier with uncompromised AI security.</p></div>
     <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Navigate</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="index.html" class="hover:text-white">Home</a></li><li><a href="services.html" class="hover:text-white">Services</a></li><li><a href="request.html" class="hover:text-white">Request Service</a></li><li><a href="chatbot.html" class="hover:text-white">AI Analyst</a></li></ul></div>
     <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Legal</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="#" class="hover:text-white">Privacy Policy</a></li><li><a href="#" class="hover:text-white">Security Disclosure</a></li><li><a href="#" class="hover:text-white">Terms of Service</a></li></ul></div>
-    <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Contact</h4><ul class="space-y-3 text-sm text-slate-400"><li>info@cybernova.co.bw</li><li>+267 365 000 43 </li><li>Gaborone, Botswana</li></ul></div>
+    <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Contact</h4><ul class="space-y-3 text-sm text-slate-400"><li>info@cybernova.co.bw</li><li>+267 365 000 43</li><li>Gaborone, Botswana</li></ul></div>
   </div>
   <div class="max-w-7xl mx-auto mt-10 pt-8 border-t border-slate-800 text-slate-500 text-xs">© 2026 CyberNova Analytics Ltd. All rights reserved.</div>
 </footer>
@@ -182,17 +295,73 @@
 </a>
 
 <script>
-(function(){
-  var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay');
-  if(!btn||!drawer||!overlay)return;
-  function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');}
-  function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');}
-  btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();});
-  overlay.addEventListener('click',c);
-  drawer.querySelectorAll('a').forEach(function(a){a.addEventListener('click',c);});
-  window.addEventListener('resize',function(){if(window.innerWidth>=768)c();});
-  document.addEventListener('keydown',function(e){if(e.key==='Escape')c();});
-})();
+  /* ══════════════════════════════════════════════════════
+     PUBLIC NAV JS — shared logic for all public pages
+  ══════════════════════════════════════════════════════ */
+  (function () {
+    'use strict';
+
+    /* Active page: match filename (minus .html) to data-page attribute */
+    var page = location.pathname.split('/').pop().replace('.html', '') || 'index';
+    document.querySelectorAll('[data-page]').forEach(function (a) {
+      if (a.dataset.page === page) a.classList.add('active');
+    });
+
+    /* Scroll shadow — only after 8px */
+    var hdr = document.getElementById('pubHeader');
+    window.addEventListener('scroll', function () {
+      hdr.classList.toggle('scrolled', window.scrollY > 8);
+    }, { passive: true });
+
+    /* Hamburger / drawer */
+    var btn    = document.getElementById('pubHamburger');
+    var drawer = document.getElementById('pubDrawer');
+
+    function openDrawer() {
+      btn.classList.add('open');
+      drawer.classList.add('open');
+      btn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden'; /* lock background scroll */
+    }
+    function closeDrawer() {
+      btn.classList.remove('open');
+      drawer.classList.remove('open');
+      btn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    btn.addEventListener('click', function () {
+      drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+    });
+
+    /* Close on any nav link tap */
+    drawer.querySelectorAll('a').forEach(function (a) {
+      a.addEventListener('click', closeDrawer);
+    });
+
+    /* Close on outside click */
+    document.addEventListener('click', function (e) {
+      if (drawer.classList.contains('open') &&
+          !hdr.contains(e.target) && !drawer.contains(e.target)) {
+        closeDrawer();
+      }
+    });
+
+    /* Close on Escape */
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeDrawer();
+    });
+
+    /* Admin session badge — shown only when CyberNovaDB has active admin */
+    try {
+      var session = window.CyberNovaDB &&
+                    typeof window.CyberNovaDB.getCurrentSession === 'function'
+                    ? window.CyberNovaDB.getCurrentSession() : null;
+      var badge = document.getElementById('pubSiteBadge');
+      if (badge) badge.classList.toggle('visible', !!(session && session.role === 'admin'));
+    } catch (e) { /* silent fail if DB not loaded */ }
+
+  })();
 </script>
 </body>
 </html>

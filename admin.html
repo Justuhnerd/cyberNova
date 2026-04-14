@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -8,11 +8,12 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <!-- Storage layer -->
+  <script src="storage.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
       authDomain: "cybernova-3f09c.firebaseapp.com",
@@ -21,10 +22,8 @@
       messagingSenderId: "153861855601",
       appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -37,9 +36,10 @@
         if (mobileAdminInitial) mobileAdminInitial.textContent = user.email[0].toUpperCase();
         document.getElementById('pageContent').classList.remove('hidden');
         document.getElementById('loadingScreen').classList.add('hidden');
+        // Wire live data after auth resolves
+        updateDashboard();
       }
     });
-
     window.handleLogout = async function() {
       if (confirm('Are you sure you want to log out?')) {
         await signOut(auth);
@@ -51,11 +51,8 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
-
     .stat-card { transition:transform .2s,box-shadow .2s; }
     .stat-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(10,47,68,.1); }
-
-    /* Mobile drawer */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
     .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
     .hamburger span:nth-child(1){margin-bottom:5px;}
@@ -78,38 +75,14 @@
     .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
     .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
     body.nav-open{overflow:hidden;}
-
-    /* Desktop topnav */
-    .topnav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #64748b;
-      border-radius: 6px;
-      text-decoration: none;
-      background: transparent;
-      transition: color .18s, background .18s;
-      white-space: nowrap;
-      position: relative;
-    }
-    .topnav-link:hover { color: #0A2F44; background: rgba(10,47,68,.06); }
-    .topnav-link.topnav-active { color: #E0A800; background: rgba(224,168,0,.1); }
-    .topnav-link.topnav-active::after { content:''; position:absolute; bottom:-1px; left:12px; right:12px; height:2px; background:#E0A800; border-radius:2px 2px 0 0; }
-    .topnav-link .material-symbols-outlined { font-size:16px; font-variation-settings:'FILL' 1; }
-    .topnav-divider { width:1px; height:20px; background:#e2e8f0; }
-
-    @media (max-width: 1023px) {
-      .hamburger { display: flex; }
-      .desktop-topnav-links { display: none !important; }
-      .desktop-topnav-admin { display: none !important; }
-    }
-    @media (min-width: 1024px) {
-      .hamburger { display: none !important; }
-      .page-main { margin-left: 0 !important; }
-    }
+    .topnav-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:13px;font-weight:600;color:#64748b;border-radius:6px;text-decoration:none;background:transparent;transition:color .18s,background .18s;white-space:nowrap;position:relative;}
+    .topnav-link:hover{color:#0A2F44;background:rgba(10,47,68,.06);}
+    .topnav-link.topnav-active{color:#E0A800;background:rgba(224,168,0,.1);}
+    .topnav-link.topnav-active::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:#E0A800;border-radius:2px 2px 0 0;}
+    .topnav-link .material-symbols-outlined{font-size:16px;font-variation-settings:'FILL' 1;}
+    .topnav-divider{width:1px;height:20px;background:#e2e8f0;}
+    @media(max-width:1023px){.hamburger{display:flex;}.desktop-topnav-links,.desktop-topnav-admin{display:none!important;}}
+    @media(min-width:1024px){.hamburger{display:none!important;}.page-main{margin-left:0!important;}}
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
@@ -152,9 +125,8 @@
 </nav>
 
 <!-- Header -->
- <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
+<header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
   <div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-8 h-16">
-    <!-- Logo + stacked brand -->
     <a href="admin.html" class="flex items-center gap-3 flex-shrink-0">
       <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
       <div class="leading-tight">
@@ -162,12 +134,10 @@
         <div class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</div>
       </div>
     </a>
-
-    <!-- Desktop navigation (scrollable if needed) -->
     <div class="hidden lg:flex items-center gap-2 overflow-x-auto flex-1 min-w-0 justify-center">
       <nav class="desktop-topnav-links flex items-center gap-0.5">
         <a href="admin.html" class="topnav-link topnav-active"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-        <a href="requests.html" class="topnav-link"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
+        <a href="requests.html" class="topnav-link"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span id="navPendingBadge" class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">0</span></a>
         <a href="analytics.html" class="topnav-link"><span class="material-symbols-outlined">analytics</span>Analytics</a>
         <a href="traffic-analytics.html" class="topnav-link"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
         <a href="content.html" class="topnav-link"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
@@ -176,8 +146,6 @@
         <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
       </nav>
     </div>
-
-    <!-- Admin info + logout (always on right) -->
     <div class="desktop-topnav-admin flex items-center gap-2 lg:gap-3 flex-shrink-0">
       <div class="flex items-center gap-2">
         <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
@@ -192,71 +160,308 @@
         <span class="text-xs hidden sm:inline">Logout</span>
       </button>
     </div>
-
-    <!-- Mobile hamburger -->
     <button id="hamburger" class="hamburger ml-auto lg:hidden" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- Main Content (Dashboard only) -->
+<!-- Main Content -->
 <div id="pageContent" class="hidden page-main">
   <div class="p-6 lg:p-8 pt-24 lg:pt-24">
-    <!-- Dashboard content (same as original) -->
+
     <header class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
-      <div><h2 class="text-2xl font-black tracking-tight text-[#0A2F44] mb-1">Admin Dashboard</h2><p class="text-slate-500 text-sm">Real-time surveillance — <span id="currentTime" class="font-mono"></span></p></div>
-      <div class="flex items-center gap-3 bg-green-50 text-green-800 px-4 py-3 rounded-lg border border-green-200 text-sm font-medium"><span class="material-symbols-outlined text-green-600 text-lg" style="font-variation-settings:'FILL' 1">check_circle</span> All Systems Operational</div>
+      <div>
+        <h2 class="text-2xl font-black tracking-tight text-[#0A2F44] mb-1">Admin Dashboard</h2>
+        <p class="text-slate-500 text-sm">Real-time surveillance — <span id="currentTime" class="font-mono"></span></p>
+      </div>
+      <div class="flex items-center gap-3 bg-green-50 text-green-800 px-4 py-3 rounded-lg border border-green-200 text-sm font-medium">
+        <span class="material-symbols-outlined text-green-600 text-lg" style="font-variation-settings:'FILL' 1">check_circle</span>
+        All Systems Operational
+      </div>
     </header>
 
     <!-- Stat Cards -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
-      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start mb-3"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Threats</p><span class="material-symbols-outlined text-red-500 text-lg" style="font-variation-settings:'FILL' 1">crisis_alert</span></div><h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]">12</h3><div class="mt-3 h-1 w-full bg-slate-100 rounded-full"><div class="h-full bg-red-500 w-1/4 rounded-full"></div></div><p class="text-xs text-slate-400 mt-2">↑ 3 from yesterday</p></div>
-      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start mb-3"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Requests Pending</p><span class="material-symbols-outlined text-[#E0A800] text-lg" style="font-variation-settings:'FILL' 1">pending_actions</span></div><h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]">84</h3><div class="mt-3 h-1 w-full bg-slate-100 rounded-full"><div class="h-full bg-[#E0A800] w-3/4 rounded-full"></div></div><p class="text-xs text-slate-400 mt-2">↑ 12 new today — <a href="requests.html" class="text-[#0A2F44] font-bold hover:underline">Manage →</a></p></div>
-      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start mb-3"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Network Health</p><span class="material-symbols-outlined text-green-500 text-lg" style="font-variation-settings:'FILL' 1">monitor_heart</span></div><h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]">99.8%</h3><div class="mt-3 h-1 w-full bg-slate-100 rounded-full"><div class="h-full bg-green-500 w-full rounded-full"></div></div><p class="text-xs text-green-600 mt-2 font-semibold">All nodes optimal</p></div>
-      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm"><div class="flex justify-between items-start mb-3"><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Uptime</p><span class="material-symbols-outlined text-[#0A2F44] text-lg" style="font-variation-settings:'FILL' 1">schedule</span></div><h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]">42d 11h</h3><div class="mt-3 h-1 w-full bg-slate-100 rounded-full"><div class="h-full bg-[#0A2F44] w-full rounded-full"></div></div><p class="text-xs text-slate-400 mt-2">SLA: 99.9% target</p></div>
+      <!-- Active Threats — simulated (no real sensor data) -->
+      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Threats</p>
+          <span class="material-symbols-outlined text-red-500 text-lg" style="font-variation-settings:'FILL' 1">crisis_alert</span>
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]">12</h3>
+        <div class="mt-3 h-1 w-full bg-slate-100 rounded-full"><div class="h-full bg-red-500 w-1/4 rounded-full"></div></div>
+        <p class="text-xs text-slate-400 mt-2">↑ 3 from yesterday</p>
+      </div>
+
+      <!-- Requests Pending — live from storage -->
+      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Requests Pending</p>
+          <span class="material-symbols-outlined text-[#E0A800] text-lg" style="font-variation-settings:'FILL' 1">pending_actions</span>
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]" id="statPendingCount">—</h3>
+        <div class="mt-3 h-1 w-full bg-slate-100 rounded-full">
+          <div class="h-full bg-[#E0A800] rounded-full" id="statPendingBar" style="width:0%"></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-2" id="statPendingSubtext">Loading… · <a href="requests.html" class="text-[#0A2F44] font-bold hover:underline">Manage →</a></p>
+      </div>
+
+      <!-- Network Health — simulated -->
+      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Network Health</p>
+          <span class="material-symbols-outlined text-green-500 text-lg" style="font-variation-settings:'FILL' 1">monitor_heart</span>
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]">99.8%</h3>
+        <div class="mt-3 h-1 w-full bg-slate-100 rounded-full"><div class="h-full bg-green-500 w-full rounded-full"></div></div>
+        <p class="text-xs text-green-600 mt-2 font-semibold">All nodes optimal</p>
+      </div>
+
+      <!-- Content Items — live from storage -->
+      <div class="stat-card bg-white p-5 sm:p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Published Content</p>
+          <span class="material-symbols-outlined text-[#0A2F44] text-lg" style="font-variation-settings:'FILL' 1">edit_note</span>
+        </div>
+        <h3 class="text-2xl sm:text-3xl font-black text-[#0A2F44]" id="statContentCount">—</h3>
+        <div class="mt-3 h-1 w-full bg-slate-100 rounded-full">
+          <div class="h-full bg-[#0A2F44] rounded-full" id="statContentBar" style="width:50%"></div>
+        </div>
+        <p class="text-xs text-slate-400 mt-2"><a href="content.html" class="text-[#0A2F44] font-bold hover:underline">Manage content →</a></p>
+      </div>
     </div>
 
     <!-- Charts -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm"><div class="flex justify-between items-center mb-5"><div><h4 class="text-sm font-bold text-[#0A2F44]">Threat Trajectory — Last 7 Days</h4><p class="text-xs text-slate-400 mt-0.5">Active threats detected per day</p></div><select class="text-xs border border-slate-200 rounded px-2 py-1 text-slate-500" onchange="updateThreatChart(this.value)"><option value="7">7 Days</option><option value="14">14 Days</option><option value="30">30 Days</option></select></div><canvas id="threatChart" height="120"></canvas></div>
-      <div class="bg-white p-6 rounded-xl shadow-sm"><div class="mb-5"><h4 class="text-sm font-bold text-[#0A2F44]">Threat Distribution</h4><p class="text-xs text-slate-400 mt-0.5">By attack category</p></div><canvas id="doughnutChart" height="160"></canvas><div class="mt-4 space-y-1.5"><div class="flex justify-between text-xs"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-red-500 rounded-sm inline-block"></span>Ransomware</span><span class="font-bold text-slate-700">34%</span></div><div class="flex justify-between text-xs"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#E0A800] rounded-sm inline-block"></span>Phishing</span><span class="font-bold text-slate-700">28%</span></div><div class="flex justify-between text-xs"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-[#0A2F44] rounded-sm inline-block"></span>APT</span><span class="font-bold text-slate-700">22%</span></div><div class="flex justify-between text-xs"><span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-slate-400 rounded-sm inline-block"></span>Other</span><span class="font-bold text-slate-700">16%</span></div></div></div>
+      <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm">
+        <div class="flex justify-between items-center mb-5">
+          <div>
+            <h4 class="text-sm font-bold text-[#0A2F44]">Threat Trajectory — Last 7 Days</h4>
+            <p class="text-xs text-slate-400 mt-0.5">Active threats detected per day</p>
+          </div>
+          <select class="text-xs border border-slate-200 rounded px-2 py-1 text-slate-500" onchange="updateThreatChart(this.value)">
+            <option value="7">7 Days</option><option value="14">14 Days</option><option value="30">30 Days</option>
+          </select>
+        </div>
+        <canvas id="threatChart" height="120"></canvas>
+      </div>
+
+      <div class="bg-white p-6 rounded-xl shadow-sm">
+        <div class="mb-5">
+          <h4 class="text-sm font-bold text-[#0A2F44]">Requests by Threat Type</h4>
+          <p class="text-xs text-slate-400 mt-0.5">From submitted service requests</p>
+        </div>
+        <canvas id="doughnutChart" height="160"></canvas>
+        <div class="mt-4 space-y-1.5" id="doughnutLegend"></div>
+      </div>
     </div>
 
     <!-- Quick Links -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-      <a href="requests.html" class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#E0A800] hover:shadow-md"><span class="material-symbols-outlined text-[#E0A800] text-2xl">mark_as_unread</span><div><p class="font-bold text-[#0A2F44] text-sm">Manage Requests</p><p class="text-xs text-slate-400 mt-0.5">84 pending · 12 new today</p></div><span class="material-symbols-outlined text-slate-300 ml-auto text-base">arrow_forward</span></a>
-      <a href="solutions.html" class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#0A2F44] hover:shadow-md"><span class="material-symbols-outlined text-[#0A2F44] text-2xl">hub</span><div><p class="font-bold text-[#0A2F44] text-sm">Solutions Overview</p><p class="text-xs text-slate-400 mt-0.5">Platform & pricing tiers</p></div><span class="material-symbols-outlined text-slate-300 ml-auto text-base">arrow_forward</span></a>
-      <a href="analytics.html" class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-sm border-l-4 border-slate-300 hover:shadow-md"><span class="material-symbols-outlined text-slate-500 text-2xl">analytics</span><div><p class="font-bold text-[#0A2F44] text-sm">Full Analytics</p><p class="text-xs text-slate-400 mt-0.5">Charts & detailed reports</p></div><span class="material-symbols-outlined text-slate-300 ml-auto text-base">arrow_forward</span></a>
+      <a href="requests.html" class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#E0A800] hover:shadow-md">
+        <span class="material-symbols-outlined text-[#E0A800] text-2xl">mark_as_unread</span>
+        <div>
+          <p class="font-bold text-[#0A2F44] text-sm">Manage Requests</p>
+          <p class="text-xs text-slate-400 mt-0.5" id="qlRequestsText">Loading…</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 ml-auto text-base">arrow_forward</span>
+      </a>
+      <a href="content.html" class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-sm border-l-4 border-[#0A2F44] hover:shadow-md">
+        <span class="material-symbols-outlined text-[#0A2F44] text-2xl">edit_note</span>
+        <div>
+          <p class="font-bold text-[#0A2F44] text-sm">Content Management</p>
+          <p class="text-xs text-slate-400 mt-0.5" id="qlContentText">Loading…</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 ml-auto text-base">arrow_forward</span>
+      </a>
+      <a href="audit.html" class="flex items-center gap-4 bg-white p-5 rounded-xl shadow-sm border-l-4 border-slate-300 hover:shadow-md">
+        <span class="material-symbols-outlined text-slate-500 text-2xl">fact_check</span>
+        <div>
+          <p class="font-bold text-[#0A2F44] text-sm">Audit Trail</p>
+          <p class="text-xs text-slate-400 mt-0.5" id="qlAuditText">Loading…</p>
+        </div>
+        <span class="material-symbols-outlined text-slate-300 ml-auto text-base">arrow_forward</span>
+      </a>
     </div>
 
-    <!-- Recent Requests Table (simplified) -->
+    <!-- Recent Requests Table -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
-      <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4"><h4 class="text-sm font-bold text-[#0A2F44]">Recent Service Requests</h4><a href="requests.html" class="text-xs text-[#0A2F44] font-bold hover:underline">View all →</a></div>
+      <div class="p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-4">
+        <h4 class="text-sm font-bold text-[#0A2F44]">Recent Service Requests</h4>
+        <a href="requests.html" class="text-xs text-[#0A2F44] font-bold hover:underline">View all →</a>
+      </div>
       <div class="overflow-x-auto">
         <table class="w-full text-left">
-          <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider"><tr><th class="px-5 py-4">Ticket ID</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Client</th><th class="px-5 py-4 hidden sm:table-cell">Country</th><th class="px-5 py-4">Threat Level</th><th class="px-5 py-4 hidden sm:table-cell">Status</th></tr></thead>
-          <tbody class="text-sm divide-y divide-slate-50">
-            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241024-9821</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 24, 2024</td><td class="px-5 py-4 font-medium text-sm">Aether Global Ltd</td><td class="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">South Africa</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-[10px] font-bold uppercase">High</span></td><td class="px-5 py-4 text-slate-500 italic text-xs hidden sm:table-cell">Active Mitigation</td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241023-7720</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 23, 2024</td><td class="px-5 py-4 font-medium text-sm">Nova Strategic</td><td class="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">Zimbabwe</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-700 text-[10px] font-bold uppercase">Medium</span></td><td class="px-5 py-4 text-slate-500 italic text-xs hidden sm:table-cell">Under Review</td></tr>
-            <tr class="hover:bg-slate-50"><td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">CNS-20241023-4109</td><td class="px-5 py-4 text-slate-400 text-xs">Oct 23, 2024</td><td class="px-5 py-4 font-medium text-sm">Helios Dynamics</td><td class="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">Botswana</td><td class="px-5 py-4"><span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold uppercase">Low</span></td><td class="px-5 py-4 text-green-600 font-semibold text-xs hidden sm:table-cell">Resolved</td></tr>
+          <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+            <tr>
+              <th class="px-5 py-4">Ticket ID</th>
+              <th class="px-5 py-4">Date</th>
+              <th class="px-5 py-4">Client</th>
+              <th class="px-5 py-4 hidden sm:table-cell">Country</th>
+              <th class="px-5 py-4">Priority</th>
+              <th class="px-5 py-4 hidden sm:table-cell">Status</th>
+            </tr>
+          </thead>
+          <tbody id="recentTicketsTbody" class="text-sm divide-y divide-slate-50">
+            <tr><td colspan="6" class="px-5 py-8 text-center text-slate-400 text-sm">Loading…</td></tr>
           </tbody>
         </table>
       </div>
     </div>
+
   </div>
 </div>
 
 <script>
   // Hamburger
-  (function(){ var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay'); if(!btn||!drawer||!overlay)return; function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');} function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');} btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();}); overlay.addEventListener('click',c); drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c)); window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();}); document.addEventListener('keydown',function(e){if(e.key==='Escape')c();}); })();
+  (function(){
+    var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay');
+    if(!btn||!drawer||!overlay)return;
+    function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');}
+    function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');}
+    btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();});
+    overlay.addEventListener('click',c);
+    drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c));
+    window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')c();});
+  })();
+
   // Clock
-  function updateClock(){var el=document.getElementById('currentTime');if(el)el.textContent=new Date().toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'medium',timeStyle:'short'});} updateClock();setInterval(updateClock,30000);
-  // Charts
-  const chartData={7:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],data:[8,15,12,20,16,9,12]},14:{labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri','Sat','Sun'],data:[5,9,11,7,13,6,8,8,15,12,20,16,9,12]},30:{labels:Array.from({length:30},(_,i)=>`D${i+1}`),data:Array.from({length:30},()=>Math.floor(4+Math.random()*18))}};
-  const threatChart=new Chart(document.getElementById('threatChart').getContext('2d'),{type:'line',data:{labels:chartData[7].labels,datasets:[{label:'Threats',data:chartData[7].data,borderColor:'#0A2F44',backgroundColor:'rgba(10,47,68,.06)',borderWidth:2.5,pointBackgroundColor:'#E0A800',pointBorderColor:'#0A2F44',pointRadius:5,tension:0.4,fill:true}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.04)'}},x:{grid:{display:false}}}}});
-  function updateThreatChart(days){const d=chartData[days];threatChart.data.labels=d.labels;threatChart.data.datasets[0].data=d.data;threatChart.update();}
-  new Chart(document.getElementById('doughnutChart').getContext('2d'),{type:'doughnut',data:{labels:['Ransomware','Phishing','APT','Other'],datasets:[{data:[34,28,22,16],backgroundColor:['#ef4444','#E0A800','#0A2F44','#94a3b8'],borderWidth:0,hoverOffset:8}]},options:{responsive:true,cutout:'72%',plugins:{legend:{display:false}}}});
+  function updateClock(){
+    var el=document.getElementById('currentTime');
+    if(el) el.textContent=new Date().toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'medium',timeStyle:'short'});
+  }
+  updateClock();
+  setInterval(updateClock,30000);
+
+  // ── Seed & live data ─────────────────────────────────────────
+  CyberNovaDB.seedIfEmpty();
+
+  function updateDashboard() {
+    const tickets = CyberNovaDB.getTickets();
+    const content = CyberNovaDB.getContent();
+    const audit   = CyberNovaDB.getAudit();
+
+    const pending   = tickets.filter(t => t.status === 'new').length;
+    const inProg    = tickets.filter(t => t.status === 'in-progress').length;
+    const total     = tickets.length;
+    const published = content.filter(c => c.status === 'published').length;
+
+    // Stat cards
+    document.getElementById('statPendingCount').textContent  = pending + inProg;
+    document.getElementById('statPendingBar').style.width    = total > 0 ? `${Math.min(((pending+inProg)/total)*100,100)}%` : '0%';
+    document.getElementById('statPendingSubtext').innerHTML  = `${pending} new · ${inProg} in progress · <a href="requests.html" class="text-[#0A2F44] font-bold hover:underline">Manage →</a>`;
+    document.getElementById('statContentCount').textContent  = published;
+
+    // Nav badge
+    const badge = document.getElementById('navPendingBadge');
+    if (badge) badge.textContent = pending;
+
+    // Quick links
+    document.getElementById('qlRequestsText').textContent = `${pending} new · ${inProg} in progress`;
+    document.getElementById('qlContentText').textContent  = `${published} published · ${content.filter(c=>c.status==='archived').length} archived`;
+    document.getElementById('qlAuditText').textContent    = `${audit.length} log entr${audit.length !== 1 ? 'ies' : 'y'}`;
+
+    // Recent tickets table (last 5 newest first)
+    const recent = tickets.slice().reverse().slice(0, 5);
+    const tbody  = document.getElementById('recentTicketsTbody');
+
+    if (recent.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400 text-sm">No requests yet. <a href="request.html" class="text-[#0A2F44] font-bold hover:underline">Submit the first one →</a></td></tr>`;
+    } else {
+      const priorityClass = p => ({ high:'bg-red-50 text-red-700', medium:'bg-yellow-50 text-yellow-700', low:'bg-green-50 text-green-700' }[p] || 'bg-slate-100 text-slate-500');
+      const statusLabel   = s => ({ new:'New', 'in-progress':'In Progress', resolved:'Resolved', escalated:'Escalated' }[s] || s);
+
+      tbody.innerHTML = recent.map(t => `
+        <tr class="hover:bg-slate-50">
+          <td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">${t.id}</td>
+          <td class="px-5 py-4 text-slate-400 text-xs">${new Date(t.createdAt).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'})}</td>
+          <td class="px-5 py-4 font-medium text-sm">${t.name || t.org || '—'}</td>
+          <td class="px-5 py-4 text-slate-400 text-xs hidden sm:table-cell">${t.country || '—'}</td>
+          <td class="px-5 py-4">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${priorityClass(t.priority)}">${t.priority}</span>
+          </td>
+          <td class="px-5 py-4 text-slate-500 text-xs hidden sm:table-cell">${statusLabel(t.status)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Doughnut — threat type breakdown from real tickets
+    buildDoughnut(tickets);
+  }
+
+  // ── Charts ───────────────────────────────────────────────────
+  const chartData = {
+    7:  { labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], data:[8,15,12,20,16,9,12] },
+    14: { labels:['Mon','Tue','Wed','Thu','Fri','Sat','Sun','Mon','Tue','Wed','Thu','Fri','Sat','Sun'], data:[5,9,11,7,13,6,8,8,15,12,20,16,9,12] },
+    30: { labels:Array.from({length:30},(_,i)=>`D${i+1}`), data:Array.from({length:30},()=>Math.floor(4+Math.random()*18)) },
+  };
+
+  const threatChart = new Chart(document.getElementById('threatChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: chartData[7].labels,
+      datasets: [{
+        label: 'Threats',
+        data: chartData[7].data,
+        borderColor: '#0A2F44',
+        backgroundColor: 'rgba(10,47,68,.06)',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#E0A800',
+        pointBorderColor: '#0A2F44',
+        pointRadius: 5,
+        tension: 0.4,
+        fill: true,
+      }],
+    },
+    options: { responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,.04)'}},x:{grid:{display:false}}} },
+  });
+
+  function updateThreatChart(days) {
+    const d = chartData[days];
+    threatChart.data.labels = d.labels;
+    threatChart.data.datasets[0].data = d.data;
+    threatChart.update();
+  }
+
+  let doughnutChart = null;
+
+  function buildDoughnut(tickets) {
+    // Tally threat types from real tickets
+    const counts = {};
+    tickets.forEach(t => {
+      const key = (t.threatType || 'Other').split(' ')[0]; // shorten label
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    // Fall back to simulated if no tickets yet
+    const labels = Object.keys(counts).length > 0 ? Object.keys(counts) : ['Ransomware','Phishing','APT','Other'];
+    const data   = Object.keys(counts).length > 0 ? Object.values(counts) : [34,28,22,16];
+    const colors = ['#ef4444','#E0A800','#0A2F44','#94a3b8','#6366f1','#10b981','#f97316'];
+
+    if (doughnutChart) doughnutChart.destroy();
+
+    doughnutChart = new Chart(document.getElementById('doughnutChart').getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels,
+        datasets: [{ data, backgroundColor: colors.slice(0, labels.length), borderWidth: 0, hoverOffset: 8 }],
+      },
+      options: { responsive:true, cutout:'72%', plugins:{legend:{display:false}} },
+    });
+
+    // Legend
+    const total = data.reduce((a,b)=>a+b,0);
+    document.getElementById('doughnutLegend').innerHTML = labels.map((l,i) => `
+      <div class="flex justify-between text-xs">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2.5 h-2.5 rounded-sm inline-block" style="background:${colors[i]}"></span>${l}
+        </span>
+        <span class="font-bold text-slate-700">${total > 0 ? Math.round((data[i]/total)*100) : 0}%</span>
+      </div>
+    `).join('');
+  }
 </script>
 </body>
 </html>

@@ -7,12 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-  <script src="js/admin-nav.js"></script>
+  <!-- Storage layer -->
+  <script src="storage.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
       authDomain: "cybernova-3f09c.firebaseapp.com",
@@ -21,10 +21,8 @@
       messagingSenderId: "153861855601",
       appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -39,7 +37,6 @@
         document.getElementById('loadingScreen').classList.add('hidden');
       }
     });
-
     window.handleLogout = async function() {
       if (confirm('Are you sure you want to log out?')) {
         await signOut(auth);
@@ -57,8 +54,6 @@
     .form-input:focus { border-color:#0A2F44; box-shadow:0 0 0 3px rgba(10,47,68,.06); }
     @keyframes slideIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
     .slide-in{animation:slideIn .25s ease}
-
-    /* Mobile drawer */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
     .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
     .hamburger span:nth-child(1){margin-bottom:5px;}
@@ -81,38 +76,14 @@
     .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
     .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
     body.nav-open{overflow:hidden;}
-
-    /* Desktop topnav */
-    .topnav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #64748b;
-      border-radius: 6px;
-      text-decoration: none;
-      background: transparent;
-      transition: color .18s, background .18s;
-      white-space: nowrap;
-      position: relative;
-    }
-    .topnav-link:hover { color: #0A2F44; background: rgba(10,47,68,.06); }
-    .topnav-link.topnav-active { color: #E0A800; background: rgba(224,168,0,.1); }
-    .topnav-link.topnav-active::after { content:''; position:absolute; bottom:-1px; left:12px; right:12px; height:2px; background:#E0A800; border-radius:2px 2px 0 0; }
-    .topnav-link .material-symbols-outlined { font-size:16px; font-variation-settings:'FILL' 1; }
-    .topnav-divider { width:1px; height:20px; background:#e2e8f0; }
-
-    @media (max-width: 1023px) {
-      .hamburger { display: flex; }
-      .desktop-topnav-links { display: none !important; }
-      .desktop-topnav-admin { display: none !important; }
-    }
-    @media (min-width: 1024px) {
-      .hamburger { display: none !important; }
-      .page-main { margin-left: 0 !important; }
-    }
+    .topnav-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:13px;font-weight:600;color:#64748b;border-radius:6px;text-decoration:none;background:transparent;transition:color .18s,background .18s;white-space:nowrap;position:relative;}
+    .topnav-link:hover{color:#0A2F44;background:rgba(10,47,68,.06);}
+    .topnav-link.topnav-active{color:#E0A800;background:rgba(224,168,0,.1);}
+    .topnav-link.topnav-active::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:#E0A800;border-radius:2px 2px 0 0;}
+    .topnav-link .material-symbols-outlined{font-size:16px;font-variation-settings:'FILL' 1;}
+    .topnav-divider{width:1px;height:20px;background:#e2e8f0;}
+    @media(max-width:1023px){.hamburger{display:flex;}.desktop-topnav-links,.desktop-topnav-admin{display:none!important;}}
+    @media(min-width:1024px){.hamburger{display:none!important;}.page-main{margin-left:0!important;}}
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
@@ -142,10 +113,9 @@
   </div>
 </nav>
 
-<!-- Unified Admin Header (stacked brand, non‑overlapping) -->
+<!-- Header -->
 <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
   <div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-8 h-16">
-    <!-- Logo + stacked brand -->
     <a href="admin.html" class="flex items-center gap-3 flex-shrink-0">
       <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
       <div class="leading-tight">
@@ -153,22 +123,18 @@
         <div class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</div>
       </div>
     </a>
-
-    <!-- Desktop navigation (scrollable if needed) -->
     <div class="hidden lg:flex items-center gap-2 overflow-x-auto flex-1 min-w-0 justify-center">
       <nav class="desktop-topnav-links flex items-center gap-0.5">
-        <a href="admin.html" class="topnav-link" id="nav-dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-        <a href="requests.html" class="topnav-link" id="nav-requests"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
-        <a href="analytics.html" class="topnav-link" id="nav-analytics"><span class="material-symbols-outlined">analytics</span>Analytics</a>
-        <a href="traffic-analytics.html" class="topnav-link" id="nav-traffic"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
-        <a href="content.html" class="topnav-link" id="nav-content"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
-        <a href="audit.html" class="topnav-link" id="nav-audit"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
+        <a href="admin.html" class="topnav-link"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a href="requests.html" class="topnav-link"><span class="material-symbols-outlined">mark_as_unread</span>Requests</a>
+        <a href="analytics.html" class="topnav-link"><span class="material-symbols-outlined">analytics</span>Analytics</a>
+        <a href="traffic-analytics.html" class="topnav-link"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
+        <a href="content.html" class="topnav-link topnav-active"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
+        <a href="audit.html" class="topnav-link"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
         <div class="topnav-divider mx-2"></div>
         <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
       </nav>
     </div>
-
-    <!-- Admin info + logout (always on right) -->
     <div class="desktop-topnav-admin flex items-center gap-2 lg:gap-3 flex-shrink-0">
       <div class="flex items-center gap-2">
         <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
@@ -183,52 +149,283 @@
         <span class="text-xs hidden sm:inline">Logout</span>
       </button>
     </div>
-
-    <!-- Mobile hamburger -->
     <button id="hamburger" class="hamburger ml-auto lg:hidden" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
+
 <!-- Main Content -->
 <div id="pageContent" class="hidden page-main">
   <div class="p-6 lg:p-8 pt-24 lg:pt-24">
-    <div class="mb-6"><h2 class="text-2xl font-black text-[#0A2F44] mb-1">Content Management</h2><p class="text-slate-500 text-sm">Publish, edit, and archive case studies, blog posts, testimonials, and gallery items.</p></div>
+    <div class="mb-6">
+      <h2 class="text-2xl font-black text-[#0A2F44] mb-1">Content Management</h2>
+      <p class="text-slate-500 text-sm">Publish, edit, and archive case studies, blog posts, testimonials, and gallery items.</p>
+    </div>
+
+    <!-- Tabs -->
     <div class="flex gap-2 mb-6 flex-wrap">
-      <button onclick="switchContent('case-studies')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 bg-[#0A2F44] text-white" id="ct-case-studies">Case Studies</button>
-      <button onclick="switchContent('testimonials')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-testimonials">Testimonials</button>
+      <button onclick="switchContent('case-study')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 bg-[#0A2F44] text-white" id="ct-case-study">Case Studies</button>
+      <button onclick="switchContent('testimonial')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-testimonial">Testimonials</button>
       <button onclick="switchContent('blog')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-blog">Blog Posts</button>
       <button onclick="switchContent('gallery')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-gallery">Gallery</button>
     </div>
-    <div class="flex justify-between items-center mb-4"><p class="text-xs text-slate-400" id="contentCount">3 items</p><button onclick="openAddModal()" class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700"><span class="material-symbols-outlined text-base">add</span> Add New</button></div>
-    <div class="bg-white rounded-xl shadow-sm overflow-hidden overflow-x-auto"><table class="w-full text-left min-w-[600px]"><thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider"><tr><th class="px-5 py-4">Title</th><th class="px-5 py-4">Category</th><th class="px-5 py-4">Status</th><th class="px-5 py-4">Last Modified</th><th class="px-5 py-4 text-right">Actions</th></tr></thead><tbody id="contentTableBody" class="text-sm divide-y divide-slate-50"></tbody></table></div>
-    <div id="undoBanner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-4 z-50 slide-in"><span id="undoMsg" class="text-sm font-medium"></span><button onclick="undoAction()" class="text-[#E0A800] text-sm font-bold hover:underline">Undo</button><button onclick="dismissUndo()" class="text-slate-400 hover:text-white"><span class="material-symbols-outlined text-base">close</span></button></div>
+
+    <div class="flex justify-between items-center mb-4">
+      <p class="text-xs text-slate-400" id="contentCount">0 items</p>
+      <button onclick="openAddModal()" class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">
+        <span class="material-symbols-outlined text-base">add</span> Add New
+      </button>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden overflow-x-auto">
+      <table class="w-full text-left min-w-[600px]">
+        <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+          <tr>
+            <th class="px-5 py-4">Title</th>
+            <th class="px-5 py-4">Category / Meta</th>
+            <th class="px-5 py-4">Status</th>
+            <th class="px-5 py-4">Last Modified</th>
+            <th class="px-5 py-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="contentTableBody" class="text-sm divide-y divide-slate-50"></tbody>
+      </table>
+    </div>
+
+    <!-- Undo banner -->
+    <div id="undoBanner" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-xl flex items-center gap-4 z-50 slide-in">
+      <span id="undoMsg" class="text-sm font-medium"></span>
+      <button onclick="undoAction()" class="text-[#E0A800] text-sm font-bold hover:underline">Undo</button>
+      <button onclick="dismissUndo()" class="text-slate-400 hover:text-white"><span class="material-symbols-outlined text-base">close</span></button>
+    </div>
   </div>
 </div>
 
-<!-- Add Modal -->
-<div id="addModal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"><div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-8 slide-in"><div class="flex justify-between items-center mb-6"><h3 class="font-black text-[#0A2F44] text-lg" id="modalTitle">Add Case Study</h3><button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button></div><div class="space-y-4"><div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Title *</label><input id="newTitle" type="text" class="form-input" placeholder="Enter title..."/></div><div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Category</label><input id="newCategory" type="text" class="form-input" placeholder="e.g. Finance, Government..."/></div><div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Content Summary</label><textarea id="newContent" class="form-input resize-none" rows="3" placeholder="Brief description..."></textarea></div><div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Status</label><select id="newStatus" class="form-input"><option value="Published">Published</option><option value="Draft">Draft</option><option value="Archived">Archived</option></select></div></div><div class="flex gap-3 mt-6"><button onclick="saveContent()" class="flex-1 bg-[#0A2F44] text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-700">Save Item</button><button onclick="closeModal()" class="px-6 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button></div></div></div>
+<!-- Add / Edit Modal -->
+<div id="addModal" class="hidden fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl p-8 slide-in">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="font-black text-[#0A2F44] text-lg" id="modalTitle">Add Item</h3>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="space-y-4">
+      <input type="hidden" id="editingId"/>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Title *</label>
+        <input id="newTitle" type="text" class="form-input" placeholder="Enter title..."/>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Category / Tag</label>
+        <input id="newCategory" type="text" class="form-input" placeholder="e.g. Finance, Government, 5 Stars..."/>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Content / Body</label>
+        <textarea id="newContent" class="form-input resize-none" rows="4" placeholder="Summary or full content..."></textarea>
+      </div>
+    </div>
+    <div class="flex gap-3 mt-6">
+      <button onclick="saveContent()" class="flex-1 bg-[#0A2F44] text-white py-3 rounded-xl font-bold text-sm hover:bg-slate-700">Save Item</button>
+      <button onclick="closeModal()" class="px-6 py-3 border border-slate-200 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <script>
-  // Hamburger (identical)
-  (function(){ var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay'); if(!btn||!drawer||!overlay)return; function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');} function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');} btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();}); overlay.addEventListener('click',c); drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c)); window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();}); document.addEventListener('keydown',function(e){if(e.key==='Escape')c();}); })();
+  // Hamburger
+  (function(){
+    var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay');
+    if(!btn||!drawer||!overlay)return;
+    function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');}
+    function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');}
+    btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();});
+    overlay.addEventListener('click',c);
+    drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c));
+    window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')c();});
+  })();
 
-  let currentContentType='case-studies'; let lastDeleted=null;
-  const contentStore={'case-studies':[{id:1,title:'SOC Implementation — ZimMicro Finance',category:'Financial / Zimbabwe',status:'Published',modified:'2024-10-20'},{id:2,title:'Phishing Simulation — Cape Town Municipality',category:'Government / South Africa',status:'Published',modified:'2024-10-18'},{id:3,title:'Ransomware Response — Durban Freight Solutions',category:'Logistics / South Africa',status:'Published',modified:'2024-10-15'}],'testimonials':[{id:1,title:'Thandeka Mokoena — Durban Freight Solutions',category:'5 Stars',status:'Published',modified:'2024-10-20'},{id:2,title:'Kobus de Villiers — Cape Town Municipality',category:'5 Stars',status:'Published',modified:'2024-10-18'}],'blog':[{id:1,title:'Understanding Ransomware-as-a-Service in Africa',category:'Threat Education',status:'Published',modified:'2024-10-22'},{id:2,title:'POPIA Compliance Checklist for SMEs',category:'Compliance',status:'Draft',modified:'2024-10-19'}],'gallery':[{id:1,title:'SOC Training Workshop — Johannesburg',category:'Training Events',status:'Published',modified:'2024-10-10'}]};
-  function switchContent(type){currentContentType=type;['case-studies','testimonials','blog','gallery'].forEach(t=>{const btn=document.getElementById('ct-'+t);btn.classList.remove('bg-[#0A2F44]','text-white');btn.classList.add('text-slate-600');});const ab=document.getElementById('ct-'+type);ab.classList.add('bg-[#0A2F44]','text-white');ab.classList.remove('text-slate-600');renderContentTable();}
-  function renderContentTable(){const items=contentStore[currentContentType]||[];document.getElementById('contentCount').textContent=`${items.length} item${items.length!==1?'s':''}`;document.getElementById('contentTableBody').innerHTML=items.map(item=>`<tr class="hover:bg-slate-50"><td class="px-5 py-4 font-medium text-[#0A2F44]">${item.title}</td><td class="px-5 py-4 text-slate-400 text-xs">${item.category}</td><td class="px-5 py-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${item.status==='Published'?'bg-green-50 text-green-700':item.status==='Draft'?'bg-yellow-50 text-yellow-700':'bg-slate-100 text-slate-500'}">${item.status}</span></td><td class="px-5 py-4 text-slate-400 text-xs font-mono">${item.modified}</td><td class="px-5 py-4 text-right"><button onclick="editItem(${item.id})" class="text-[#0A2F44] text-xs font-bold hover:underline mr-3">Edit</button><button onclick="archiveItem(${item.id})" class="text-slate-400 text-xs font-bold hover:underline mr-3">Archive</button><button onclick="deleteItem(${item.id})" class="text-red-400 text-xs font-bold hover:underline">Delete</button></td></tr>`).join('');}
-  function openAddModal(){document.getElementById('modalTitle').textContent=`Add ${currentContentType.replace('-',' ').replace(/\b\w/g,c=>c.toUpperCase()).slice(0,-1)}`;document.getElementById('newTitle').value='';document.getElementById('newCategory').value='';document.getElementById('newContent').value='';document.getElementById('addModal').classList.remove('hidden');}
-  function closeModal(){document.getElementById('addModal').classList.add('hidden');}
-  function saveContent(){const title=document.getElementById('newTitle').value.trim();if(!title){alert('Title required');return;}const newItem={id:Date.now(),title,category:document.getElementById('newCategory').value||'General',status:document.getElementById('newStatus').value,modified:new Date().toISOString().split('T')[0]};contentStore[currentContentType].unshift(newItem);logAudit(currentContentType,`Published: "${title}"`,'publish');renderContentTable();closeModal();showUndo(`"${title}" published.`);}
-  function editItem(id){const item=contentStore[currentContentType].find(i=>i.id===id);if(!item)return;const newTitle=prompt('Edit title:',item.title);if(newTitle&&newTitle.trim()){const old=item.title;item.title=newTitle.trim();item.modified=new Date().toISOString().split('T')[0];logAudit(currentContentType,`Edited: "${old}" → "${item.title}"`,'edit');renderContentTable();showUndo(`Item updated.`);}}
-  function archiveItem(id){const item=contentStore[currentContentType].find(i=>i.id===id);if(!item)return;item.status=item.status==='Archived'?'Published':'Archived';logAudit(currentContentType,`${item.status==='Archived'?'Archived':'Unarchived'}: "${item.title}"`,'archive');renderContentTable();showUndo(`"${item.title}" ${item.status==='Archived'?'archived':'restored'}.`);}
-  function deleteItem(id){const items=contentStore[currentContentType];const idx=items.findIndex(i=>i.id===id);if(idx===-1)return;lastDeleted={type:currentContentType,item:items[idx],idx};logAudit(currentContentType,`Deleted: "${items[idx].title}"`,'delete');items.splice(idx,1);renderContentTable();showUndo(`"${lastDeleted.item.title}" deleted.`);}
-  let undoTimer=null;
-  function showUndo(msg){document.getElementById('undoMsg').textContent=msg;document.getElementById('undoBanner').classList.remove('hidden');if(undoTimer)clearTimeout(undoTimer);undoTimer=setTimeout(()=>dismissUndo(),6000);}
-  function dismissUndo(){document.getElementById('undoBanner').classList.add('hidden');lastDeleted=null;}
-  function undoAction(){if(lastDeleted){contentStore[lastDeleted.type].splice(lastDeleted.idx,0,lastDeleted.item);logAudit(lastDeleted.type,`Undo delete: "${lastDeleted.item.title}"`,'undo');renderContentTable();lastDeleted=null;}dismissUndo();}
-  const auditLog=JSON.parse(sessionStorage.getItem('cn_audit')||'[]');
-  window.logAudit=function(category,action,type){const entry={ts:new Date().toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'short',timeStyle:'medium'}),actor:document.getElementById('adminEmail')?.textContent||'admin',category,action,type};auditLog.unshift(entry);sessionStorage.setItem('cn_audit',JSON.stringify(auditLog.slice(0,200)));};
+  // ── Storage-backed content management ────────────────────────
+  CyberNovaDB.seedIfEmpty();
+
+  let currentType = 'case-study';
+
+  const tabLabels = {
+    'case-study': 'Case Study',
+    'testimonial': 'Testimonial',
+    'blog': 'Blog Post',
+    'gallery': 'Gallery Item',
+  };
+
+  function switchContent(type) {
+    currentType = type;
+    // Reset tab styles
+    ['case-study','testimonial','blog','gallery'].forEach(t => {
+      const btn = document.getElementById('ct-' + t);
+      btn.classList.remove('active','bg-[#0A2F44]','text-white');
+      btn.classList.add('text-slate-600');
+    });
+    const active = document.getElementById('ct-' + type);
+    active.classList.add('active','bg-[#0A2F44]','text-white');
+    active.classList.remove('text-slate-600');
+    renderContentTable();
+  }
+
+  function renderContentTable() {
+    const items = CyberNovaDB.getContent(currentType);
+    document.getElementById('contentCount').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+
+    const tbody = document.getElementById('contentTableBody');
+    if (items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-12 text-center text-slate-400 text-sm">No ${tabLabels[currentType].toLowerCase()}s yet. Click "Add New" to create one.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = items.map(item => {
+      const meta = item.meta || {};
+      const metaStr = meta.industry || meta.category || meta.org || meta.rating ? (meta.rating ? `⭐ ${meta.rating} · ${meta.org || ''}` : (meta.industry || meta.category || meta.org || '—')) : '—';
+      const statusClass = item.status === 'published'
+        ? 'bg-green-50 text-green-700'
+        : item.status === 'archived'
+        ? 'bg-slate-100 text-slate-500'
+        : 'bg-yellow-50 text-yellow-700';
+
+      return `
+        <tr class="hover:bg-slate-50">
+          <td class="px-5 py-4 font-medium text-[#0A2F44] max-w-[220px] truncate">${item.title}</td>
+          <td class="px-5 py-4 text-slate-400 text-xs">${metaStr}</td>
+          <td class="px-5 py-4">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${statusClass}">${item.status}</span>
+          </td>
+          <td class="px-5 py-4 text-slate-400 text-xs font-mono">${new Date(item.updatedAt).toLocaleDateString('en-ZA')}</td>
+          <td class="px-5 py-4 text-right whitespace-nowrap">
+            <button onclick="editItem('${item.id}')" class="text-[#0A2F44] text-xs font-bold hover:underline mr-3">Edit</button>
+            <button onclick="doArchive('${item.id}')" class="text-slate-400 text-xs font-bold hover:underline mr-3">
+              ${item.status === 'archived' ? 'Restore' : 'Archive'}
+            </button>
+            <button onclick="deleteItem('${item.id}')" class="text-red-400 text-xs font-bold hover:underline">Delete</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ── Modal ─────────────────────────────────────────────────────
+  function openAddModal() {
+    document.getElementById('editingId').value = '';
+    document.getElementById('modalTitle').textContent = `Add ${tabLabels[currentType]}`;
+    document.getElementById('newTitle').value = '';
+    document.getElementById('newCategory').value = '';
+    document.getElementById('newContent').value = '';
+    document.getElementById('addModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('addModal').classList.add('hidden');
+  }
+
+  function saveContent() {
+    const title = document.getElementById('newTitle').value.trim();
+    if (!title) { alert('Title is required.'); return; }
+
+    const editingId = document.getElementById('editingId').value;
+    const category  = document.getElementById('newCategory').value.trim();
+    const body      = document.getElementById('newContent').value.trim();
+
+    if (editingId) {
+      // Edit mode
+      CyberNovaDB.updateContent(editingId, {
+        title,
+        body,
+        meta: { category },
+      });
+      showUndo(`"${title}" updated.`);
+    } else {
+      // New item
+      CyberNovaDB.addContent({
+        type:  currentType,
+        title,
+        body,
+        meta:  { category },
+      });
+      showUndo(`"${title}" published.`);
+    }
+
+    renderContentTable();
+    closeModal();
+  }
+
+  function editItem(id) {
+    const item = CyberNovaDB.getContent().find(c => c.id === id);
+    if (!item) return;
+    document.getElementById('editingId').value   = id;
+    document.getElementById('modalTitle').textContent = `Edit ${tabLabels[currentType]}`;
+    document.getElementById('newTitle').value    = item.title;
+    document.getElementById('newCategory').value = item.meta?.category || item.meta?.industry || item.meta?.org || '';
+    document.getElementById('newContent').value  = item.body || '';
+    document.getElementById('addModal').classList.remove('hidden');
+  }
+
+  function doArchive(id) {
+    const item = CyberNovaDB.getContent().find(c => c.id === id);
+    if (!item) return;
+    if (item.status === 'archived') {
+      CyberNovaDB.updateContent(id, { status: 'published' });
+      showUndo(`"${item.title}" restored.`);
+    } else {
+      CyberNovaDB.archiveContent(id);
+      showUndo(`"${item.title}" archived. Undo?`);
+    }
+    renderContentTable();
+  }
+
+  function deleteItem(id) {
+    const item = CyberNovaDB.getContent().find(c => c.id === id);
+    if (!item) return;
+    if (!confirm(`Permanently delete "${item.title}"? This cannot be undone.`)) return;
+
+    // Remove from storage directly
+    const all = JSON.parse(localStorage.getItem('cn_content') || '[]').filter(c => c.id !== id);
+    localStorage.setItem('cn_content', JSON.stringify(all));
+
+    // Log to audit
+    CyberNovaDB.addAuditEntry({
+      action: 'deleted',
+      targetType: item.type,
+      targetId: id,
+      targetTitle: item.title,
+    });
+
+    renderContentTable();
+    showUndo(`"${item.title}" permanently deleted.`);
+  }
+
+  // ── Undo (archive only) ───────────────────────────────────────
+  let undoTimer = null;
+
+  function showUndo(msg) {
+    document.getElementById('undoMsg').textContent = msg;
+    document.getElementById('undoBanner').classList.remove('hidden');
+    if (undoTimer) clearTimeout(undoTimer);
+    undoTimer = setTimeout(dismissUndo, 6000);
+  }
+
+  function dismissUndo() {
+    document.getElementById('undoBanner').classList.add('hidden');
+    if (undoTimer) clearTimeout(undoTimer);
+  }
+
+  function undoAction() {
+    const restored = CyberNovaDB.undoLastArchive();
+    if (restored) {
+      renderContentTable();
+      showUndo(`"${restored.title}" restored.`);
+    } else {
+      dismissUndo();
+    }
+  }
+
+  // Initial render
   renderContentTable();
 </script>
 </body>

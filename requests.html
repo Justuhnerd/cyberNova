@@ -7,12 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-  <script src="js/admin-nav.js"></script>
+  <!-- Storage layer -->
+  <script src="storage.js"></script>
   <!-- Firebase Auth Guard -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
       authDomain: "cybernova-3f09c.firebaseapp.com",
@@ -21,10 +21,8 @@
       messagingSenderId: "153861855601",
       appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -39,21 +37,16 @@
         document.getElementById('loadingScreen').classList.add('hidden');
       }
     });
-
     window.handleLogout = async function() {
       if (confirm('Are you sure you want to log out?')) {
         await signOut(auth);
         window.location.href = 'login.html';
       }
     };
-
   </script>
-
   <style>
     body { font-family: 'Inter', sans-serif; }
     .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
-    
-    /* Mobile drawer styles (same as admin) */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
     .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
     .hamburger span:nth-child(1){margin-bottom:5px;}
@@ -61,7 +54,6 @@
     .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
     .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
     .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
-
     .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
     .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
     .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
@@ -77,58 +69,17 @@
     .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
     .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
     body.nav-open{overflow:hidden;}
-
-    /* Desktop top nav */
-    .topnav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #64748b;
-      border-radius: 6px;
-      text-decoration: none;
-      background: transparent;
-      cursor: pointer;
-      transition: color .18s, background .18s;
-      white-space: nowrap;
-      position: relative;
-    }
-    .topnav-link:hover { color: #0A2F44; background: rgba(10,47,68,.06); }
-    .topnav-link.topnav-active { color: #E0A800; background: rgba(224,168,0,.1); }
-    .topnav-link.topnav-active::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 12px;
-      right: 12px;
-      height: 2px;
-      background: #E0A800;
-      border-radius: 2px 2px 0 0;
-    }
-    .topnav-link .material-symbols-outlined { font-size: 16px; font-variation-settings: 'FILL' 1; }
-    .topnav-divider { width: 1px; height: 20px; background: #e2e8f0; }
-
-    @media (max-width: 1023px) {
-      .hamburger { display: flex; }
-      .desktop-topnav-links, .desktop-topnav-admin { display: none !important; }
-    }
-    @media (min-width: 1024px) {
-      .hamburger { display: none !important; }
-      .main-requests { margin-left: 0 !important; padding-top: 1.5rem !important; }
-    }
-    .status-badge { @apply px-2.5 py-1 rounded-full text-[10px] font-bold uppercase; }
-    .modal-transition { transition: opacity 0.2s ease, visibility 0.2s; }
-
-      .main-requests {
-  padding-top: 90px !important; 
-}
-@media (min-width: 1024px) {
-  .main-requests {
-    padding-top: 80px !important;
-  }
-}
+    .topnav-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:13px;font-weight:600;color:#64748b;border-radius:6px;text-decoration:none;background:transparent;cursor:pointer;transition:color .18s,background .18s;white-space:nowrap;position:relative;}
+    .topnav-link:hover{color:#0A2F44;background:rgba(10,47,68,.06);}
+    .topnav-link.topnav-active{color:#E0A800;background:rgba(224,168,0,.1);}
+    .topnav-link.topnav-active::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:#E0A800;border-radius:2px 2px 0 0;}
+    .topnav-link .material-symbols-outlined{font-size:16px;font-variation-settings:'FILL' 1;}
+    .topnav-divider{width:1px;height:20px;background:#e2e8f0;}
+    @media(max-width:1023px){.hamburger{display:flex;}.desktop-topnav-links,.desktop-topnav-admin{display:none!important;}}
+    @media(min-width:1024px){.hamburger{display:none!important;}}
+    .modal-transition{transition:opacity .2s ease,visibility .2s;}
+    .main-requests{padding-top:90px!important;}
+    @media(min-width:1024px){.main-requests{padding-top:80px!important;}}
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
@@ -147,8 +98,8 @@
     <a href="requests.html" class="active"><span class="nav-icon">mark_as_unread</span>Requests</a>
     <a href="analytics.html"><span class="nav-icon">analytics</span>Analytics</a>
     <a href="traffic-analytics.html"><span class="nav-icon">traffic</span>Traffic Analytics</a>
-    <a href="admin.html#content"><span class="nav-icon">edit_note</span>Content Mgmt</a>
-    <a href="admin.html#audit"><span class="nav-icon">fact_check</span>Audit Trail</a>
+    <a href="content.html"><span class="nav-icon">edit_note</span>Content Mgmt</a>
+    <a href="audit.html"><span class="nav-icon">fact_check</span>Audit Trail</a>
     <div class="border-t border-white/10 my-2"></div>
     <a href="index.html"><span class="nav-icon">open_in_new</span>Public Site</a>
   </div>
@@ -161,13 +112,8 @@
   </div>
 </nav>
 
-<!-- Desktop Sidebar (hidden on lg, kept for compatibility) -->
-<aside class="desktop-sidebar h-screen w-64 bg-[#0A2F44] fixed left-0 top-0 z-40 hidden lg:hidden"></aside>
-
- <!-- Unified Admin Header (stacked brand, non‑overlapping) -->
 <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
   <div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-8 h-16">
-    <!-- Logo + stacked brand -->
     <a href="admin.html" class="flex items-center gap-3 flex-shrink-0">
       <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
       <div class="leading-tight">
@@ -175,22 +121,18 @@
         <div class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</div>
       </div>
     </a>
-
-    <!-- Desktop navigation (scrollable if needed) -->
     <div class="hidden lg:flex items-center gap-2 overflow-x-auto flex-1 min-w-0 justify-center">
       <nav class="desktop-topnav-links flex items-center gap-0.5">
-        <a href="admin.html" class="topnav-link" id="nav-dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-        <a href="requests.html" class="topnav-link" id="nav-requests"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
-        <a href="analytics.html" class="topnav-link" id="nav-analytics"><span class="material-symbols-outlined">analytics</span>Analytics</a>
-        <a href="traffic-analytics.html" class="topnav-link" id="nav-traffic"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
-        <a href="content.html" class="topnav-link" id="nav-content"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
-        <a href="audit.html" class="topnav-link" id="nav-audit"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
+        <a href="admin.html" class="topnav-link"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a href="requests.html" class="topnav-link topnav-active"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span id="navPendingBadge" class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">0</span></a>
+        <a href="analytics.html" class="topnav-link"><span class="material-symbols-outlined">analytics</span>Analytics</a>
+        <a href="traffic-analytics.html" class="topnav-link"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
+        <a href="content.html" class="topnav-link"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
+        <a href="audit.html" class="topnav-link"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
         <div class="topnav-divider mx-2"></div>
         <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
       </nav>
     </div>
-
-    <!-- Admin info + logout (always on right) -->
     <div class="desktop-topnav-admin flex items-center gap-2 lg:gap-3 flex-shrink-0">
       <div class="flex items-center gap-2">
         <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
@@ -205,200 +147,300 @@
         <span class="text-xs hidden sm:inline">Logout</span>
       </button>
     </div>
-
-    <!-- Mobile hamburger -->
     <button id="hamburger" class="hamburger ml-auto lg:hidden" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </header>
 
-<!-- MAIN CONTENT -->
 <div id="pageContent" class="hidden">
-  <main class="main-requests p-6 lg:p-8 pt-24 lg:pt-24">
+  <main class="main-requests p-6 lg:p-8">
     <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
-      <div><h2 class="text-2xl font-black text-[#0A2F44]">Service Requests</h2><p class="text-slate-500 text-sm">Manage and respond to client security requests</p></div>
-      <button class="bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-slate-700"><span class="material-symbols-outlined text-base">add</span> New Request</button>
+      <div>
+        <h2 class="text-2xl font-black text-[#0A2F44]">Service Requests</h2>
+        <p class="text-slate-500 text-sm">Manage and respond to client security requests</p>
+      </div>
+      <a href="request.html" class="bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 hover:bg-slate-700">
+        <span class="material-symbols-outlined text-base">open_in_new</span> Client Form
+      </a>
     </div>
 
-    <!-- Filters & Search -->
+    <!-- Filters -->
     <div class="bg-white rounded-xl shadow-sm p-4 mb-6 flex flex-wrap gap-4 items-end">
-      <div class="flex-1 min-w-[180px]"><label class="block text-xs font-semibold text-slate-500 mb-1">Search</label><div class="relative"><span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span><input type="text" id="searchInput" placeholder="Ticket ID, client, or email..." class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#0A2F44]"></div></div>
-      <div><label class="block text-xs font-semibold text-slate-500 mb-1">Status</label><select id="statusFilter" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white"><option value="">All</option><option value="Pending">Pending</option><option value="In Progress">In Progress</option><option value="Resolved">Resolved</option><option value="Escalated">Escalated</option></select></div>
-      <div><label class="block text-xs font-semibold text-slate-500 mb-1">Priority</label><select id="priorityFilter" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white"><option value="">All</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option></select></div>
-      <button id="resetFilters" class="text-slate-500 text-sm hover:text-[#0A2F44] flex items-center gap-1"><span class="material-symbols-outlined text-base">refresh</span> Reset</button>
+      <div class="flex-1 min-w-[180px]">
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Search</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+          <input type="text" id="searchInput" placeholder="Ticket ID, client, or keyword..." class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#0A2F44]">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Status</label>
+        <select id="statusFilter" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">All</option>
+          <option value="new">New</option>
+          <option value="in-progress">In Progress</option>
+          <option value="resolved">Resolved</option>
+          <option value="escalated">Escalated</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Priority</label>
+        <select id="priorityFilter" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">All</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+      <button id="resetFilters" class="text-slate-500 text-sm hover:text-[#0A2F44] flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">refresh</span> Reset
+      </button>
     </div>
 
-    <!-- Requests Table -->
+    <!-- Table -->
     <div class="bg-white rounded-xl shadow-sm overflow-hidden">
       <div class="overflow-x-auto">
         <table class="w-full text-left">
           <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
-            <tr><th class="px-5 py-4">Ticket ID</th><th class="px-5 py-4">Date</th><th class="px-5 py-4">Client / Email</th><th class="px-5 py-4">Issue Summary</th><th class="px-5 py-4">Priority</th><th class="px-5 py-4">Status</th><th class="px-5 py-4 text-right">Actions</th></tr>
+            <tr>
+              <th class="px-5 py-4">Ticket ID</th>
+              <th class="px-5 py-4">Date</th>
+              <th class="px-5 py-4">Client / Org</th>
+              <th class="px-5 py-4">Threat Type</th>
+              <th class="px-5 py-4">Priority</th>
+              <th class="px-5 py-4">Status</th>
+              <th class="px-5 py-4 text-right">Actions</th>
+            </tr>
           </thead>
           <tbody id="requestsTableBody" class="text-sm divide-y divide-slate-50"></tbody>
         </table>
       </div>
+      <!-- Empty state -->
+      <div id="emptyState" class="hidden p-16 text-center">
+        <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">inbox</span>
+        <p class="text-slate-500 font-semibold">No requests match your filters.</p>
+        <p class="text-slate-400 text-xs mt-1">New submissions from the client form appear here automatically.</p>
+      </div>
       <!-- Pagination -->
       <div class="px-5 py-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3 text-xs text-slate-400">
         <div><span id="showingRange">Showing 0 of 0</span></div>
-        <div class="flex gap-1"><button id="prevPage" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40" disabled>←</button><span id="pageIndicator" class="px-3 py-1">Page 1</span><button id="nextPage" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-slate-50">→</button></div>
+        <div class="flex gap-1">
+          <button id="prevPage" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40" disabled>←</button>
+          <span id="pageIndicator" class="px-3 py-1">Page 1</span>
+          <button id="nextPage" class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 hover:bg-slate-50">→</button>
+        </div>
       </div>
     </div>
   </main>
 </div>
 
-<!-- Request Detail Modal -->
+<!-- Detail Modal -->
 <div id="detailModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 modal-transition">
   <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
-    <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center"><h3 class="font-black text-[#0A2F44] text-lg">Request Details</h3><button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button></div>
+    <div class="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center">
+      <h3 class="font-black text-[#0A2F44] text-lg">Request Details</h3>
+      <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><span class="material-symbols-outlined">close</span></button>
+    </div>
     <div class="p-6 space-y-5" id="modalContent"></div>
-    <div class="sticky bottom-0 bg-white border-t border-slate-100 px-6 py-4 flex justify-end gap-3"><button onclick="closeModal()" class="px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium">Close</button></div>
   </div>
 </div>
 
 <script>
-  // ---------- MOCK DATA (84 requests, realistic) ----------
-  const allRequests = [
-    { id: "CNS-20241024-9821", date: "Oct 24, 2024", client: "Aether Global Ltd", email: "support@aetherglobal.com", summary: "Ransomware attack on finance servers", priority: "High", status: "In Progress", details: "Encrypted critical financial data. Need immediate containment and recovery assistance." },
-    { id: "CNS-20241023-7720", date: "Oct 23, 2024", client: "Nova Strategic", email: "it@novastrategic.co.za", summary: "Phishing campaign targeting employees", priority: "Medium", status: "Pending", details: "Multiple staff reported suspicious emails. Require simulation and training." },
-    { id: "CNS-20241023-4109", date: "Oct 23, 2024", client: "Helios Dynamics", email: "security@helios.bw", summary: "Low-level intrusion attempt", priority: "Low", status: "Resolved", details: "Blocked IP address, no data loss." },
-    { id: "CNS-20241022-2291", date: "Oct 22, 2024", client: "Sovereign Cloud", email: "admin@sovereigncloud.com", summary: "APT activity detected", priority: "High", status: "Escalated", details: "Persistent threat actor observed. Need advanced hunting." },
-    { id: "CNS-20241021-5632", date: "Oct 21, 2024", client: "Meridian Finance", email: "ciso@meridian.co.za", summary: "Data exfiltration attempt", priority: "High", status: "In Progress", details: "Sensitive customer data potentially compromised. Investigation ongoing." },
-    { id: "CNS-20241020-1234", date: "Oct 20, 2024", client: "Green Energy Ltd", email: "tech@greenenergy.com", summary: "DDoS mitigation request", priority: "Medium", status: "Pending", details: "Website under volumetric attack, require WAF tuning." },
-    { id: "CNS-20241019-9876", date: "Oct 19, 2024", client: "City of Johannesburg", email: "cio@joburg.gov.za", summary: "Zero-day vulnerability assessment", priority: "High", status: "In Progress", details: "Critical infrastructure patch management." },
-    { id: "CNS-20241018-4567", date: "Oct 18, 2024", client: "BlueRock Mining", email: "it@bluerock.com", summary: "Ransomware simulation", priority: "Low", status: "Resolved", details: "Tabletop exercise completed." },
-    { id: "CNS-20241017-8901", date: "Oct 17, 2024", client: "EduTech SA", email: "admin@edutech.co.za", summary: "Phishing awareness training", priority: "Medium", status: "Pending", details: "Request for staff training materials." },
-    { id: "CNS-20241016-2345", date: "Oct 16, 2024", client: "Transnet Freight", email: "security@transnet.co.za", summary: "SOC integration", priority: "Medium", status: "In Progress", details: "Integrate SIEM logs with CyberNova SOC." },
-    { id: "CNS-20241015-6789", date: "Oct 15, 2024", client: "Capitec Bank", email: "cso@capitec.co.za", summary: "Penetration test report", priority: "High", status: "Resolved", details: "Delivered final report with remediation steps." },
-    { id: "CNS-20241014-3456", date: "Oct 14, 2024", client: "Standard Bank", email: "threat@standardbank.com", summary: "Threat hunting support", priority: "High", status: "In Progress", details: "Assisted with EDR telemetry analysis." },
-  ];
-  // Generate additional requests to reach 30+ for pagination demo
-  for (let i = 13; i <= 45; i++) {
-    const priorities = ["High","Medium","Low"];
-    const statuses = ["Pending","In Progress","Resolved","Escalated"];
-    const clients = ["Client A","Client B","Client C","Deloitte","PwC","Nedbank","MTN","Vodacom"];
-    allRequests.push({
-      id: `CNS-202410${Math.floor(10+Math.random()*20)}-${Math.floor(1000+Math.random()*9000)}`,
-      date: `Oct ${Math.floor(1+Math.random()*28)}, 2024`,
-      client: clients[Math.floor(Math.random()*clients.length)],
-      email: `contact@${clients[Math.floor(Math.random()*clients.length)].toLowerCase().replace(/\s/g,'')}.com`,
-      summary: ["Firewall configuration","Incident response","Vulnerability scan","Compliance audit"][Math.floor(Math.random()*4)],
-      priority: priorities[Math.floor(Math.random()*3)],
-      status: statuses[Math.floor(Math.random()*4)],
-      details: "Detailed description would appear here. This request requires admin attention."
-    });
+  // ── Status helpers ────────────────────────────────────────────
+  function toUIStatus(s) {
+    return { 'new':'New', 'in-progress':'In Progress', 'resolved':'Resolved', 'escalated':'Escalated' }[s] || s;
   }
-  // Sort by date descending
-  allRequests.sort((a,b) => new Date(b.date) - new Date(a.date));
+  function statusBadgeClass(s) {
+    return { 'new':'bg-slate-100 text-slate-600', 'in-progress':'bg-blue-100 text-blue-700', 'resolved':'bg-green-100 text-green-700', 'escalated':'bg-red-100 text-red-700' }[s] || 'bg-slate-100 text-slate-500';
+  }
+  function priorityBadgeClass(p) {
+    return { 'high':'bg-red-100 text-red-700', 'medium':'bg-yellow-100 text-yellow-700', 'low':'bg-green-100 text-green-700' }[p] || 'bg-slate-100 text-slate-500';
+  }
 
+  // ── Load from storage ─────────────────────────────────────────
+  CyberNovaDB.seedIfEmpty();
+
+  function getAllRequests() {
+    return CyberNovaDB.getTickets().slice().reverse(); // newest first
+  }
+
+  let allRequests = getAllRequests();
   let filteredRequests = [...allRequests];
   let currentPage = 1;
   const rowsPerPage = 10;
 
-  // DOM elements
-  const tbody = document.getElementById('requestsTableBody');
-  const searchInput = document.getElementById('searchInput');
-  const statusFilter = document.getElementById('statusFilter');
-  const priorityFilter = document.getElementById('priorityFilter');
-  const resetBtn = document.getElementById('resetFilters');
-  const prevBtn = document.getElementById('prevPage');
-  const nextBtn = document.getElementById('nextPage');
-  const pageIndicator = document.getElementById('pageIndicator');
-  const showingRange = document.getElementById('showingRange');
-  const modal = document.getElementById('detailModal');
-  const modalContent = document.getElementById('modalContent');
+  // Update nav badge
+  function updateBadge() {
+    const newCount = CyberNovaDB.getTickets().filter(t => t.status === 'new').length;
+    const badge = document.getElementById('navPendingBadge');
+    if (badge) badge.textContent = newCount;
+  }
+  updateBadge();
 
+  // ── Filter ────────────────────────────────────────────────────
   function filterRequests() {
-    const searchTerm = searchInput.value.toLowerCase();
-    const statusVal = statusFilter.value;
-    const priorityVal = priorityFilter.value;
-    filteredRequests = allRequests.filter(req => {
-      const matchesSearch = req.id.toLowerCase().includes(searchTerm) || req.client.toLowerCase().includes(searchTerm) || req.email.toLowerCase().includes(searchTerm);
-      const matchesStatus = !statusVal || req.status === statusVal;
-      const matchesPriority = !priorityVal || req.priority === priorityVal;
-      return matchesSearch && matchesStatus && matchesPriority;
+    allRequests = getAllRequests();
+    const kw = document.getElementById('searchInput').value.toLowerCase();
+    const sv = document.getElementById('statusFilter').value;
+    const pv = document.getElementById('priorityFilter').value;
+
+    filteredRequests = allRequests.filter(t => {
+      const matchKw = !kw ||
+        t.id.toLowerCase().includes(kw) ||
+        (t.name||'').toLowerCase().includes(kw) ||
+        (t.org||'').toLowerCase().includes(kw) ||
+        (t.email||'').toLowerCase().includes(kw) ||
+        (t.threatType||'').toLowerCase().includes(kw);
+      const matchStatus = !sv || t.status === sv;
+      const matchPriority = !pv || t.priority === pv;
+      return matchKw && matchStatus && matchPriority;
     });
     currentPage = 1;
     renderTable();
   }
 
+  // ── Render ────────────────────────────────────────────────────
   function renderTable() {
-    const start = (currentPage-1) * rowsPerPage;
-    const paginated = filteredRequests.slice(start, start+rowsPerPage);
-    if (paginated.length === 0 && currentPage > 1) { currentPage--; renderTable(); return; }
-    tbody.innerHTML = paginated.map(req => `
-      <tr class="hover:bg-slate-50 transition">
-        <td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">${req.id}</td>
-        <td class="px-5 py-4 text-slate-400 text-xs">${req.date}</td>
-        <td class="px-5 py-4"><div class="font-medium text-sm">${req.client}</div><div class="text-xs text-slate-400">${req.email}</div></td>
-        <td class="px-5 py-4 text-slate-600 max-w-xs truncate">${req.summary}</td>
-        <td class="px-5 py-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${req.priority==='High'?'bg-red-100 text-red-700':req.priority==='Medium'?'bg-yellow-100 text-yellow-700':'bg-green-100 text-green-700'}">${req.priority}</span></td>
-        <td class="px-5 py-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${req.status==='Pending'?'bg-slate-100 text-slate-600':req.status==='In Progress'?'bg-blue-100 text-blue-700':req.status==='Resolved'?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${req.status}</span></td>
-        <td class="px-5 py-4 text-right"><button onclick="viewRequest('${req.id}')" class="text-[#0A2F44] text-xs font-bold hover:underline mr-2">View</button><select onchange="updateStatus('${req.id}', this.value)" class="text-xs border border-slate-200 rounded px-2 py-1 bg-white"><option value="Pending" ${req.status==='Pending'?'selected':''}>Pending</option><option value="In Progress" ${req.status==='In Progress'?'selected':''}>In Progress</option><option value="Resolved" ${req.status==='Resolved'?'selected':''}>Resolved</option><option value="Escalated" ${req.status==='Escalated'?'selected':''}>Escalated</option></select></td>
-      </tr>
-    `).join('');
-    const totalPages = Math.ceil(filteredRequests.length / rowsPerPage) || 1;
-    pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
-    const startNum = filteredRequests.length === 0 ? 0 : start+1;
-    const endNum = Math.min(start+rowsPerPage, filteredRequests.length);
-    showingRange.textContent = `Showing ${startNum} to ${endNum} of ${filteredRequests.length} requests`;
+    const start = (currentPage - 1) * rowsPerPage;
+    const page  = filteredRequests.slice(start, start + rowsPerPage);
+    const tbody = document.getElementById('requestsTableBody');
+    const empty = document.getElementById('emptyState');
+
+    if (filteredRequests.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+    } else {
+      empty.classList.add('hidden');
+      tbody.innerHTML = page.map(t => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="px-5 py-4 font-mono text-[#0A2F44] font-semibold text-xs">${t.id}</td>
+          <td class="px-5 py-4 text-slate-400 text-xs">${new Date(t.createdAt).toLocaleDateString('en-ZA',{day:'numeric',month:'short',year:'numeric'})}</td>
+          <td class="px-5 py-4">
+            <div class="font-medium text-sm">${t.name || '—'}</div>
+            <div class="text-xs text-slate-400">${t.org || t.email || ''}</div>
+          </td>
+          <td class="px-5 py-4 text-slate-600 text-xs max-w-[160px] truncate">${t.threatType || '—'}</td>
+          <td class="px-5 py-4">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${priorityBadgeClass(t.priority)}">${t.priority}</span>
+          </td>
+          <td class="px-5 py-4">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${statusBadgeClass(t.status)}">${toUIStatus(t.status)}</span>
+          </td>
+          <td class="px-5 py-4 text-right flex items-center justify-end gap-2">
+            <button onclick="viewRequest('${t.id}')" class="text-[#0A2F44] text-xs font-bold hover:underline">View</button>
+            <select onchange="updateStatus('${t.id}', this.value)" class="text-xs border border-slate-200 rounded px-2 py-1 bg-white">
+              <option value="new"       ${t.status==='new'        ?'selected':''}>New</option>
+              <option value="in-progress" ${t.status==='in-progress'?'selected':''}>In Progress</option>
+              <option value="resolved"  ${t.status==='resolved'   ?'selected':''}>Resolved</option>
+              <option value="escalated" ${t.status==='escalated'  ?'selected':''}>Escalated</option>
+            </select>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    const total = Math.ceil(filteredRequests.length / rowsPerPage) || 1;
+    document.getElementById('pageIndicator').textContent = `Page ${currentPage} of ${total}`;
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === total;
+    const s = filteredRequests.length === 0 ? 0 : start + 1;
+    const e = Math.min(start + rowsPerPage, filteredRequests.length);
+    document.getElementById('showingRange').textContent =
+      `Showing ${s}–${e} of ${filteredRequests.length} requests`;
   }
 
+  // ── Status update ─────────────────────────────────────────────
+  window.updateStatus = function(id, newStatus) {
+    CyberNovaDB.updateTicketStatus(id, newStatus);
+    updateBadge();
+    filterRequests();
+  };
+
+  // ── Modal ─────────────────────────────────────────────────────
   window.viewRequest = function(id) {
-    const req = allRequests.find(r => r.id === id);
-    if (!req) return;
-    modalContent.innerHTML = `
-      <div class="grid grid-cols-1 gap-4">
-        <div><span class="text-xs font-bold text-slate-400 uppercase">Ticket ID</span><p class="font-mono text-sm font-semibold">${req.id}</p></div>
-        <div><span class="text-xs font-bold text-slate-400 uppercase">Date / Client</span><p class="text-sm">${req.date} · ${req.client} (${req.email})</p></div>
-        <div><span class="text-xs font-bold text-slate-400 uppercase">Issue</span><p class="text-sm font-medium">${req.summary}</p></div>
-        <div><span class="text-xs font-bold text-slate-400 uppercase">Priority / Status</span><div class="flex gap-3 mt-1"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${req.priority==='High'?'bg-red-100 text-red-700':req.priority==='Medium'?'bg-yellow-100 text-yellow-700':'bg-green-100 text-green-700'}">${req.priority}</span><span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${req.status==='Pending'?'bg-slate-100 text-slate-600':req.status==='In Progress'?'bg-blue-100 text-blue-700':req.status==='Resolved'?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${req.status}</span></div></div>
-        <div><span class="text-xs font-bold text-slate-400 uppercase">Full Description</span><p class="text-sm text-slate-600 mt-1">${req.details}</p></div>
-        <div><label class="text-xs font-bold text-slate-400 uppercase">Update Status</label><select id="modalStatusSelect" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"><option value="Pending" ${req.status==='Pending'?'selected':''}>Pending</option><option value="In Progress" ${req.status==='In Progress'?'selected':''}>In Progress</option><option value="Resolved" ${req.status==='Resolved'?'selected':''}>Resolved</option><option value="Escalated" ${req.status==='Escalated'?'selected':''}>Escalated</option></select></div>
-        <button onclick="updateStatusFromModal('${req.id}')" class="bg-[#0A2F44] text-white py-2 rounded-lg text-sm font-semibold hover:bg-slate-700">Save Changes</button>
+    const t = CyberNovaDB.getTickets().find(r => r.id === id);
+    if (!t) return;
+    document.getElementById('modalContent').innerHTML = `
+      <div class="grid gap-4">
+        <div><span class="text-xs font-bold text-slate-400 uppercase">Ticket ID</span><p class="font-mono text-sm font-semibold mt-0.5">${t.id}</p></div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Client</span><p class="text-sm mt-0.5">${t.name || '—'}</p></div>
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Organisation</span><p class="text-sm mt-0.5">${t.org || '—'}</p></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Email</span><p class="text-sm mt-0.5">${t.email || '—'}</p></div>
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Phone</span><p class="text-sm mt-0.5">${t.phone || '—'}</p></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Country</span><p class="text-sm mt-0.5">${t.country || '—'}</p></div>
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Job Title</span><p class="text-sm mt-0.5">${t.jobTitle || '—'}</p></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Threat Type</span><p class="text-sm mt-0.5">${t.threatType || '—'}</p></div>
+          <div><span class="text-xs font-bold text-slate-400 uppercase">Submitted</span><p class="text-sm mt-0.5">${new Date(t.createdAt).toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'medium',timeStyle:'short'})}</p></div>
+        </div>
+        <div>
+          <span class="text-xs font-bold text-slate-400 uppercase">Priority / Status</span>
+          <div class="flex gap-2 mt-1">
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${priorityBadgeClass(t.priority)}">${t.priority}</span>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${statusBadgeClass(t.status)}">${toUIStatus(t.status)}</span>
+          </div>
+        </div>
+        <div><span class="text-xs font-bold text-slate-400 uppercase">Description</span><p class="text-sm text-slate-600 mt-1 leading-relaxed">${t.description || '—'}</p></div>
+        <div>
+          <label class="text-xs font-bold text-slate-400 uppercase">Update Status</label>
+          <select id="modalStatusSelect" class="mt-1 w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
+            <option value="new"         ${t.status==='new'        ?'selected':''}>New</option>
+            <option value="in-progress" ${t.status==='in-progress'?'selected':''}>In Progress</option>
+            <option value="resolved"    ${t.status==='resolved'   ?'selected':''}>Resolved</option>
+            <option value="escalated"   ${t.status==='escalated'  ?'selected':''}>Escalated</option>
+          </select>
+        </div>
+        <button onclick="updateStatusFromModal('${t.id}')" class="bg-[#0A2F44] text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-slate-700">Save Changes</button>
       </div>
     `;
-    modal.classList.remove('hidden');
+    document.getElementById('detailModal').classList.remove('hidden');
   };
-  window.updateStatus = function(id, newStatus) {
-    const req = allRequests.find(r => r.id === id);
-    if (req) { req.status = newStatus; filterRequests(); }
-  };
+
   window.updateStatusFromModal = function(id) {
-    const select = document.getElementById('modalStatusSelect');
-    if (select) { updateStatus(id, select.value); closeModal(); }
+    const sel = document.getElementById('modalStatusSelect');
+    if (sel) { updateStatus(id, sel.value); closeModal(); }
   };
-  window.closeModal = function() { modal.classList.add('hidden'); };
 
-  // Event listeners
-  searchInput.addEventListener('input', filterRequests);
-  statusFilter.addEventListener('change', filterRequests);
-  priorityFilter.addEventListener('change', filterRequests);
-  resetBtn.addEventListener('click', () => { searchInput.value = ''; statusFilter.value = ''; priorityFilter.value = ''; filterRequests(); });
-  prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
-  nextBtn.addEventListener('click', () => { const total = Math.ceil(filteredRequests.length / rowsPerPage); if (currentPage < total) { currentPage++; renderTable(); } });
+  window.closeModal = function() { document.getElementById('detailModal').classList.add('hidden'); };
 
-  // Hamburger (same as admin)
+  // ── Events ────────────────────────────────────────────────────
+  document.getElementById('searchInput').addEventListener('input', filterRequests);
+  document.getElementById('statusFilter').addEventListener('change', filterRequests);
+  document.getElementById('priorityFilter').addEventListener('change', filterRequests);
+  document.getElementById('resetFilters').addEventListener('click', () => {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('priorityFilter').value = '';
+    filterRequests();
+  });
+  document.getElementById('prevPage').addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
+  document.getElementById('nextPage').addEventListener('click', () => {
+    const total = Math.ceil(filteredRequests.length / rowsPerPage);
+    if (currentPage < total) { currentPage++; renderTable(); }
+  });
+
+  // Hamburger
   (function(){
-    const btn = document.getElementById('hamburger'), drawer = document.getElementById('mobileNavDrawer'), overlay = document.getElementById('mobileNavOverlay');
-    if(!btn||!drawer||!overlay) return;
-    function openNav(){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); drawer.classList.add('open'); overlay.classList.add('visible'); document.body.classList.add('nav-open'); }
-    function closeNav(){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); drawer.classList.remove('open'); overlay.classList.remove('visible'); document.body.classList.remove('nav-open'); }
-    btn.addEventListener('click', function(){ drawer.classList.contains('open') ? closeNav() : openNav(); });
-    overlay.addEventListener('click', closeNav);
-    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
-    window.addEventListener('resize', function(){ if(window.innerWidth >= 1024) closeNav(); });
-    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
+    const btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay');
+    if(!btn||!drawer||!overlay)return;
+    function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');}
+    function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');}
+    btn.addEventListener('click',()=>drawer.classList.contains('open')?c():o());
+    overlay.addEventListener('click',c);
+    drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c));
+    window.addEventListener('resize',()=>{if(window.innerWidth>=1024)c();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')c();});
   })();
 
   // Initial render
   filterRequests();
-
-
-  
 </script>
 </body>
 </html>

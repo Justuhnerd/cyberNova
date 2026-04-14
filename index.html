@@ -8,126 +8,350 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
   <style>
-    html,body{overflow-x:hidden;font-family:'Inter',sans-serif;}
-    .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* ── Hamburger ─────────────────────────────────────────── */
-    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
-    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
-    .hamburger span:nth-child(1){margin-bottom:5px;}
-    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
-    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
-    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
-
-    /* ── Overlay ───────────────────────────────────────────── */
-    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
-    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
-
-    /* ── Drawer ────────────────────────────────────────────── */
-    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
-    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
-    .mobile-nav-drawer.open{transform:translateX(0);}
-    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
-    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
-    .mobile-nav-links{flex:1;padding:10px 0;}
-    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
-    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
-    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
-    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
-    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(1){transition-delay:.07s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(2){transition-delay:.12s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(3){transition-delay:.17s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(4){transition-delay:.22s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(5){transition-delay:.27s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(6){transition-delay:.32s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(7){transition-delay:.37s}
-    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
-    .drawer-footer .cta-primary{display:block;background:#E0A800;color:#0A2F44;text-align:center;padding:13px 20px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;transition:filter .2s;}
-    .drawer-footer .cta-primary:hover{filter:brightness(1.07);}
-    .drawer-footer .cta-secondary{display:flex;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;}
-    .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
-    body.nav-open{overflow:hidden;}
-
-    @media(max-width:767px){
-      .hamburger{display:flex;}
-      .desktop-nav{display:none!important;}
-      .desktop-cta{display:none!important;}
-      .desktop-admin-link{display:none!important;}
-    }
-    @media(max-width:640px){
-      .hero-btns{flex-direction:column!important;}
-      .hero-btns a{width:100%!important;text-align:center!important;}
-      .stats-grid{grid-template-columns:1fr 1fr!important;}
-      .threat-grid,.pillar-grid,.case-grid,.testimonials-grid{grid-template-columns:1fr!important;}
-      .cta-btn{display:block!important;width:100%!important;text-align:center!important;}
-      .footer-grid{grid-template-columns:1fr!important;gap:2rem!important;}
+    .pub-header-stripe {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: #E0A800;
+      z-index: 60;
     }
 
-    /* ── Page-specific ─────────────────────────────────────── */
-    .hero-overlay{background:linear-gradient(135deg,rgba(10,47,68,.96) 0%,rgba(10,47,68,.72) 100%);}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-    .fade-up{animation:fadeUp .7s ease forwards;opacity:0;}
-    .fade-up-1{animation-delay:.1s}.fade-up-2{animation-delay:.25s}.fade-up-3{animation-delay:.4s}.fade-up-4{animation-delay:.55s}
-    .threat-card{transition:all .22s;border-left:3px solid transparent;}
-    .threat-card:hover{border-left-color:#E0A800;transform:translateX(4px);box-shadow:0 4px 20px rgba(10,47,68,.08);}
-    .star{color:#E0A800;}
-    .pillar-card{transition:all .22s;}
-    .pillar-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(10,47,68,.12);}
-    .pillar-card:hover .p-icon{background-color:#1a6c40;}
-    .p-icon{transition:background-color .22s;}
-    .tooltip{position:relative;cursor:help;border-bottom:1px dashed #E0A800;}
-    .tooltip::after{content:attr(data-tip);position:absolute;bottom:125%;left:50%;transform:translateX(-50%);background:#0A2F44;color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50;font-weight:400;}
-    .tooltip:hover::after{opacity:1;}
-    .grid-bg{background-image:linear-gradient(rgba(10,47,68,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(10,47,68,.04) 1px,transparent 1px);background-size:40px 40px;}
+    .pub-header {
+      position: fixed;
+      top: 3px; left: 0; right: 0;
+      background: rgba(10, 47, 68, 0.97);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(224, 168, 0, 0.18);
+      z-index: 50;
+      transition: box-shadow 0.25s;
+    }
+    .pub-header.scrolled {
+      box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    }
+
+    .pub-header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .pub-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .pub-logo img {
+      height: 36px;
+      width: auto;
+    }
+    .pub-logo-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.125rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: #fff;
+      line-height: 1;
+    }
+    .pub-logo-text span { color: #E0A800; }
+
+    .pub-nav {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    @media (min-width: 900px) { .pub-nav { display: flex; } }
+
+    .pub-nav a {
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.62);
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      transition: color 0.18s, background 0.18s;
+      position: relative;
+    }
+    .pub-nav a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+    .pub-nav a.active { color: #E0A800; background: rgba(224,168,0,0.1); }
+    .pub-nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 50%;
+      transform: translateX(-50%);
+      width: 16px; height: 2px;
+      border-radius: 1px;
+      background: #E0A800;
+    }
+
+    .pub-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .pub-site-badge {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #E0A800;
+      background: rgba(224,168,0,0.12);
+      border: 1px solid rgba(224,168,0,0.28);
+      border-radius: 20px;
+      padding: 0.2rem 0.6rem;
+    }
+    .pub-site-badge .material-symbols-outlined { font-size: 13px; }
+    .pub-site-badge.visible { display: flex; }
+
+    .pub-admin-link {
+      display: none;
+      align-items: center;
+      gap: 0.25rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      padding: 0.3rem 0.55rem;
+      border-radius: 6px;
+      transition: color 0.18s, background 0.18s;
+    }
+    .pub-admin-link .material-symbols-outlined { font-size: 15px; }
+    .pub-admin-link:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.06); }
+    @media (min-width: 900px) { .pub-admin-link { display: flex; } }
+
+    .pub-cta {
+      display: none;
+      background: #E0A800;
+      color: #0A2F44;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      padding: 0.45rem 1.05rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.18s, transform 0.12s;
+      white-space: nowrap;
+    }
+    .pub-cta:hover { background: #f0b800; transform: translateY(-1px); }
+    @media (min-width: 900px) { .pub-cta { display: inline-block; } }
+
+    .pub-hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 36px; height: 36px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 6px;
+      border-radius: 6px;
+      transition: background 0.18s;
+    }
+    .pub-hamburger:hover { background: rgba(255,255,255,0.08); }
+    .pub-hamburger span {
+      display: block;
+      height: 2px;
+      background: rgba(255,255,255,0.75);
+      border-radius: 2px;
+      transform-origin: center;
+      transition: transform 0.28s cubic-bezier(.4,0,.2,1), opacity 0.2s, width 0.2s;
+    }
+    .pub-hamburger span:nth-child(1) { width: 22px; }
+    .pub-hamburger span:nth-child(2) { width: 16px; }
+    .pub-hamburger span:nth-child(3) { width: 22px; }
+    .pub-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); width: 22px; }
+    .pub-hamburger.open span:nth-child(2) { opacity: 0; }
+    .pub-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); width: 22px; }
+    @media (min-width: 900px) { .pub-hamburger { display: none; } }
+
+    .pub-drawer {
+      position: fixed;
+      top: 65px; left: 0; right: 0;
+      background: #0A2F44;
+      border-bottom: 2px solid rgba(224,168,0,0.3);
+      z-index: 49;
+      transform: translateY(-110%);
+      opacity: 0;
+      transition: transform 0.32s cubic-bezier(.4,0,.2,1), opacity 0.22s;
+      pointer-events: none;
+    }
+    .pub-drawer.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+
+    .pub-drawer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.25rem 1.25rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .pub-drawer a {
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.65);
+      padding: 0.6rem 0.75rem;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: color 0.15s, background 0.15s;
+    }
+    .pub-drawer a:hover { color: #fff; background: rgba(255,255,255,0.07); }
+    .pub-drawer a.active { color: #E0A800; background: rgba(224,168,0,0.1); }
+    .pub-drawer-divider { height: 1px; background: rgba(255,255,255,0.08); margin: 0.5rem 0; }
+    .pub-drawer-cta {
+      margin-top: 0.5rem;
+      display: block;
+      text-align: center;
+      background: #E0A800;
+      color: #0A2F44;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.7rem;
+      border-radius: 7px;
+      text-decoration: none;
+    }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
+<body>
 
-<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
-<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
-  <div class="drawer-header"><p>Navigation</p></div>
-  <div class="mobile-nav-links">
-    <a href="index.html" class="active"><span class="nav-icon">home</span>Home</a>
-    <a href="services.html"><span class="nav-icon">shield</span>Services</a>
-    <a href="faq.html"><span class="nav-icon">help</span>FAQ</a>
-    <a href="case-studies.html"><span class="nav-icon">folder_open</span>Case Studies</a>
-    <a href="chatbot.html"><span class="nav-icon">smart_toy</span>AI Analyst</a>
-    <a href="gallery.html"><span class="nav-icon">photo_library</span>Gallery</a>
-    <a href="request.html"><span class="nav-icon">mail</span>Contact</a>
-  </div>
-  <div class="drawer-footer">
-    <a href="request.html" class="cta-primary">Get Protected</a>
-    <a href="login.html" class="cta-secondary"><span class="material-symbols-outlined" style="font-size:14px">lock</span>Admin Login</a>
-  </div>
-</nav>
+  <div class="pub-header-stripe" aria-hidden="true"></div>
 
-<header class="fixed top-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
-      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
-      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
-    </a>
-    <nav class="desktop-nav hidden md:flex items-center gap-7 text-sm font-medium">
-      <a href="index.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">Home</a>
-      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
-      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
-      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
-      <a href="chatbot.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">AI Analyst</a>
-      <a href="gallery.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Gallery</a>
-      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
-    </nav>
-    <div class="flex items-center gap-2">
-      <a href="login.html" class="desktop-admin-link hidden md:flex text-slate-500 text-sm font-medium hover:text-[#0A2F44] items-center gap-1"><span class="material-symbols-outlined text-base">lock</span>Admin</a>
-      <a href="request.html" class="desktop-cta hidden md:inline-block bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
-      <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
+ div class="pub-header-stripe" aria-hidden="true"></div>
+ 
+  <header class="pub-header" id="pubHeader">
+    <div class="pub-header-inner">
+ 
+      <a href="index.html" class="pub-logo" aria-label="CyberNova home">
+        <img src="images/logo.png" alt="CyberNova Analytics" />
+        <span class="pub-logo-text">Cyber<span>Nova</span></span>
+      </a>
+ 
+      <nav class="pub-nav" aria-label="Main navigation">
+        <a href="index.html"         data-page="index">Home</a>
+        <a href="services.html"      data-page="services">Services</a>
+        <a href="faq.html"           data-page="faq">FAQ</a>
+        <a href="case-studies.html"  data-page="case-studies">Case Studies</a>
+        <a href="chatbot.html"       data-page="chatbot">AI Analyst</a>
+        <a href="gallery.html"       data-page="gallery">Gallery</a>
+        <a href="request.html"       data-page="request">Contact</a>
+      </nav>
+ 
+      <div class="pub-actions">
+        <span class="pub-site-badge" id="pubSiteBadge" aria-live="polite">
+          <span class="material-symbols-outlined" aria-hidden="true">public</span>
+          Public site
+        </span>
+ 
+        <a href="login.html" class="pub-admin-link" aria-label="Admin login">
+          <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+          Admin
+        </a>
+ 
+        <a href="request.html" class="pub-cta">Get Protected</a>
+ 
+        <button class="pub-hamburger" id="pubHamburger"
+                aria-label="Toggle navigation" aria-expanded="false"
+                aria-controls="pubDrawer">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+ 
     </div>
-  </div>
-</header>
+  </header>
+ 
+  <nav class="pub-drawer" id="pubDrawer" aria-label="Mobile navigation">
+    <div class="pub-drawer-inner">
+      <a href="index.html"        data-page="index">Home</a>
+      <a href="services.html"     data-page="services">Services</a>
+      <a href="faq.html"          data-page="faq">FAQ</a>
+      <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+      <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+      <a href="gallery.html"      data-page="gallery">Gallery</a>
+      <a href="request.html"      data-page="request">Contact</a>
+      <div class="pub-drawer-divider"></div>
+      <a href="login.html" data-page="login">
+        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">lock</span>
+        Admin Login
+      </a>
+      <a href="request.html" class="pub-drawer-cta">Get Protected</a>
+    </div>
+  </nav>
+ 
 
+  <script>
+    (function () {
+      const page = location.pathname.split('/').pop().replace('.html', '') || 'index';
+      document.querySelectorAll('[data-page]').forEach(a => {
+        if (a.dataset.page === page) a.classList.add('active');
+      });
+    })();
+
+    const header = document.getElementById('pubHeader');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 8);
+    }, { passive: true });
+
+    const btn    = document.getElementById('pubHamburger');
+    const drawer = document.getElementById('pubDrawer');
+
+    btn.addEventListener('click', () => {
+      const open = btn.classList.toggle('open');
+      drawer.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+
+    drawer.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        btn.classList.remove('open');
+        drawer.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    document.addEventListener('click', e => {
+      if (!header.contains(e.target) && !drawer.contains(e.target)) {
+        btn.classList.remove('open');
+        drawer.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      }
+    });
+
+    function checkAdminSession() {
+      try {
+        const session = window.CyberNovaDB?.getCurrentSession?.();
+        const badge   = document.getElementById('pubSiteBadge');
+        if (badge) badge.classList.toggle('visible', !!(session?.role === 'admin'));
+      } catch (_) {}
+    }
+    checkAdminSession();
+  </script>
+
+ 
 <main>
   <!-- HERO -->
   <section class="relative min-h-[88vh] flex items-center pt-20 overflow-hidden">

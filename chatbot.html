@@ -8,53 +8,126 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
   <style>
-    /* Base & shared */
-    html,body{overflow-x:hidden;font-family:'Inter',sans-serif;}
-    .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;vertical-align:middle;}
+    /* ── Reset & base ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; }
 
-    /* ── Hamburger & mobile drawer (from services) ──────────── */
-    .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
-    .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
-    .hamburger span:nth-child(1){margin-bottom:5px;}
-    .hamburger span:nth-child(3){margin-top:5px;width:16px;}
-    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-    .hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
-    .hamburger.open span:nth-child(3){width:24px;transform:translateY(-7px) rotate(-45deg);}
-
-    .mobile-nav-overlay{position:fixed;inset:0;background:rgba(10,47,68,.55);backdrop-filter:blur(3px);z-index:8000;opacity:0;pointer-events:none;transition:opacity .3s ease;}
-    .mobile-nav-overlay.visible{opacity:1;pointer-events:all;}
-
-    .mobile-nav-drawer{position:fixed;top:0;right:0;bottom:0;width:min(300px,85vw);background:#0A2F44;z-index:9000;transform:translateX(110%);transition:transform .4s cubic-bezier(.23,1,.32,1);display:flex;flex-direction:column;padding-top:73px;overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.3);}
-    .mobile-nav-drawer::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:linear-gradient(to bottom,#E0A800,transparent 80%);}
-    .mobile-nav-drawer.open{transform:translateX(0);}
-    .drawer-header{padding:20px 28px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
-    .drawer-header p{color:rgba(255,255,255,.4);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0;}
-    .mobile-nav-links{flex:1;padding:10px 0;}
-    .mobile-nav-links a{display:flex;align-items:center;gap:12px;padding:14px 28px;color:rgba(255,255,255,.72);font-size:15px;font-weight:600;text-decoration:none;border-left:3px solid transparent;opacity:0;transform:translateX(16px);transition:color .2s,background .2s,border-left-color .2s,opacity .35s ease,transform .35s ease;}
-    .mobile-nav-links a:hover,.mobile-nav-links a.active{color:#fff;background:rgba(255,255,255,.07);border-left-color:#E0A800;}
-    .mobile-nav-links a .nav-icon{font-family:'Material Symbols Outlined';font-variation-settings:'FILL' 1,'wght' 300,'GRAD' 0,'opsz' 20;font-size:18px;opacity:.6;transition:opacity .2s;}
-    .mobile-nav-links a:hover .nav-icon,.mobile-nav-links a.active .nav-icon{opacity:1;}
-    .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(1){transition-delay:.07s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(2){transition-delay:.12s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(3){transition-delay:.17s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(4){transition-delay:.22s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(5){transition-delay:.27s}
-    .mobile-nav-drawer.open .mobile-nav-links a:nth-child(6){transition-delay:.32s}
-    .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
-    .drawer-footer .cta-primary{display:block;background:#E0A800;color:#0A2F44;text-align:center;padding:13px 20px;border-radius:8px;font-weight:800;font-size:14px;text-decoration:none;transition:filter .2s;}
-    .drawer-footer .cta-primary:hover{filter:brightness(1.07);}
-    .drawer-footer .cta-secondary{display:flex;align-items:center;justify-content:center;gap:6px;color:rgba(255,255,255,.5);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;}
-    .drawer-footer .cta-secondary:hover{color:rgba(255,255,255,.85);}
-    body.nav-open{overflow:hidden;}
-
-    @media(max-width:767px){
-      .hamburger{display:flex;}
-      .desktop-nav{display:none!important;}
-      .desktop-cta{display:none!important;}
+    /* ══════════════════════════════════════════════════════
+       PUBLIC NAV — shared across all public pages
+       (identical to services & case-studies)
+    ══════════════════════════════════════════════════════ */
+    .pub-header-stripe {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; background: #E0A800; z-index: 60;
     }
+    .pub-header {
+      position: fixed; top: 3px; left: 0; right: 0;
+      background: rgba(10,47,68,.97);
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(224,168,0,.18);
+      z-index: 50; transition: box-shadow .25s;
+    }
+    .pub-header.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.25); }
+    .pub-header-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 1.25rem;
+      height: 62px; display: flex; align-items: center;
+      justify-content: space-between; gap: 1.5rem;
+    }
+    .pub-logo { display: flex; align-items: center; gap: .625rem; text-decoration: none; flex-shrink: 0; }
+    .pub-logo img { height: 36px; width: auto; }
+    .pub-logo-text { font-size: 1.125rem; font-weight: 800; letter-spacing: -.04em; color: #fff; line-height: 1; }
+    .pub-logo-text span { color: #E0A800; }
+    .pub-nav { display: none; align-items: center; gap: .25rem; }
+    @media (min-width: 900px) { .pub-nav { display: flex; } }
+    .pub-nav a {
+      text-decoration: none; font-size: .8125rem; font-weight: 500;
+      color: rgba(255,255,255,.62); padding: .35rem .7rem; border-radius: 6px;
+      transition: color .18s, background .18s; position: relative;
+    }
+    .pub-nav a:hover { color: #fff; background: rgba(255,255,255,.07); }
+    .pub-nav a.active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .pub-nav a.active::after {
+      content: ''; position: absolute; bottom: -1px; left: 50%;
+      transform: translateX(-50%); width: 16px; height: 2px;
+      border-radius: 1px; background: #E0A800;
+    }
+    .pub-actions { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
+    .pub-site-badge {
+      display: none; align-items: center; gap: .25rem;
+      font-size: .6875rem; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: #E0A800;
+      background: rgba(224,168,0,.12); border: 1px solid rgba(224,168,0,.28);
+      border-radius: 20px; padding: .2rem .6rem;
+    }
+    .pub-site-badge .material-symbols-outlined { font-size: 13px; }
+    .pub-site-badge.visible { display: flex; }
+    .pub-admin-link {
+      display: none; align-items: center; gap: .25rem;
+      font-size: .8rem; font-weight: 500; color: rgba(255,255,255,.5);
+      text-decoration: none; padding: .3rem .55rem; border-radius: 6px;
+      transition: color .18s, background .18s;
+    }
+    .pub-admin-link .material-symbols-outlined { font-size: 15px; }
+    .pub-admin-link:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.06); }
+    @media (min-width: 900px) { .pub-admin-link { display: flex; } }
+    .pub-cta {
+      display: none; background: #E0A800; color: #0A2F44;
+      font-size: .8125rem; font-weight: 700; padding: .45rem 1.05rem;
+      border-radius: 6px; text-decoration: none;
+      transition: background .18s, transform .12s; white-space: nowrap;
+    }
+    .pub-cta:hover { background: #f0b800; transform: translateY(-1px); }
+    @media (min-width: 900px) { .pub-cta { display: inline-block; } }
+    .pub-hamburger {
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 5px; width: 36px; height: 36px; cursor: pointer;
+      background: none; border: none; padding: 6px;
+      border-radius: 6px; transition: background .18s;
+    }
+    .pub-hamburger:hover { background: rgba(255,255,255,.08); }
+    .pub-hamburger span {
+      display: block; height: 2px; background: rgba(255,255,255,.75);
+      border-radius: 2px; transform-origin: center;
+      transition: transform .28s cubic-bezier(.4,0,.2,1), opacity .2s, width .2s;
+    }
+    .pub-hamburger span:nth-child(1) { width: 22px; }
+    .pub-hamburger span:nth-child(2) { width: 16px; }
+    .pub-hamburger span:nth-child(3) { width: 22px; }
+    .pub-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); width: 22px; }
+    .pub-hamburger.open span:nth-child(2) { opacity: 0; }
+    .pub-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); width: 22px; }
+    @media (min-width: 900px) { .pub-hamburger { display: none; } }
+    .pub-drawer {
+      position: fixed; top: 65px; left: 0; right: 0;
+      background: #0A2F44; border-bottom: 2px solid rgba(224,168,0,.3);
+      z-index: 49; transform: translateY(-110%); opacity: 0;
+      transition: transform .32s cubic-bezier(.4,0,.2,1), opacity .22s;
+      pointer-events: none;
+    }
+    .pub-drawer.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .pub-drawer-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 1.25rem 1.25rem 1.5rem;
+      display: flex; flex-direction: column; gap: .25rem;
+    }
+    .pub-drawer a {
+      text-decoration: none; font-size: .9375rem; font-weight: 500;
+      color: rgba(255,255,255,.65); padding: .6rem .75rem; border-radius: 7px;
+      display: flex; align-items: center; gap: .5rem;
+      transition: color .15s, background .15s;
+    }
+    .pub-drawer a:hover { color: #fff; background: rgba(255,255,255,.07); }
+    .pub-drawer a.active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .pub-drawer-divider { height: 1px; background: rgba(255,255,255,.08); margin: .5rem 0; }
+    .pub-drawer-cta {
+      margin-top: .5rem; display: block; text-align: center;
+      background: #E0A800; color: #0A2F44; font-weight: 700;
+      font-size: .9rem; padding: .7rem; border-radius: 7px; text-decoration: none;
+    }
+    /* Offset for fixed header */
+    .pub-page-offset { height: 65px; }
 
-    /* Chat specific styles */
+    /* ── Chat specific styles ────────────────────────── */
     .chat-scroll::-webkit-scrollbar { width: 4px; }
     .chat-scroll::-webkit-scrollbar-track { background: transparent; }
     .chat-scroll::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
@@ -64,274 +137,262 @@
     .dot:nth-child(3) { animation-delay: 0.3s; }
     @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .msg-in { animation: fadeIn 0.25s ease; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align: middle; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased h-screen flex flex-col">
+<body class="bg-slate-50 text-slate-800 antialiased">
 
-<!-- MOBILE OVERLAY & DRAWER (identical to services/faq) -->
-<div id="mobileNavOverlay" class="mobile-nav-overlay" aria-hidden="true"></div>
-<nav id="mobileNavDrawer" class="mobile-nav-drawer" aria-label="Mobile navigation">
-  <div class="drawer-header"><p>Navigation</p></div>
-  <div class="mobile-nav-links">
-    <a href="index.html"><span class="nav-icon">home</span>Home</a>
-    <a href="services.html"><span class="nav-icon">shield</span>Services</a>
-    <a href="faq.html"><span class="nav-icon">help</span>FAQ</a>
-    <a href="case-studies.html"><span class="nav-icon">folder_open</span>Case Studies</a>
-    <a href="chatbot.html" class="active"><span class="nav-icon">smart_toy</span>AI Analyst</a>
-    <a href="request.html"><span class="nav-icon">mail</span>Contact</a>
-  </div>
-  <div class="drawer-footer">
-    <a href="request.html" class="cta-primary">Contact Security Team</a>
-    <a href="login.html" class="cta-secondary"><span class="material-symbols-outlined" style="font-size:14px">lock</span>Admin Login</a>
-  </div>
-</nav>
+  <!-- ══ GOLD STRIPE ═══════════════════════════════════ -->
+  <div class="pub-header-stripe" aria-hidden="true"></div>
 
-<!-- HEADER: updated with hamburger + desktop nav, matches services style -->
-<header class="bg-white/90 backdrop-blur-md shadow-sm z-50 border-b border-slate-100 flex-shrink-0">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-    <a href="index.html" class="flex items-center gap-2.5 flex-shrink-0">
-      <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%20viewBox%3D%220%200%2036%2036%22%3E%3Crect%20width%3D%2236%22%20height%3D%2236%22%20fill%3D%22%230A2F44%22%20rx%3D%226%22%2F%3E%3Ctext%20x%3D%2218%22%20y%3D%2224%22%20text-anchor%3D%22middle%22%20fill%3D%22%23E0A800%22%20font-weight%3D%22bold%22%20font-size%3D%2214%22%3ECN%3C%2Ftext%3E%3C%2Fsvg%3E';"/>
-      <span class="text-xl font-black tracking-tighter text-[#0A2F44]">CyberNova</span>
-    </a>
-    <nav class="desktop-nav hidden md:flex items-center gap-8 text-sm font-medium">
-      <a href="index.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Home</a>
-      <a href="services.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Services</a>
-      <a href="faq.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">FAQ</a>
-      <a href="case-studies.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Case Studies</a>
-      <a href="chatbot.html" class="text-[#0A2F44] border-b-2 border-[#E0A800] pb-0.5">AI Analyst</a>
-      <a href="request.html" class="text-slate-500 hover:text-[#0A2F44] transition-colors">Contact</a>
-    </nav>
-    <div class="flex items-center gap-2">
-      <a href="request.html" class="desktop-cta hidden md:inline-block bg-[#0A2F44] text-white px-5 py-2 rounded text-sm font-semibold hover:bg-slate-700 transition-colors">Get Protected</a>
-      <button id="hamburger" class="hamburger" aria-label="Toggle navigation" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<div class="flex flex-1 overflow-hidden">
-
-  <!-- LEFT PANEL (desktop only) -->
-  <div class="hidden lg:flex flex-col w-80 bg-[#0A2F44] p-8 flex-shrink-0">
-    <div class="mb-8">
-      <div class="w-12 h-12 bg-[#E0A800] rounded-xl flex items-center justify-center mb-4">
-        <span class="material-symbols-outlined text-[#0A2F44] text-2xl" style="font-variation-settings:'FILL' 1">smart_toy</span>
-      </div>
-      <h2 class="text-white font-black text-xl tracking-tight">Nova AI Analyst</h2>
-      <p class="text-slate-400 text-xs mt-1">Sovereign Intelligence Interface v2.4</p>
-    </div>
-
-    <div class="space-y-3 mb-8">
-      <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-400 rounded-full"></div><span class="text-slate-300 text-xs">System Status: Nominal</span></div>
-      <div class="flex items-center gap-2"><div class="w-2 h-2 bg-[#E0A800] rounded-full"></div><span class="text-slate-300 text-xs">Threat Level: Moderate</span></div>
-      <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-400 rounded-full"></div><span class="text-slate-300 text-xs">Sentinel Network: Online</span></div>
-    </div>
-
-    <div class="mb-6">
-      <p class="text-slate-400 text-xs uppercase tracking-wider font-semibold mb-3">Quick Prompts</p>
-      <div class="space-y-2">
-        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">What are the latest threats in Southern Africa?</button>
-        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">Explain what Ransomware-as-a-Service is.</button>
-        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">How does Zero Trust architecture work?</button>
-        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">What is POPIA and how does it affect us?</button>
-        <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">Run a basic security health check.</button>
-      </div>
-    </div>
-
-    <div class="mt-auto pt-6 border-t border-white/10">
-      <p class="text-slate-500 text-[10px] leading-relaxed">Nova AI provides general cybersecurity guidance. For active incidents, contact our emergency line immediately.</p>
-    </div>
-  </div>
-
-  <!-- CHAT AREA -->
-  <div class="flex flex-col flex-1 bg-slate-50">
-
-    <!-- Chat Header -->
-    <div class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between flex-shrink-0">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 bg-[#0A2F44] rounded-lg flex items-center justify-center">
-          <span class="material-symbols-outlined text-[#E0A800] text-lg" style="font-variation-settings:'FILL' 1">smart_toy</span>
-        </div>
-        <div>
-          <h3 class="font-bold text-[#0A2F44] text-sm">CyberNova AI Analyst</h3>
-          <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div><span class="text-xs text-slate-400">Active — Sentinel Interface</span></div>
-        </div>
-      </div>
-      <button onclick="clearChat()" class="text-slate-400 hover:text-slate-600 transition-colors text-xs flex items-center gap-1">
-        <span class="material-symbols-outlined text-base">refresh</span> Clear
-      </button>
-    </div>
-
-    <!-- Messages -->
-    <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-5 chat-scroll">
-      <!-- Intro AI message -->
-      <div class="flex items-start gap-3 msg-in">
-        <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
-          <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
-        </div>
-        <div class="max-w-[80%]">
-          <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
-            <p class="text-sm leading-relaxed text-slate-700">Welcome, Commander. I'm <strong>Nova</strong> — CyberNova's AI security analyst. System status is <strong class="text-green-600">Nominal</strong>. I can help you understand cybersecurity threats, explain our services, or guide you through security best practices. How can I assist today?</p>
-          </div>
-          <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · Just now</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Input -->
-    <div class="bg-white border-t border-slate-100 p-4 flex-shrink-0">
-      <div class="flex items-center gap-3 max-w-4xl mx-auto">
-        <div class="flex-1 relative">
-          <input id="chatInput" type="text" placeholder="Ask Nova anything about cybersecurity..."
-            class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-4 text-sm focus:outline-none focus:border-[#0A2F44] focus:ring-2 focus:ring-[#0A2F44]/10 transition-all"
-            onkeydown="if(event.key==='Enter') sendMessage()"/>
-        </div>
-        <button onclick="sendMessage()" class="w-11 h-11 bg-[#0A2F44] text-white rounded-xl flex items-center justify-center hover:bg-slate-700 transition-colors flex-shrink-0">
-          <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">send</span>
+  <!-- ══ FIXED HEADER (same as services) ═══════════════ -->
+  <header class="pub-header" id="pubHeader">
+    <div class="pub-header-inner">
+      <a href="index.html" class="pub-logo" aria-label="CyberNova home">
+        <img src="images/logo.png" alt="CyberNova Analytics"/>
+        <span class="pub-logo-text">Cyber<span>Nova</span></span>
+      </a>
+      <nav class="pub-nav" aria-label="Main navigation">
+        <a href="index.html"        data-page="index">Home</a>
+        <a href="services.html"     data-page="services">Services</a>
+        <a href="faq.html"          data-page="faq">FAQ</a>
+        <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+        <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+        <a href="gallery.html"      data-page="gallery">Gallery</a>
+        <a href="request.html"      data-page="request">Contact</a>
+      </nav>
+      <div class="pub-actions">
+        <span class="pub-site-badge" id="pubSiteBadge" aria-live="polite">
+          <span class="material-symbols-outlined" aria-hidden="true">public</span>
+          Public site
+        </span>
+        <a href="login.html" class="pub-admin-link" aria-label="Admin login">
+          <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+          Admin
+        </a>
+        <a href="request.html" class="pub-cta">Get Protected</a>
+        <button class="pub-hamburger" id="pubHamburger"
+                aria-label="Toggle navigation" aria-expanded="false"
+                aria-controls="pubDrawer">
+          <span></span><span></span><span></span>
         </button>
       </div>
-      <p class="text-[10px] text-slate-400 text-center mt-2">CyberNova Intelligence v2.4.1 · For emergencies call +27 11 000 0001</p>
+    </div>
+  </header>
+
+  <!-- ══ MOBILE DRAWER ══════════════════════════════════ -->
+  <nav class="pub-drawer" id="pubDrawer" aria-label="Mobile navigation">
+    <div class="pub-drawer-inner">
+      <a href="index.html"        data-page="index">Home</a>
+      <a href="services.html"     data-page="services">Services</a>
+      <a href="faq.html"          data-page="faq">FAQ</a>
+      <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+      <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+      <a href="gallery.html"      data-page="gallery">Gallery</a>
+      <a href="request.html"      data-page="request">Contact</a>
+      <div class="pub-drawer-divider"></div>
+      <a href="login.html" data-page="login">
+        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">lock</span>
+        Admin Login
+      </a>
+      <a href="request.html" class="pub-drawer-cta">Get Protected</a>
+    </div>
+  </nav>
+
+  <!-- Offset to clear fixed header -->
+  <div class="pub-page-offset" aria-hidden="true"></div>
+
+  <!-- ══ CHAT LAYOUT (full height below header) ════════ -->
+  <div class="flex flex-col" style="height: calc(100vh - 65px); overflow: hidden;">
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Left sidebar - desktop only -->
+      <div class="hidden lg:flex flex-col w-80 bg-[#0A2F44] p-8 flex-shrink-0 overflow-y-auto">
+        <div class="mb-8">
+          <div class="w-12 h-12 bg-[#E0A800] rounded-xl flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-[#0A2F44] text-2xl" style="font-variation-settings:'FILL' 1">smart_toy</span>
+          </div>
+          <h2 class="text-white font-black text-xl tracking-tight">Nova AI Analyst</h2>
+          <p class="text-slate-400 text-xs mt-1">Sovereign Intelligence Interface v2.4</p>
+        </div>
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-400 rounded-full"></div><span class="text-slate-300 text-xs">System Status: Nominal</span></div>
+          <div class="flex items-center gap-2"><div class="w-2 h-2 bg-[#E0A800] rounded-full"></div><span class="text-slate-300 text-xs">Threat Level: Moderate</span></div>
+          <div class="flex items-center gap-2"><div class="w-2 h-2 bg-green-400 rounded-full"></div><span class="text-slate-300 text-xs">Sentinel Network: Online</span></div>
+        </div>
+        <div class="mb-6">
+          <p class="text-slate-400 text-xs uppercase tracking-wider font-semibold mb-3">Quick Prompts</p>
+          <div class="space-y-2">
+            <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">What are the latest threats in Southern Africa?</button>
+            <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">Explain what Ransomware-as-a-Service is.</button>
+            <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">How does Zero Trust architecture work?</button>
+            <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">What is POPIA and how does it affect us?</button>
+            <button onclick="sendQuickPrompt(this)" class="w-full text-left px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 text-xs transition-colors">Run a basic security health check.</button>
+          </div>
+        </div>
+        <div class="mt-auto pt-6 border-t border-white/10">
+          <p class="text-slate-500 text-[10px] leading-relaxed">Nova AI provides general cybersecurity guidance. For active incidents, contact our emergency line immediately.</p>
+        </div>
+      </div>
+
+      <!-- Chat area -->
+      <div class="flex flex-col flex-1 bg-slate-50 overflow-hidden">
+        <div class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 bg-[#0A2F44] rounded-lg flex items-center justify-center">
+              <span class="material-symbols-outlined text-[#E0A800] text-lg" style="font-variation-settings:'FILL' 1">smart_toy</span>
+            </div>
+            <div>
+              <h3 class="font-bold text-[#0A2F44] text-sm">CyberNova AI Analyst</h3>
+              <div class="flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-green-500 rounded-full"></div><span class="text-xs text-slate-400">Active — Sentinel Interface</span></div>
+            </div>
+          </div>
+          <button onclick="clearChat()" class="text-slate-400 hover:text-slate-600 transition-colors text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-base">refresh</span> Clear
+          </button>
+        </div>
+
+        <!-- Messages container -->
+        <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-5 chat-scroll">
+          <div class="flex items-start gap-3 msg-in">
+            <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
+              <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
+            </div>
+            <div class="max-w-[80%]">
+              <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
+                <p class="text-sm leading-relaxed text-slate-700">Welcome, Commander. I'm <strong>Nova</strong> — CyberNova's AI security analyst. System status is <strong class="text-green-600">Nominal</strong>. I can help you understand cybersecurity threats, explain our services, or guide you through security best practices. How can I assist today?</p>
+              </div>
+              <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · Just now</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input bar -->
+        <div class="bg-white border-t border-slate-100 p-4 flex-shrink-0">
+          <div class="flex items-center gap-3 max-w-4xl mx-auto">
+            <div class="flex-1 relative">
+              <input id="chatInput" type="text" placeholder="Ask Nova anything about cybersecurity..."
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl py-3 pl-4 pr-4 text-sm focus:outline-none focus:border-[#0A2F44] focus:ring-2 focus:ring-[#0A2F44]/10 transition-all"
+                onkeydown="if(event.key==='Enter') sendMessage()"/>
+            </div>
+            <button onclick="sendMessage()" class="w-11 h-11 bg-[#0A2F44] text-white rounded-xl flex items-center justify-center hover:bg-slate-700 transition-colors flex-shrink-0">
+              <span class="material-symbols-outlined text-lg" style="font-variation-settings:'FILL' 1">send</span>
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-400 text-center mt-2">CyberNova Intelligence v2.4.1 · For emergencies call +267 365 000 43</p>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- Floating chatbot button not needed on this page (already the chat interface) -->
+  <!-- Footer (not sticky, appears only if content overflows) -->
+  <footer class="bg-slate-900 text-white py-12 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+      <div><div class="font-black text-2xl tracking-tighter mb-4">CyberNova</div><p class="text-slate-400 text-sm">Empowering the Southern African digital frontier with uncompromised AI security.</p></div>
+      <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Navigate</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="index.html" class="hover:text-white">Home</a></li><li><a href="services.html" class="hover:text-white">Services</a></li><li><a href="request.html" class="hover:text-white">Request Service</a></li><li><a href="chatbot.html" class="hover:text-white">AI Analyst</a></li></ul></div>
+      <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Legal</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="#" class="hover:text-white">Privacy Policy</a></li><li><a href="#" class="hover:text-white">Security Disclosure</a></li><li><a href="#" class="hover:text-white">Terms of Service</a></li></ul></div>
+      <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Contact</h4><ul class="space-y-3 text-sm text-slate-400"><li>info@cybernova.co.bw</li><li>+267 365 000 43</li><li>Gaborone, Botswana</li></ul></div>
+    </div>
+    <div class="max-w-7xl mx-auto mt-10 pt-8 border-t border-slate-800 text-slate-500 text-xs">© 2026 CyberNova Analytics Ltd. All rights reserved.</div>
+  </footer>
 
-<script>
-  // Hamburger logic (identical to services page)
-  (function(){
-    var btn = document.getElementById('hamburger'), drawer = document.getElementById('mobileNavDrawer'), overlay = document.getElementById('mobileNavOverlay');
-    if(!btn||!drawer||!overlay) return;
-    function openNav(){ btn.classList.add('open'); btn.setAttribute('aria-expanded','true'); drawer.classList.add('open'); overlay.classList.add('visible'); document.body.classList.add('nav-open'); }
-    function closeNav(){ btn.classList.remove('open'); btn.setAttribute('aria-expanded','false'); drawer.classList.remove('open'); overlay.classList.remove('visible'); document.body.classList.remove('nav-open'); }
-    btn.addEventListener('click', function(){ drawer.classList.contains('open') ? closeNav() : openNav(); });
-    overlay.addEventListener('click', closeNav);
-    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
-    window.addEventListener('resize', function(){ if(window.innerWidth >= 768) closeNav(); });
-    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeNav(); });
-  })();
-
-  // Chat logic (fully preserved)
-  const responses = {
-    "ransomware": "Ransomware-as-a-Service (RaaS) is a criminal business model where ransomware developers lease their malicious tools to affiliates in exchange for a cut of ransom payments. It's the reason ransomware attacks have exploded — the barrier to entry is near zero. Affiliates don't need technical skills; they just need access to the RaaS platform. CyberNova's Adaptive Threat Intel monitors known RaaS groups active in the SADC region, including Cl0p and LockBit affiliates targeting local infrastructure.",
-    "zero trust": "Zero Trust is a security model built on the principle of 'never trust, always verify.' Unlike traditional perimeter security (which trusts anything inside the network), Zero Trust assumes breach and verifies every request regardless of origin. It requires strict identity verification, least-privilege access, micro-segmentation, and continuous monitoring. CyberNova natively integrates Zero Trust principles across all deployments — every user, device, and workload is treated as potentially hostile until verified.",
-    "popia": "POPIA (Protection of Personal Information Act) is South Africa's comprehensive data protection law, similar to GDPR. It governs how organisations collect, process, store, and share personal information. Key obligations include appointing an Information Officer, getting explicit consent for data processing, implementing technical security measures, and reporting breaches within 72 hours. Non-compliance can result in fines up to R10 million or 10 years imprisonment. CyberNova's Sovereign Cloud Guard ensures your architecture maintains POPIA compliance at the infrastructure level.",
-    "threat": "Current high-priority threats in the Southern African region include: (1) Ransomware attacks targeting financial institutions and government departments — we've tracked a 42% increase year-on-year. (2) Business Email Compromise (BEC) scams targeting CFOs and finance teams. (3) Supply chain attacks via third-party software vendors. (4) Phishing campaigns exploiting load-shedding and banking themes. CyberNova's threat intelligence team actively tracks 14 threat actor groups known to operate in the SADC region.",
-    "health": "Based on general security benchmarks, a basic health check includes: ✓ Patch management — are all systems updated? ✓ MFA enforcement across all user accounts ✓ Privileged Access Management (PAM) controls ✓ Endpoint Detection & Response (EDR) deployment ✓ Backup integrity and offline copies ✓ Network segmentation status ✓ Employee phishing simulation scores. For a comprehensive automated assessment of your specific environment, I'd recommend submitting a Service Request so our team can run a formal vulnerability assessment.",
-    "default": [
-      "That's a great question. Cybersecurity in the Southern African context involves unique challenges around data sovereignty, regulatory compliance (POPIA, GDPR), and region-specific threat actors. CyberNova's Sovereign Protection Framework is designed specifically for these conditions. Would you like me to explain any specific aspect in more detail?",
-      "From a security perspective, I'd recommend looking at this through the lens of our four-pillar framework: Adaptive Threat Intelligence, Sovereign Cloud Guard, Rapid Incident Response, and Executive Insight. Each pillar addresses a different dimension of your security posture. Which would you like to explore?",
-      "That's within our operational scope. CyberNova's team of regional analysts can provide detailed guidance on this. For immediate specialist input, you can submit a Service Request and our team will respond within 2 business hours. In the meantime, I can provide general guidance — what specifically would you like to know?",
-      "Interesting question. In the SADC threat landscape, this is increasingly relevant. Our Sentinel AI monitors millions of signals daily to detect patterns like this before they manifest into incidents. Would you like me to elaborate on our detection methodology or our incident response approach?"
-    ]
-  };
-
-  function getResponse(input) {
-    const lower = input.toLowerCase();
-    if (lower.includes('ransomware') || lower.includes('raas')) return responses.ransomware;
-    if (lower.includes('zero trust') || lower.includes('zerotrust')) return responses['zero trust'];
-    if (lower.includes('popia') || lower.includes('gdpr') || lower.includes('compliance')) return responses.popia;
-    if (lower.includes('threat') || lower.includes('attack') || lower.includes('southern africa') || lower.includes('sadc')) return responses.threat;
-    if (lower.includes('health') || lower.includes('check') || lower.includes('audit') || lower.includes('assessment')) return responses.health;
-    return responses.default[Math.floor(Math.random() * responses.default.length)];
-  }
-
-  function appendMessage(text, isUser) {
-    const container = document.getElementById('chatMessages');
-    const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    const div = document.createElement('div');
-    div.className = `flex items-start gap-3 msg-in ${isUser ? 'justify-end' : ''}`;
-    if (isUser) {
-      div.innerHTML = `<div class="max-w-[80%]"><div class="bg-[#0A2F44] text-white px-4 py-3 rounded-xl rounded-tr-none shadow-sm"><p class="text-sm leading-relaxed">${escapeHtml(text)}</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1 text-right">You · ${now}</span></div>`;
-    } else {
-      div.innerHTML = `
-        <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
-          <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
-        </div>
-        <div class="max-w-[80%]">
-          <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
-            <p class="text-sm leading-relaxed text-slate-700">${escapeHtml(text)}</p>
-          </div>
-          <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ${now}</span>
-        </div>`;
+  <script>
+    /* ── Chat logic (unchanged) ───────────────────────── */
+    const responses = {
+      ransomware: "Ransomware-as-a-Service (RaaS) is a criminal business model where ransomware developers lease their malicious tools to affiliates in exchange for a cut of ransom payments. It's the reason ransomware attacks have exploded — the barrier to entry is near zero. CyberNova's Adaptive Threat Intel monitors known RaaS groups active in the SADC region, including Cl0p and LockBit affiliates targeting local infrastructure.",
+      zeroTrust:  "Zero Trust is a security model built on the principle of 'never trust, always verify.' Unlike traditional perimeter security, Zero Trust assumes breach and verifies every request regardless of origin. It requires strict identity verification, least-privilege access, micro-segmentation, and continuous monitoring. CyberNova natively integrates Zero Trust principles across all deployments.",
+      popia:      "POPIA (Protection of Personal Information Act) is South Africa's comprehensive data protection law. Key obligations include appointing an Information Officer, getting explicit consent for data processing, implementing technical security measures, and reporting breaches to the Information Regulator within 72 hours. Non-compliance can result in fines up to R10 million or 10 years imprisonment.",
+      threat:     "Current high-priority threats in the Southern African region include: (1) Ransomware attacks targeting financial institutions and government departments — a 42% increase year-on-year. (2) Business Email Compromise (BEC) scams targeting CFOs and finance teams. (3) Supply chain attacks via third-party software vendors. (4) Phishing campaigns exploiting load-shedding and banking themes.",
+      health:     "A basic security health check covers: ✓ Patch management — are all systems updated? ✓ MFA enforcement across all user accounts ✓ Privileged Access Management (PAM) controls ✓ Endpoint Detection &amp; Response (EDR) deployment ✓ Backup integrity and offline copies ✓ Network segmentation ✓ Employee phishing simulation scores. For a comprehensive assessment, submit a Service Request.",
+      defaults:   [
+        "That's a great question. Cybersecurity in the Southern African context involves unique challenges around data sovereignty, regulatory compliance (POPIA, GDPR), and region-specific threat actors. CyberNova's Sovereign Protection Framework is designed specifically for these conditions. Would you like me to explain any specific aspect?",
+        "From a security perspective, I'd recommend looking at this through the lens of our four-pillar framework: Adaptive Threat Intelligence, Sovereign Cloud Guard, Rapid Incident Response, and Executive Insight. Which would you like to explore?",
+        "That's within our operational scope. For immediate specialist input, submit a Service Request and our team will respond within 2 business hours. In the meantime, I can provide general guidance — what specifically would you like to know?",
+        "In the SADC threat landscape, this is increasingly relevant. Our Sentinel AI monitors millions of signals daily to detect patterns like this before they manifest into incidents. Would you like me to elaborate on our detection methodology or incident response approach?"
+      ]
+    };
+    function getResponse(input){
+      let l = input.toLowerCase();
+      if (l.includes('ransomware') || l.includes('raas')) return responses.ransomware;
+      if (l.includes('zero trust') || l.includes('zerotrust')) return responses.zeroTrust;
+      if (l.includes('popia') || l.includes('gdpr') || l.includes('compliance')) return responses.popia;
+      if (l.includes('threat') || l.includes('attack') || l.includes('southern africa') || l.includes('sadc')) return responses.threat;
+      if (l.includes('health') || l.includes('check') || l.includes('audit') || l.includes('assessment')) return responses.health;
+      return responses.defaults[Math.floor(Math.random() * responses.defaults.length)];
     }
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-  }
+    function escapeHtml(str){
+      return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : '&gt;');
+    }
+    function appendMessage(text, isUser){
+      let container = document.getElementById('chatMessages');
+      let now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      let div = document.createElement('div');
+      div.className = 'flex items-start gap-3 msg-in' + (isUser ? ' justify-end' : '');
+      if (isUser) {
+        div.innerHTML = '<div class="max-w-[80%]"><div class="bg-[#0A2F44] text-white px-4 py-3 rounded-xl rounded-tr-none shadow-sm"><p class="text-sm leading-relaxed">' + escapeHtml(text) + '</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1 text-right">You · ' + now + '</span></div>';
+      } else {
+        div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center"><span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span></div><div class="max-w-[80%]"><div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm"><p class="text-sm leading-relaxed text-slate-700">' + text + '</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ' + now + '</span></div>';
+      }
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+    function showTyping(){
+      let container = document.getElementById('chatMessages');
+      let div = document.createElement('div');
+      div.id = 'typingIndicator';
+      div.className = 'flex items-start gap-3';
+      div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center"><span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span></div><div class="bg-white border border-slate-100 px-4 py-4 rounded-tl-none rounded-xl shadow-sm flex gap-1.5 items-center"><div class="dot w-2 h-2 bg-slate-400 rounded-full"></div><div class="dot w-2 h-2 bg-slate-400 rounded-full"></div><div class="dot w-2 h-2 bg-slate-400 rounded-full"></div></div>';
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+    function hideTyping(){
+      let el = document.getElementById('typingIndicator');
+      if (el) el.remove();
+    }
+    function sendMessage(){
+      let input = document.getElementById('chatInput');
+      let text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      appendMessage(text, true);
+      showTyping();
+      setTimeout(() => { hideTyping(); appendMessage(getResponse(text), false); }, 1200 + Math.random() * 800);
+    }
+    function sendQuickPrompt(btn){
+      document.getElementById('chatInput').value = btn.textContent.trim();
+      sendMessage();
+    }
+    function clearChat(){
+      let container = document.getElementById('chatMessages');
+      container.innerHTML = '';
+      let now = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+      let div = document.createElement('div');
+      div.className = 'flex items-start gap-3 msg-in';
+      div.innerHTML = '<div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center"><span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span></div><div class="max-w-[80%]"><div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm"><p class="text-sm leading-relaxed text-slate-700">Session cleared. How can I assist you today?</p></div><span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ' + now + '</span></div>';
+      container.appendChild(div);
+    }
 
-  function escapeHtml(str) {
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-      return c;
-    });
-  }
-
-  function showTyping() {
-    const container = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.id = 'typingIndicator';
-    div.className = 'flex items-start gap-3';
-    div.innerHTML = `
-      <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
-        <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
-      </div>
-      <div class="bg-white border border-slate-100 px-4 py-4 rounded-tl-none rounded-xl shadow-sm flex gap-1.5 items-center">
-        <div class="dot w-2 h-2 bg-slate-400 rounded-full"></div>
-        <div class="dot w-2 h-2 bg-slate-400 rounded-full"></div>
-        <div class="dot w-2 h-2 bg-slate-400 rounded-full"></div>
-      </div>`;
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-  }
-
-  function hideTyping() {
-    const el = document.getElementById('typingIndicator');
-    if (el) el.remove();
-  }
-
-  function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    appendMessage(text, true);
-    showTyping();
-    setTimeout(() => {
-      hideTyping();
-      appendMessage(getResponse(text), false);
-    }, 1200 + Math.random() * 800);
-  }
-
-  function sendQuickPrompt(btn) {
-    const text = btn.textContent.trim();
-    document.getElementById('chatInput').value = text;
-    sendMessage();
-  }
-
-  function clearChat() {
-    const container = document.getElementById('chatMessages');
-    container.innerHTML = '';
-    // Re-add welcome message
-    const now = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    const welcomeDiv = document.createElement('div');
-    welcomeDiv.className = 'flex items-start gap-3 msg-in';
-    welcomeDiv.innerHTML = `
-      <div class="w-8 h-8 rounded-lg bg-[#0A2F44] flex-shrink-0 flex items-center justify-center">
-        <span class="material-symbols-outlined text-[#E0A800] text-sm" style="font-variation-settings:'FILL' 1">smart_toy</span>
-      </div>
-      <div class="max-w-[80%]">
-        <div class="bg-white border border-slate-100 px-4 py-3 rounded-tl-none rounded-xl shadow-sm">
-          <p class="text-sm leading-relaxed text-slate-700">Session cleared. How can I assist you today?</p>
-        </div>
-        <span class="text-[10px] text-slate-400 mt-1 block px-1">Nova AI · ${now}</span>
-      </div>`;
-    container.appendChild(welcomeDiv);
-  }
-</script>
+    /* ══════════════════════════════════════════════════════
+       PUBLIC NAV JS — active page, scroll shadow, drawer
+    ══════════════════════════════════════════════════════ */
+    (function () {
+      let page = location.pathname.split('/').pop().replace('.html', '') || 'index';
+      document.querySelectorAll('[data-page]').forEach(a => { if (a.dataset.page === page) a.classList.add('active'); });
+      let hdr = document.getElementById('pubHeader');
+      window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', window.scrollY > 8), { passive: true });
+      let btn = document.getElementById('pubHamburger');
+      let drawer = document.getElementById('pubDrawer');
+      function openDrawer() { btn.classList.add('open'); drawer.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; }
+      function closeDrawer() { btn.classList.remove('open'); drawer.classList.remove('open'); btn.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
+      btn.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+      document.addEventListener('click', e => { if (drawer.classList.contains('open') && !hdr.contains(e.target) && !drawer.contains(e.target)) closeDrawer(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
+      try {
+        let session = window.CyberNovaDB && typeof window.CyberNovaDB.getCurrentSession === 'function' ? window.CyberNovaDB.getCurrentSession() : null;
+        let badge = document.getElementById('pubSiteBadge');
+        if (badge) badge.classList.toggle('visible', !!(session && session.role === 'admin'));
+      } catch(e) {}
+    })();
+  </script>
 </body>
 </html>

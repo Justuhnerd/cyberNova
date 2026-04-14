@@ -7,13 +7,12 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
-  <script src="js/admin-nav.js"></script>
-
+  <!-- Storage layer -->
+  <script src="storage.js"></script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
     const firebaseConfig = {
       apiKey: "AIzaSyD68cOjLOliszubuAHHpXU8kpr0rXuLUos",
       authDomain: "cybernova-3f09c.firebaseapp.com",
@@ -22,10 +21,8 @@
       messagingSenderId: "153861855601",
       appId: "1:153861855601:web:8c52c849b6fd01a4a33ed0",
     };
-
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
-
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -38,9 +35,9 @@
         if (mobileAdminInitial) mobileAdminInitial.textContent = user.email[0].toUpperCase();
         document.getElementById('pageContent').classList.remove('hidden');
         document.getElementById('loadingScreen').classList.add('hidden');
+        renderAudit();
       }
     });
-
     window.handleLogout = async function() {
       if (confirm('Are you sure you want to log out?')) {
         await signOut(auth);
@@ -52,8 +49,6 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
-
-    /* Mobile drawer */
     .hamburger{display:none;flex-direction:column;justify-content:center;align-items:center;width:44px;height:44px;background:transparent;border:none;cursor:pointer;padding:0;z-index:9999;flex-shrink:0;}
     .hamburger span{display:block;width:24px;height:2px;background:#0A2F44;border-radius:2px;transition:transform .35s cubic-bezier(.23,1,.32,1),opacity .25s ease,width .3s ease;transform-origin:center;pointer-events:none;}
     .hamburger span:nth-child(1){margin-bottom:5px;}
@@ -76,38 +71,14 @@
     .mobile-nav-drawer.open .mobile-nav-links a{opacity:1;transform:translateX(0);}
     .drawer-footer{padding:20px 28px 36px;border-top:1px solid rgba(255,255,255,.08);display:flex;flex-direction:column;gap:10px;}
     body.nav-open{overflow:hidden;}
-
-    /* Desktop topnav */
-    .topnav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #64748b;
-      border-radius: 6px;
-      text-decoration: none;
-      background: transparent;
-      transition: color .18s, background .18s;
-      white-space: nowrap;
-      position: relative;
-    }
-    .topnav-link:hover { color: #0A2F44; background: rgba(10,47,68,.06); }
-    .topnav-link.topnav-active { color: #E0A800; background: rgba(224,168,0,.1); }
-    .topnav-link.topnav-active::after { content:''; position:absolute; bottom:-1px; left:12px; right:12px; height:2px; background:#E0A800; border-radius:2px 2px 0 0; }
-    .topnav-link .material-symbols-outlined { font-size:16px; font-variation-settings:'FILL' 1; }
-    .topnav-divider { width:1px; height:20px; background:#e2e8f0; }
-
-    @media (max-width: 1023px) {
-      .hamburger { display: flex; }
-      .desktop-topnav-links { display: none !important; }
-      .desktop-topnav-admin { display: none !important; }
-    }
-    @media (min-width: 1024px) {
-      .hamburger { display: none !important; }
-      .page-main { margin-left: 0 !important; }
-    }
+    .topnav-link{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:13px;font-weight:600;color:#64748b;border-radius:6px;text-decoration:none;background:transparent;transition:color .18s,background .18s;white-space:nowrap;position:relative;}
+    .topnav-link:hover{color:#0A2F44;background:rgba(10,47,68,.06);}
+    .topnav-link.topnav-active{color:#E0A800;background:rgba(224,168,0,.1);}
+    .topnav-link.topnav-active::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:#E0A800;border-radius:2px 2px 0 0;}
+    .topnav-link .material-symbols-outlined{font-size:16px;font-variation-settings:'FILL' 1;}
+    .topnav-divider{width:1px;height:20px;background:#e2e8f0;}
+    @media(max-width:1023px){.hamburger{display:flex;}.desktop-topnav-links,.desktop-topnav-admin{display:none!important;}}
+    @media(min-width:1024px){.hamburger{display:none!important;}.page-main{margin-left:0!important;}}
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased">
@@ -132,14 +103,17 @@
     <a href="index.html"><span class="nav-icon">open_in_new</span>Public Site</a>
   </div>
   <div class="drawer-footer">
-    <div class="flex items-center gap-3 px-3 py-2 mb-2"><div id="mobileAdminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div><div><p id="mobileAdminEmail" class="text-white text-xs font-semibold">Loading...</p><p class="text-slate-400 text-[10px]">Administrator</p></div></div>
+    <div class="flex items-center gap-3 px-3 py-2 mb-2">
+      <div id="mobileAdminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
+      <div><p id="mobileAdminEmail" class="text-white text-xs font-semibold">Loading...</p><p class="text-slate-400 text-[10px]">Administrator</p></div>
+    </div>
     <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-300 rounded-lg hover:text-red-400 hover:bg-red-400/10"><span class="material-symbols-outlined text-lg">logout</span><span>Logout</span></button>
   </div>
 </nav>
-<!-- Unified Admin Header (stacked brand, non‑overlapping) -->
+
+<!-- Header -->
 <header class="fixed top-0 w-full bg-white/95 backdrop-blur-md shadow-sm z-50 border-b border-slate-100">
   <div class="flex items-center justify-between gap-3 w-full px-4 sm:px-6 lg:px-8 h-16">
-    <!-- Logo + stacked brand -->
     <a href="admin.html" class="flex items-center gap-3 flex-shrink-0">
       <img src="images/logo.png" alt="CyberNova" class="h-9 w-auto"/>
       <div class="leading-tight">
@@ -147,22 +121,18 @@
         <div class="text-[9px] text-[#E0A800] font-bold tracking-widest uppercase">Admin Panel</div>
       </div>
     </a>
-
-    <!-- Desktop navigation (scrollable if needed) -->
     <div class="hidden lg:flex items-center gap-2 overflow-x-auto flex-1 min-w-0 justify-center">
       <nav class="desktop-topnav-links flex items-center gap-0.5">
-        <a href="admin.html" class="topnav-link" id="nav-dashboard"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
-        <a href="requests.html" class="topnav-link" id="nav-requests"><span class="material-symbols-outlined">mark_as_unread</span>Requests <span class="ml-1 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">84</span></a>
-        <a href="analytics.html" class="topnav-link" id="nav-analytics"><span class="material-symbols-outlined">analytics</span>Analytics</a>
-        <a href="traffic-analytics.html" class="topnav-link" id="nav-traffic"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
-        <a href="content.html" class="topnav-link" id="nav-content"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
-        <a href="audit.html" class="topnav-link" id="nav-audit"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
+        <a href="admin.html" class="topnav-link"><span class="material-symbols-outlined">dashboard</span>Dashboard</a>
+        <a href="requests.html" class="topnav-link"><span class="material-symbols-outlined">mark_as_unread</span>Requests</a>
+        <a href="analytics.html" class="topnav-link"><span class="material-symbols-outlined">analytics</span>Analytics</a>
+        <a href="traffic-analytics.html" class="topnav-link"><span class="material-symbols-outlined">traffic</span>Traffic Analytics</a>
+        <a href="content.html" class="topnav-link"><span class="material-symbols-outlined">edit_note</span>Content Mgmt</a>
+        <a href="audit.html" class="topnav-link topnav-active"><span class="material-symbols-outlined">fact_check</span>Audit Trail</a>
         <div class="topnav-divider mx-2"></div>
         <a href="index.html" class="topnav-link text-slate-400"><span class="material-symbols-outlined">open_in_new</span>Public Site</a>
       </nav>
     </div>
-
-    <!-- Admin info + logout (always on right) -->
     <div class="desktop-topnav-admin flex items-center gap-2 lg:gap-3 flex-shrink-0">
       <div class="flex items-center gap-2">
         <div id="adminInitial" class="w-8 h-8 bg-[#E0A800] rounded-full flex items-center justify-center text-[#0A2F44] font-black text-sm">A</div>
@@ -177,8 +147,6 @@
         <span class="text-xs hidden sm:inline">Logout</span>
       </button>
     </div>
-
-    <!-- Mobile hamburger -->
     <button id="hamburger" class="hamburger ml-auto lg:hidden" aria-label="Toggle navigation" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -188,35 +156,152 @@
 <!-- Main Content -->
 <div id="pageContent" class="hidden page-main">
   <div class="p-6 lg:p-8 pt-24 lg:pt-24">
-    <div class="mb-6 flex justify-between items-start">
-      <div><h2 class="text-2xl font-black text-[#0A2F44] mb-1">Audit Trail</h2><p class="text-slate-500 text-sm">All content changes logged with actor, action, and timestamp.</p></div>
-      <button onclick="clearAudit()" class="text-xs text-slate-400 hover:text-red-500 transition-colors border border-slate-200 px-3 py-1.5 rounded-lg">Clear Log</button>
+    <div class="mb-6 flex justify-between items-start flex-wrap gap-4">
+      <div>
+        <h2 class="text-2xl font-black text-[#0A2F44] mb-1">Audit Trail</h2>
+        <p class="text-slate-500 text-sm">Immutable log of all content actions — publish, edit, archive, restore, delete.</p>
+      </div>
+      <!-- No clear button — audit trail is non-editable by design (NFR-03) -->
+      <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-lg text-xs font-semibold">
+        <span class="material-symbols-outlined text-base" style="font-variation-settings:'FILL' 1">lock</span>
+        Read-only · Cannot be modified
+      </div>
     </div>
+
+    <!-- Filter bar -->
+    <div class="bg-white rounded-xl shadow-sm p-4 mb-4 flex flex-wrap gap-4 items-end">
+      <div class="flex-1 min-w-[180px]">
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Search</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-base">search</span>
+          <input type="text" id="auditSearch" placeholder="Title, action, type..." class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#0A2F44]">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Action</label>
+        <select id="auditActionFilter" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">All</option>
+          <option value="published">Published</option>
+          <option value="edited">Edited</option>
+          <option value="archived">Archived</option>
+          <option value="restored">Restored</option>
+          <option value="deleted">Deleted</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Type</label>
+        <select id="auditTypeFilter" class="border border-slate-200 rounded-lg px-3 py-2 text-sm bg-white">
+          <option value="">All</option>
+          <option value="case-study">Case Study</option>
+          <option value="blog">Blog</option>
+          <option value="testimonial">Testimonial</option>
+          <option value="gallery">Gallery</option>
+        </select>
+      </div>
+      <button onclick="resetAuditFilters()" class="text-slate-500 text-sm hover:text-[#0A2F44] flex items-center gap-1">
+        <span class="material-symbols-outlined text-base">refresh</span> Reset
+      </button>
+    </div>
+
     <div class="bg-white rounded-xl shadow-sm overflow-hidden overflow-x-auto">
-      <table class="w-full text-left min-w-[600px]">
-        <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider"><tr><th class="px-5 py-4">Timestamp</th><th class="px-5 py-4">Actor</th><th class="px-5 py-4">Category</th><th class="px-5 py-4">Action</th><th class="px-5 py-4">Item</th></tr></thead>
+      <table class="w-full text-left min-w-[640px]">
+        <thead class="bg-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+          <tr>
+            <th class="px-5 py-4">Timestamp</th>
+            <th class="px-5 py-4">Actor</th>
+            <th class="px-5 py-4">Content Type</th>
+            <th class="px-5 py-4">Title</th>
+            <th class="px-5 py-4">Action</th>
+          </tr>
+        </thead>
         <tbody id="auditTableBody" class="text-sm divide-y divide-slate-50 font-mono text-xs"></tbody>
       </table>
-      <div id="auditEmpty" class="p-10 text-center text-slate-400 text-sm">No audit entries yet. Actions will appear here as you manage content.</div>
+      <div id="auditEmpty" class="p-12 text-center text-slate-400 text-sm hidden">
+        <span class="material-symbols-outlined text-4xl text-slate-300 block mb-2">history</span>
+        No audit entries yet. Actions from Content Management will appear here.
+      </div>
     </div>
+
+    <p class="text-xs text-slate-400 mt-3 text-right" id="auditCount"></p>
   </div>
 </div>
 
 <script>
   // Hamburger
-  (function(){ var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay'); if(!btn||!drawer||!overlay)return; function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');} function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');} btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();}); overlay.addEventListener('click',c); drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c)); window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();}); document.addEventListener('keydown',function(e){if(e.key==='Escape')c();}); })();
+  (function(){
+    var btn=document.getElementById('hamburger'),drawer=document.getElementById('mobileNavDrawer'),overlay=document.getElementById('mobileNavOverlay');
+    if(!btn||!drawer||!overlay)return;
+    function o(){btn.classList.add('open');btn.setAttribute('aria-expanded','true');drawer.classList.add('open');overlay.classList.add('visible');document.body.classList.add('nav-open');}
+    function c(){btn.classList.remove('open');btn.setAttribute('aria-expanded','false');drawer.classList.remove('open');overlay.classList.remove('visible');document.body.classList.remove('nav-open');}
+    btn.addEventListener('click',function(){drawer.classList.contains('open')?c():o();});
+    overlay.addEventListener('click',c);
+    drawer.querySelectorAll('a').forEach(a=>a.addEventListener('click',c));
+    window.addEventListener('resize',function(){if(window.innerWidth>=1024)c();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')c();});
+  })();
 
-  const auditLog = JSON.parse(sessionStorage.getItem('cn_audit') || '[]');
+  // ── Action badge colours ──────────────────────────────────────
+  const actionColors = {
+    published: 'bg-green-50 text-green-700',
+    edited:    'bg-blue-50 text-blue-700',
+    archived:  'bg-yellow-50 text-yellow-700',
+    restored:  'bg-purple-50 text-purple-700',
+    deleted:   'bg-red-50 text-red-700',
+  };
+
+  // ── Render ────────────────────────────────────────────────────
   function renderAudit() {
+    const kw     = (document.getElementById('auditSearch')?.value || '').toLowerCase();
+    const action = document.getElementById('auditActionFilter')?.value || '';
+    const type   = document.getElementById('auditTypeFilter')?.value || '';
+
+    let entries = CyberNovaDB.getAudit().slice().reverse(); // newest first
+
+    if (kw)     entries = entries.filter(e => (e.targetTitle||'').toLowerCase().includes(kw) || (e.action||'').includes(kw));
+    if (action) entries = entries.filter(e => e.action === action);
+    if (type)   entries = entries.filter(e => e.targetType === type);
+
     const tbody = document.getElementById('auditTableBody');
     const empty = document.getElementById('auditEmpty');
-    if (auditLog.length === 0) { empty.classList.remove('hidden'); tbody.innerHTML = ''; return; }
+    const count = document.getElementById('auditCount');
+
+    count.textContent = `${entries.length} entr${entries.length !== 1 ? 'ies' : 'y'}`;
+
+    if (entries.length === 0) {
+      tbody.innerHTML = '';
+      empty.classList.remove('hidden');
+      return;
+    }
     empty.classList.add('hidden');
-    const typeColors = { publish:'bg-green-50 text-green-700', edit:'bg-blue-50 text-blue-700', archive:'bg-yellow-50 text-yellow-700', delete:'bg-red-50 text-red-700', undo:'bg-purple-50 text-purple-700', logout:'bg-slate-50 text-slate-600' };
-    tbody.innerHTML = auditLog.map(e => `<tr><td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">${e.ts}</td><td class="px-5 py-3.5 text-slate-700 font-medium">${e.actor}</td><td class="px-5 py-3.5 text-slate-400 capitalize">${e.category}</td><td class="px-5 py-3.5 text-slate-600">${e.action}</td><td class="px-5 py-3.5"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${typeColors[e.type] || 'bg-slate-50 text-slate-500'}">${e.type}</span></td></tr>`).join('');
+
+    tbody.innerHTML = entries.map(e => `
+      <tr class="hover:bg-slate-50">
+        <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">
+          ${new Date(e.timestamp).toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'short',timeStyle:'medium'})}
+        </td>
+        <td class="px-5 py-3.5 text-slate-700 font-medium font-sans">${e.actor || 'admin'}</td>
+        <td class="px-5 py-3.5 text-slate-400 capitalize font-sans">${e.targetType || '—'}</td>
+        <td class="px-5 py-3.5 text-slate-600 font-sans max-w-[200px] truncate">${e.targetTitle || '—'}</td>
+        <td class="px-5 py-3.5">
+          <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${actionColors[e.action] || 'bg-slate-50 text-slate-500'}">
+            ${e.action}
+          </span>
+        </td>
+      </tr>
+    `).join('');
   }
-  function clearAudit() { if(confirm('Clear all audit entries from this session?')) { auditLog.length = 0; sessionStorage.removeItem('cn_audit'); renderAudit(); } }
-  renderAudit();
+
+  function resetAuditFilters() {
+    document.getElementById('auditSearch').value = '';
+    document.getElementById('auditActionFilter').value = '';
+    document.getElementById('auditTypeFilter').value = '';
+    renderAudit();
+  }
+
+  // Filter events
+  document.getElementById('auditSearch').addEventListener('input', renderAudit);
+  document.getElementById('auditActionFilter').addEventListener('change', renderAudit);
+  document.getElementById('auditTypeFilter').addEventListener('change', renderAudit);
 </script>
 </body>
 </html>
