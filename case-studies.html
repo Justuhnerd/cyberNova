@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -233,9 +233,9 @@
   <!-- Offset to clear fixed header -->
   <div class="pub-page-offset" aria-hidden="true"></div>
 
-  <!-- ══ MAIN CASE STUDIES CONTENT (original layout, filters, cards, modal) ══ -->
+  <!-- ══ MAIN CASE STUDIES CONTENT (updated with search) ══ -->
   <main>
-    <!-- PAGE HERO -->
+    <!-- PAGE HERO (now includes search bar) -->
     <section class="bg-[#0A2F44] py-14 sm:py-20 px-4 sm:px-8 relative overflow-hidden">
       <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image:linear-gradient(rgba(224,168,0,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(224,168,0,.3) 1px,transparent 1px);background-size:40px 40px;"></div>
       <div class="absolute top-0 right-0 w-80 h-80 bg-[#E0A800]/5 rounded-full -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>
@@ -243,6 +243,16 @@
         <span class="text-[#E0A800] text-xs font-bold tracking-widest uppercase">Proven Results</span>
         <h1 class="cs-h1 text-4xl sm:text-5xl font-black text-white mt-3 mb-4 tracking-tight">Case Studies</h1>
         <p class="text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed">Real engagements. Measurable outcomes. Every case study follows the <strong class="text-white">Challenge → Solution → Outcome</strong> format.</p>
+        
+        <!-- NEW: Search bar (mirroring FAQ page) -->
+        <div class="mt-8 max-w-xl mx-auto relative">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+          <input id="caseSearch" type="text" placeholder="Search case studies, sectors, threats..." 
+                 class="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl py-3.5 pl-12 pr-10 text-sm focus:outline-none focus:border-[#E0A800] focus:bg-white/15 transition-all"
+                 oninput="applyFilters()"/>
+          <span id="searchClearCase" class="hidden absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-white material-symbols-outlined text-lg" onclick="clearSearch()">close</span>
+        </div>
+
         <div class="cs-stats flex gap-4 sm:gap-6 mt-6 sm:mt-8 flex-wrap">
           <div class="text-center"><div class="text-xl sm:text-2xl font-black text-[#E0A800]">6</div><p class="text-slate-400 text-xs mt-0.5">Case Studies</p></div>
           <div class="divider w-px bg-white/10 hidden sm:block"></div>
@@ -312,9 +322,11 @@
             <div class="bg-[#0A2F44] px-5 sm:px-6 py-4 flex justify-between items-start gap-2"><div><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">Financial · Harare, ZW</span><h3 class="text-white font-bold text-sm sm:text-base mt-1 leading-snug">SOC Implementation — Microfinance</h3></div><span class="bg-yellow-500/20 text-yellow-300 text-[10px] font-bold px-2 py-1 rounded-full uppercase mt-1 flex-shrink-0">Fraud</span></div>
             <div class="p-5 sm:p-6 space-y-4"><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Challenge</p><p class="text-slate-600 text-sm leading-relaxed">A Zimbabwean microfinance institution serving 40,000 clients had zero security monitoring. Repeated transaction fraud, credential theft, and insider-enabled data access went undetected for weeks.</p></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Solution</p><p class="text-slate-600 text-sm leading-relaxed">CyberNova deployed a lightweight <span class="tip" data-tip="Security Operations Centre">SOC</span> using open-source <span class="tip" data-tip="Security Information and Event Management">SIEM</span> tooling scaled to budget. Real-time anomaly detection implemented in 6 weeks.</p></div><div class="bg-green-50 border border-green-100 rounded-lg p-3"><p class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-1">Outcome</p><div class="flex flex-wrap gap-2 sm:gap-3"><span class="text-xs font-bold text-green-800">✓ Fraud down 94%</span><span class="text-xs font-bold text-green-800">✓ ROI in 2 months</span><span class="text-xs font-bold text-green-800">✓ 40K clients protected</span></div></div><button onclick="openModal('case3')" class="w-full text-center text-[#0A2F44] text-xs font-bold hover:underline flex items-center justify-center gap-1 pt-1">Read full case study <span class="material-symbols-outlined text-sm">arrow_forward</span></button></div>
           </div>
-          <!-- Card 4-6 similar (condensed for brevity but fully functional) -->
+          <!-- Card 4 -->
           <div class="case-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden fade-up fade-up-4" data-industry="government" data-threat="apt"><div class="bg-[#0A2F44] px-5 sm:px-6 py-4 flex justify-between items-start gap-2"><div><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">Government · Lusaka, ZM</span><h3 class="text-white font-bold text-sm sm:text-base mt-1 leading-snug">APT Detection & Eviction</h3></div><span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-1 rounded-full uppercase mt-1 flex-shrink-0">APT</span></div><div class="p-5 sm:p-6 space-y-4"><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Challenge</p><p class="text-slate-600 text-sm leading-relaxed">A Zambian ministry's procurement systems had been silently compromised for an estimated 9 months. Classified tender documents and vendor data were being exfiltrated.</p></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Solution</p><p class="text-slate-600 text-sm leading-relaxed">Full network forensic investigation identified 4 C2 beacons, 3 compromised admin accounts, and a custom rootkit. Coordinated eviction completed within 72 hours.</p></div><div class="bg-green-50 border border-green-100 rounded-lg p-3"><p class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-1">Outcome</p><div class="flex flex-wrap gap-2 sm:gap-3"><span class="text-xs font-bold text-green-800">✓ Full eviction in 72hrs</span><span class="text-xs font-bold text-green-800">✓ 0 data lost post-IR</span><span class="text-xs font-bold text-green-800">✓ POPIA-compliant report</span></div></div><button onclick="openModal('case4')" class="w-full text-center text-[#0A2F44] text-xs font-bold hover:underline flex items-center justify-center gap-1 pt-1">Read full case study <span class="material-symbols-outlined text-sm">arrow_forward</span></button></div></div>
+          <!-- Card 5 -->
           <div class="case-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden fade-up fade-up-5" data-industry="financial" data-threat="fraud"><div class="bg-[#0A2F44] px-5 sm:px-6 py-4 flex justify-between items-start gap-2"><div><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">Financial · Johannesburg, SA</span><h3 class="text-white font-bold text-sm sm:text-base mt-1 leading-snug">BEC Attack — CFO Impersonation</h3></div><span class="bg-yellow-500/20 text-yellow-300 text-[10px] font-bold px-2 py-1 rounded-full uppercase mt-1 flex-shrink-0">Fraud</span></div><div class="p-5 sm:p-6 space-y-4"><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Challenge</p><p class="text-slate-600 text-sm leading-relaxed">A Johannesburg asset management firm's accounts payable team received a convincing BEC email impersonating the CFO, authorising a R2.4 million "urgent transfer".</p></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Solution</p><p class="text-slate-600 text-sm leading-relaxed">CyberNova's forensic team traced the transaction chain and worked with FIC to freeze R1.9 million within 4 hours. Email header analysis proved impersonation.</p></div><div class="bg-green-50 border border-green-100 rounded-lg p-3"><p class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-1">Outcome</p><div class="flex flex-wrap gap-2 sm:gap-3"><span class="text-xs font-bold text-green-800">✓ R1.9M recovered</span><span class="text-xs font-bold text-green-800">✓ Perpetrator identified</span><span class="text-xs font-bold text-green-800">✓ MFA deployed post-IR</span></div></div><button onclick="openModal('case5')" class="w-full text-center text-[#0A2F44] text-xs font-bold hover:underline flex items-center justify-center gap-1 pt-1">Read full case study <span class="material-symbols-outlined text-sm">arrow_forward</span></button></div></div>
+          <!-- Card 6 -->
           <div class="case-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden fade-up fade-up-6" data-industry="energy" data-threat="apt"><div class="bg-[#0A2F44] px-5 sm:px-6 py-4 flex justify-between items-start gap-2"><div><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">Energy · Pretoria, SA</span><h3 class="text-white font-bold text-sm sm:text-base mt-1 leading-snug">SCADA Infrastructure Protection</h3></div><span class="bg-purple-500/20 text-purple-300 text-[10px] font-bold px-2 py-1 rounded-full uppercase mt-1 flex-shrink-0">APT</span></div><div class="p-5 sm:p-6 space-y-4"><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Challenge</p><p class="text-slate-600 text-sm leading-relaxed">A South African power utility's SCADA systems were exposed to external networks through a legacy IT/OT boundary misconfiguration.</p></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Solution</p><p class="text-slate-600 text-sm leading-relaxed">Sovereign Cloud Guard deployed to enforce strict OT/IT network separation. Continuous monitoring with ICS-specific threat signatures.</p></div><div class="bg-green-50 border border-green-100 rounded-lg p-3"><p class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-1">Outcome</p><div class="flex flex-wrap gap-2 sm:gap-3"><span class="text-xs font-bold text-green-800">✓ Zero breaches post-deploy</span><span class="text-xs font-bold text-green-800">✓ Full OT/IT segregation</span><span class="text-xs font-bold text-green-800">✓ 99.9% uptime maintained</span></div></div><button onclick="openModal('case6')" class="w-full text-center text-[#0A2F44] text-xs font-bold hover:underline flex items-center justify-center gap-1 pt-1">Read full case study <span class="material-symbols-outlined text-sm">arrow_forward</span></button></div></div>
         </div>
         <div id="noResults" class="hidden text-center py-24"><span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">search_off</span><p class="text-slate-500 font-semibold">No case studies match this filter combination.</p><button onclick="resetFilters()" class="mt-4 text-[#0A2F44] font-bold text-sm underline">Reset filters</button></div>
@@ -360,24 +372,98 @@
     })();
   </script>
 
-  <!-- filters & modal JS (preserved) -->
+  <!-- filters, search, and modal JS (updated with text search) -->
   <script>
     const filterState = { industry: 'all', threat: 'all' };
-    document.querySelectorAll('[data-industry]').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('[data-industry]').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterState.industry = btn.dataset.industry; applyFilters(); }));
-    document.querySelectorAll('[data-threat]').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('[data-threat]').forEach(b => b.classList.remove('active')); btn.classList.add('active'); filterState.threat = btn.dataset.threat; applyFilters(); }));
-    function applyFilters() { const cards = document.querySelectorAll('.case-card'); let visible = 0; cards.forEach(card => { const show = (filterState.industry === 'all' || card.dataset.industry === filterState.industry) && (filterState.threat === 'all' || card.dataset.threat === filterState.threat); card.style.display = show ? '' : 'none'; if (show) visible++; }); document.getElementById('filterCount').textContent = `Showing ${visible} of ${cards.length}`; document.getElementById('noResults').classList.toggle('hidden', visible > 0); }
-    function resetFilters() { filterState.industry = 'all'; filterState.threat = 'all'; document.querySelectorAll('[data-industry],[data-threat]').forEach(b => b.classList.remove('active')); document.querySelectorAll('[data-industry="all"],[data-threat="all"]').forEach(b => b.classList.add('active')); applyFilters(); }
-    const caseData = { case1: { title:'Ransomware Incident Response', meta:'Logistics · Durban, South Africa · Ransomware', challenge:'LockBit ransomware encrypted 100% of operational systems at Durban Freight Solutions 72 hours before a critical port shipment window worth R12 million. All on-site backups appeared encrypted. The operations director called CyberNova at 02:14 AM.', solution:['CIRT activated and on-site within 38 minutes of initial call','Network isolation of affected segments to halt lateral spread','Identification of offline tape backups in a physically separate facility — untouched by ransomware','Forensic analysis of the encryption binary identified a decryption flaw allowing 23% of files to be recovered independently','Parallel recovery track: critical operational systems prioritised — port booking, customs clearance, driver management','Root cause identified: unpatched RDP server with exposed port used as initial access vector'], outcome:'Full systems restored in 18 hours. Zero ransom paid. Shipment met. Post-incident hardening included RDP elimination, offline backup protocol, and EDR deployment.', metrics:['18 hours to restore','R0 ransom paid','R12M shipment protected','Zero data published'] },
+    let searchQuery = '';
+
+    // Industry filter buttons
+    document.querySelectorAll('[data-industry]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-industry]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterState.industry = btn.dataset.industry;
+        applyFilters();
+      });
+    });
+
+    // Threat filter buttons
+    document.querySelectorAll('[data-threat]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-threat]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterState.threat = btn.dataset.threat;
+        applyFilters();
+      });
+    });
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.case-card');
+      let visible = 0;
+      const query = searchQuery.toLowerCase().trim();
+
+      cards.forEach(card => {
+        const showByFilters = (filterState.industry === 'all' || card.dataset.industry === filterState.industry) &&
+                              (filterState.threat === 'all' || card.dataset.threat === filterState.threat);
+        const showBySearch = query === '' || card.textContent.toLowerCase().includes(query);
+        const show = showByFilters && showBySearch;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+
+      document.getElementById('filterCount').textContent = `Showing ${visible} of ${cards.length}`;
+      document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+      document.getElementById('searchClearCase').classList.toggle('hidden', query === '');
+    }
+
+    function clearSearch() {
+      document.getElementById('caseSearch').value = '';
+      searchQuery = '';
+      applyFilters();
+    }
+
+    function resetFilters() {
+      filterState.industry = 'all';
+      filterState.threat = 'all';
+      document.querySelectorAll('[data-industry],[data-threat]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('[data-industry="all"],[data-threat="all"]').forEach(b => b.classList.add('active'));
+      // Also clear search
+      document.getElementById('caseSearch').value = '';
+      searchQuery = '';
+      applyFilters();
+    }
+
+    // Listen for search input directly (already bound via oninput in HTML, but we'll also handle clear via JS)
+    document.getElementById('caseSearch').addEventListener('input', function(e) {
+      searchQuery = e.target.value;
+      applyFilters();
+    });
+
+    // Run initial filter
+    applyFilters();
+
+    // Modal data and functions (unchanged)
+    const caseData = { 
+      case1: { title:'Ransomware Incident Response', meta:'Logistics · Durban, South Africa · Ransomware', challenge:'LockBit ransomware encrypted 100% of operational systems at Durban Freight Solutions 72 hours before a critical port shipment window worth R12 million. All on-site backups appeared encrypted. The operations director called CyberNova at 02:14 AM.', solution:['CIRT activated and on-site within 38 minutes of initial call','Network isolation of affected segments to halt lateral spread','Identification of offline tape backups in a physically separate facility — untouched by ransomware','Forensic analysis of the encryption binary identified a decryption flaw allowing 23% of files to be recovered independently','Parallel recovery track: critical operational systems prioritised — port booking, customs clearance, driver management','Root cause identified: unpatched RDP server with exposed port used as initial access vector'], outcome:'Full systems restored in 18 hours. Zero ransom paid. Shipment met. Post-incident hardening included RDP elimination, offline backup protocol, and EDR deployment.', metrics:['18 hours to restore','R0 ransom paid','R12M shipment protected','Zero data published'] },
       case2: { title:'Phishing Simulation & Awareness Programme', meta:'Government · Cape Town, South Africa · Phishing', challenge:'A Cape Town municipal department with 1,400 staff had an 82% baseline phishing click-through rate. Senior management clicked at the same rate as junior staff. Multiple real credential-harvesting campaigns had compromised 47 staff email accounts.', solution:['Baseline phishing simulation across all 1,400 staff using locally relevant lures (load-shedding notifications, salary increase announcements)','Segmented reporting by department, seniority, and device type','Role-based training modules: executive track, finance track, general staff track','Monthly simulated campaigns with progressively sophisticated lures','Gamified "Security Score" leaderboard by department','Manager escalation protocol for repeat clickers'], outcome:'Over 12 weeks, click-through rate dropped from 82% to 11%. Suspicious email reporting increased by 340%. The programme is now standard onboarding for all new staff.', metrics:['82% → 11% click rate','1,400 staff trained','340% increase in reporting','12-week programme'] },
       case3: { title:'SOC Implementation — Microfinance', meta:'Financial Services · Harare, Zimbabwe · Fraud', challenge:'ZimMicro Finance Ltd, serving 40,000 clients with mobile money and microloans, had no security monitoring infrastructure. An insider-enabled data exfiltration incident exposing 12,000 customer records had gone undetected for 3 months.', solution:['Deployed a budget-appropriate SOC using open-source Wazuh SIEM and Suricata IDS','Real-time mobile transaction anomaly detection tuned for Zimbabwean fraud patterns','Privileged Access Management (PAM) controls for all administrator accounts','User and Entity Behaviour Analytics (UEBA) to detect insider activity','Staff security training and incident reporting hotline','Full implementation in 6 weeks within a constrained infrastructure environment'], outcome:'Fraud incidents dropped 94% within 3 months. The SOC paid for itself through fraud prevention within 2 months.', metrics:['94% fraud reduction','2-month ROI','40,000 clients protected','6-week deployment'] },
       case4: { title:'APT Detection & Eviction', meta:'Government · Lusaka, Zambia · APT', challenge:'A Zambian ministry\'s procurement systems had been silently infiltrated by an APT group for an estimated 9 months. Classified tender documents and ministry communications were being systematically exfiltrated to overseas infrastructure.', solution:['Full forensic investigation across 340 endpoints over 7 days','Identification of 4 active C2 beacons communicating with external servers','3 compromised administrator accounts discovered — credentials sold on dark web','Custom rootkit identified and reverse-engineered to understand scope of compromise','Coordinated simultaneous eviction across all endpoints to prevent re-entrenchment','POPIA-compliant incident report prepared for the Information Regulator'], outcome:'Full eviction completed in 72 hours. No data was exfiltrated post-detection. The ministry has since deployed CyberNova\'s continuous monitoring service.', metrics:['72-hour eviction','340 endpoints cleaned','0 data lost post-detection','Full attribution report'] },
       case5: { title:'BEC Attack — CFO Impersonation', meta:'Financial Services · Johannesburg, South Africa · Fraud', challenge:'A Johannesburg asset management firm received a Business Email Compromise (BEC) email impersonating the CFO using a domain registered 24 hours earlier. The accounts payable manager authorised a R2.4 million transfer to a compromised vendor account.', solution:['Immediate engagement — transaction traced through FIC (Financial Intelligence Centre)','Worked with the receiving bank\'s fraud team to freeze R1.9 million within 4 hours','Email header analysis, domain registration forensics, and IP tracing for law enforcement','Dark web search confirmed CFO credentials were for sale from a prior phishing compromise','Implemented DMARC, DKIM, and SPF email authentication controls','Deployed dual-authorisation controls for all transfers above R500,000'], outcome:'R1.9 million of R2.4 million recovered. Perpetrator network identified and referred to SAPS. Email authentication controls prevent future spoofing attempts.', metrics:['R1.9M recovered','Perpetrator identified','DMARC/DKIM deployed','Dual-auth controls live'] },
       case6: { title:'SCADA Infrastructure Protection', meta:'Energy · Pretoria, South Africa · APT', challenge:'A South African power utility\'s SCADA systems were found to have a legacy IT/OT boundary misconfiguration exposing industrial control interfaces to the broader corporate network. A threat actor had been performing reconnaissance for 6 weeks.', solution:['Emergency network segmentation to isolate all OT/ICS systems from IT networks','Deployment of Sovereign Cloud Guard with ICS-specific threat detection signatures','Zero-trust access controls for all SCADA console access — biometric + hardware token','Continuous monitoring of all OT network traffic for anomalous commands','Staff training for OT security — separate track from IT security awareness','Incident response runbook specifically for ICS/SCADA scenarios'], outcome:'Zero security incidents in the 12 months following deployment. Full OT/IT network segregation achieved. 99.9% uptime maintained throughout the security uplift.', metrics:['Zero breaches post-deploy','Full OT/IT segregation','99.9% uptime','SACSA 2024 recognition'] }
     };
-    function openModal(id) { const c = caseData[id]; document.getElementById('modalContent').innerHTML = `<div class="bg-[#0A2F44] px-6 sm:px-8 py-5 sm:py-6 flex justify-between items-start rounded-t-2xl gap-3"><div><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">${c.meta}</span><h2 class="text-white font-black text-lg sm:text-xl mt-1">${c.title}</h2></div><button onclick="closeModal()" class="text-white/60 hover:text-white mt-1 flex-shrink-0 p-1"><span class="material-symbols-outlined">close</span></button></div><div class="p-6 sm:p-8 space-y-6"><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Challenge</p><p class="text-slate-600 text-sm leading-relaxed">${c.challenge}</p></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Solution</p><ul class="space-y-2">${c.solution.map(s => `<li class="flex gap-2 text-sm text-slate-600"><span class="text-[#E0A800] font-bold flex-shrink-0">→</span>${s}</li>`).join('')}</ul></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Outcome</p><p class="text-slate-600 text-sm leading-relaxed mb-3">${c.outcome}</p><div class="flex flex-wrap gap-2">${c.metrics.map(m => `<span class="bg-green-50 text-green-700 border border-green-100 text-xs font-bold px-3 py-1 rounded-full">✓ ${m}</span>`).join('')}</div></div><a href="request.html" class="flex items-center justify-center gap-2 bg-[#0A2F44] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition-all"><span class="material-symbols-outlined text-base">send</span> Request Similar Engagement</a></div>`; document.getElementById('caseModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
-    function closeModal() { document.getElementById('caseModal').classList.add('hidden'); document.body.style.overflow = ''; }
-    document.getElementById('caseModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-    applyFilters();
+    function openModal(id) { 
+      const c = caseData[id]; 
+      document.getElementById('modalContent').innerHTML = `<div class="bg-[#0A2F44] px-6 sm:px-8 py-5 sm:py-6 flex justify-between items-start rounded-t-2xl gap-3"><div><span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">${c.meta}</span><h2 class="text-white font-black text-lg sm:text-xl mt-1">${c.title}</h2></div><button onclick="closeModal()" class="text-white/60 hover:text-white mt-1 flex-shrink-0 p-1"><span class="material-symbols-outlined">close</span></button></div><div class="p-6 sm:p-8 space-y-6"><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Challenge</p><p class="text-slate-600 text-sm leading-relaxed">${c.challenge}</p></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Solution</p><ul class="space-y-2">${c.solution.map(s => `<li class="flex gap-2 text-sm text-slate-600"><span class="text-[#E0A800] font-bold flex-shrink-0">→</span>${s}</li>`).join('')}</ul></div><div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Outcome</p><p class="text-slate-600 text-sm leading-relaxed mb-3">${c.outcome}</p><div class="flex flex-wrap gap-2">${c.metrics.map(m => `<span class="bg-green-50 text-green-700 border border-green-100 text-xs font-bold px-3 py-1 rounded-full">✓ ${m}</span>`).join('')}</div></div><a href="request.html" class="flex items-center justify-center gap-2 bg-[#0A2F44] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition-all"><span class="material-symbols-outlined text-base">send</span> Request Similar Engagement</a></div>`; 
+      document.getElementById('caseModal').classList.remove('hidden'); 
+      document.body.style.overflow = 'hidden'; 
+    }
+    function closeModal() { 
+      document.getElementById('caseModal').classList.add('hidden'); 
+      document.body.style.overflow = ''; 
+    }
+    document.getElementById('caseModal').addEventListener('click', function(e) { 
+      if (e.target === this) closeModal(); 
+    });
   </script>
 </body>
 </html>

@@ -171,9 +171,17 @@
       <button onclick="switchContent('gallery')" class="tab-btn px-4 py-2 rounded-lg text-sm font-semibold border border-slate-200 text-slate-600" id="ct-gallery">Gallery</button>
     </div>
 
-    <div class="flex justify-between items-center mb-4">
-      <p class="text-xs text-slate-400" id="contentCount">0 items</p>
-      <button onclick="openAddModal()" class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700">
+    <!-- New search + controls row -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-4">
+      <div class="relative flex-1 sm:max-w-sm">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+        <input id="contentSearch" type="text" placeholder="Search titles, categories..."
+               class="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-[#0A2F44] focus:ring-2 focus:ring-[#0A2F44]/10 transition-all"
+               oninput="handleSearch()"/>
+        <span id="searchClear" class="hidden absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-slate-600 material-symbols-outlined text-lg" onclick="clearSearch()">close</span>
+      </div>
+      <p class="text-xs text-slate-400 hidden sm:block" id="contentCount">0 items</p>
+      <button onclick="openAddModal()" class="flex items-center gap-2 bg-[#0A2F44] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-slate-700 flex-shrink-0 whitespace-nowrap">
         <span class="material-symbols-outlined text-base">add</span> Add New
       </button>
     </div>
@@ -249,6 +257,7 @@
   CyberNovaDB.seedIfEmpty();
 
   let currentType = 'case-study';
+  let currentSearchQuery = '';
 
   const tabLabels = {
     'case-study': 'Case Study',
@@ -272,16 +281,32 @@
   }
 
   function renderContentTable() {
-    const items = CyberNovaDB.getContent(currentType);
-    document.getElementById('contentCount').textContent = `${items.length} item${items.length !== 1 ? 's' : ''}`;
+    const allItems = CyberNovaDB.getContent(currentType);
+    let filtered = allItems;
+
+    if (currentSearchQuery.trim()) {
+      const q = currentSearchQuery.toLowerCase().trim();
+      filtered = allItems.filter(item => {
+        const title = (item.title || '').toLowerCase();
+        const metaStr = (item.meta?.category || item.meta?.industry || item.meta?.org || item.meta?.rating || '').toString().toLowerCase();
+        const body = (item.body || '').toLowerCase();
+        return title.includes(q) || metaStr.includes(q) || body.includes(q);
+      });
+    }
+
+    document.getElementById('contentCount').textContent = `${filtered.length} item${filtered.length !== 1 ? 's' : ''}`;
 
     const tbody = document.getElementById('contentTableBody');
-    if (items.length === 0) {
+    if (allItems.length === 0) {
       tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-12 text-center text-slate-400 text-sm">No ${tabLabels[currentType].toLowerCase()}s yet. Click "Add New" to create one.</td></tr>`;
       return;
     }
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-12 text-center text-slate-400 text-sm">No items match your search.</td></tr>`;
+      return;
+    }
 
-    tbody.innerHTML = items.map(item => {
+    tbody.innerHTML = filtered.map(item => {
       const meta = item.meta || {};
       const metaStr = meta.industry || meta.category || meta.org || meta.rating ? (meta.rating ? `⭐ ${meta.rating} · ${meta.org || ''}` : (meta.industry || meta.category || meta.org || '—')) : '—';
       const statusClass = item.status === 'published'
@@ -308,6 +333,21 @@
         </tr>
       `;
     }).join('');
+  }
+
+  // ── Search ──────────────────────────────────────────────────
+  function handleSearch() {
+    const input = document.getElementById('contentSearch');
+    currentSearchQuery = input.value;
+    document.getElementById('searchClear').classList.toggle('hidden', !currentSearchQuery.trim());
+    renderContentTable();
+  }
+
+  function clearSearch() {
+    document.getElementById('contentSearch').value = '';
+    currentSearchQuery = '';
+    document.getElementById('searchClear').classList.add('hidden');
+    renderContentTable();
   }
 
   // ── Modal ─────────────────────────────────────────────────────
