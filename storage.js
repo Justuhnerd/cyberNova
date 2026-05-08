@@ -113,14 +113,24 @@ function addContent(data) {
     type:      data.type    || 'blog',
     title:     data.title   || '',
     body:      data.body    || '',
-    meta:      data.meta    || {},   // flexible: tags, rating, industry, etc.
+    meta:      data.meta    || {},
     status:    'published',
     createdAt: _timestamp(),
     updatedAt: _timestamp(),
   };
   all.push(item);
   _write(DB.CONTENT, all);
-  addAuditEntry({ action: 'published', targetType: item.type, targetId: item.id, targetTitle: item.title });
+
+  // Pass actor if provided, otherwise fallback to 'admin'
+  const actor = data.actor || 'admin';
+  addAuditEntry({
+    action: 'published',
+    targetType: item.type,
+    targetId: item.id,
+    targetTitle: item.title,
+    actor,                  // <-- now recorded
+  });
+
   return item;
 }
 
@@ -133,18 +143,20 @@ function updateContent(id, changes) {
   all[index] = { ...all[index], ...changes, updatedAt: _timestamp() };
   _write(DB.CONTENT, all);
 
+  const actor = changes.actor || 'admin';
   addAuditEntry({
     action:      'edited',
     targetType:  all[index].type,
     targetId:    id,
     targetTitle: all[index].title,
+    actor,                  // <-- now recorded
     previous,
   });
 
   return all[index];
 }
 
-function archiveContent(id) {
+function archiveContent(id, actor = 'admin') {   // accept actor
   const all = _read(DB.CONTENT);
   const index = all.findIndex(c => c.id === id);
   if (index === -1) return null;
@@ -158,13 +170,14 @@ function archiveContent(id) {
     targetType:  all[index].type,
     targetId:    id,
     targetTitle: all[index].title,
+    actor,                  // <-- now recorded
   });
 
   return all[index];
 }
 
 // Undo: restore last archived item of any type (NFR-03)
-function undoLastArchive() {
+function undoLastArchive(actor = 'admin') {     // accept actor
   const audit = _read(DB.AUDIT);
   const lastArchive = [...audit].reverse().find(e => e.action === 'archived');
   if (!lastArchive) return null;
@@ -182,6 +195,7 @@ function undoLastArchive() {
     targetType:  all[index].type,
     targetId:    all[index].id,
     targetTitle: all[index].title,
+    actor,                  // <-- now recorded
   });
 
   return all[index];
@@ -194,11 +208,11 @@ function getAudit() {
   return _read(DB.AUDIT);
 }
 
-function addAuditEntry({ action, targetType, targetId, targetTitle, previous = null }) {
+function addAuditEntry({ action, targetType, targetId, targetTitle, previous = null, actor = 'admin' }) {
   const audit = _read(DB.AUDIT);
   const entry = {
     id:          _id('audit'),
-    actor:       'admin',
+    actor,                // <-- now uses the passed-in actor (or default 'admin')
     action,               // published | edited | archived | restored
     targetType,           // case-study | blog | testimonial | gallery
     targetId,

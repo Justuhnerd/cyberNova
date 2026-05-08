@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CyberNova | Cyber Risk Blog</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+
+    /* ── Public nav (identical to other pages) ── */
+    .pub-header-stripe { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: #E0A800; z-index: 60; }
+    .pub-header { position: fixed; top: 3px; left: 0; right: 0; background: rgba(10,47,68,.97); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid rgba(224,168,0,.18); z-index: 50; transition: box-shadow .25s; }
+    .pub-header.scrolled { box-shadow: 0 4px 24px rgba(0,0,0,.25); }
+    .pub-header-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; height: 62px; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; }
+    .pub-logo { display: flex; align-items: center; gap: .625rem; text-decoration: none; flex-shrink: 0; }
+    .pub-logo img { height: 36px; width: auto; }
+    .pub-logo-text { font-size: 1.125rem; font-weight: 800; letter-spacing: -.04em; color: #fff; line-height: 1; }
+    .pub-logo-text span { color: #E0A800; }
+    .pub-nav { display: none; align-items: center; gap: .25rem; }
+    @media (min-width: 900px) { .pub-nav { display: flex; } }
+    .pub-nav a { text-decoration: none; font-size: .8125rem; font-weight: 500; color: rgba(255,255,255,.62); padding: .35rem .7rem; border-radius: 6px; transition: color .18s, background .18s; position: relative; }
+    .pub-nav a:hover { color: #fff; background: rgba(255,255,255,.07); }
+    .pub-nav a.active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .pub-nav a.active::after { content: ''; position: absolute; bottom: -1px; left: 50%; transform: translateX(-50%); width: 16px; height: 2px; border-radius: 1px; background: #E0A800; }
+    .pub-actions { display: flex; align-items: center; gap: .5rem; flex-shrink: 0; }
+    .pub-site-badge { display: none; align-items: center; gap: .25rem; font-size: .6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #E0A800; background: rgba(224,168,0,.12); border: 1px solid rgba(224,168,0,.28); border-radius: 20px; padding: .2rem .6rem; }
+    .pub-site-badge .material-symbols-outlined { font-size: 13px; }
+    .pub-site-badge.visible { display: flex; }
+    .pub-admin-link { display: none; align-items: center; gap: .25rem; font-size: .8rem; font-weight: 500; color: rgba(255,255,255,.5); text-decoration: none; padding: .3rem .55rem; border-radius: 6px; transition: color .18s, background .18s; }
+    .pub-admin-link .material-symbols-outlined { font-size: 15px; }
+    .pub-admin-link:hover { color: rgba(255,255,255,.85); background: rgba(255,255,255,.06); }
+    @media (min-width: 900px) { .pub-admin-link { display: flex; } }
+    .pub-cta { display: none; background: #E0A800; color: #0A2F44; font-size: .8125rem; font-weight: 700; padding: .45rem 1.05rem; border-radius: 6px; text-decoration: none; transition: background .18s, transform .12s; white-space: nowrap; }
+    .pub-cta:hover { background: #f0b800; transform: translateY(-1px); }
+    @media (min-width: 900px) { .pub-cta { display: inline-block; } }
+    .pub-hamburger { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 36px; height: 36px; cursor: pointer; background: none; border: none; padding: 6px; border-radius: 6px; transition: background .18s; }
+    .pub-hamburger:hover { background: rgba(255,255,255,.08); }
+    .pub-hamburger span { display: block; height: 2px; background: rgba(255,255,255,.75); border-radius: 2px; transform-origin: center; transition: transform .28s cubic-bezier(.4,0,.2,1), opacity .2s, width .2s; }
+    .pub-hamburger span:nth-child(1) { width: 22px; }
+    .pub-hamburger span:nth-child(2) { width: 16px; }
+    .pub-hamburger span:nth-child(3) { width: 22px; }
+    .pub-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); width: 22px; }
+    .pub-hamburger.open span:nth-child(2) { opacity: 0; }
+    .pub-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); width: 22px; }
+    @media (min-width: 900px) { .pub-hamburger { display: none; } }
+    .pub-drawer { position: fixed; top: 65px; left: 0; right: 0; background: #0A2F44; border-bottom: 2px solid rgba(224,168,0,.3); z-index: 49; transform: translateY(-110%); opacity: 0; transition: transform .32s cubic-bezier(.4,0,.2,1), opacity .22s; pointer-events: none; }
+    .pub-drawer.open { transform: translateY(0); opacity: 1; pointer-events: auto; }
+    .pub-drawer-inner { max-width: 1200px; margin: 0 auto; padding: 1.25rem 1.25rem 1.5rem; display: flex; flex-direction: column; gap: .25rem; }
+    .pub-drawer a { text-decoration: none; font-size: .9375rem; font-weight: 500; color: rgba(255,255,255,.65); padding: .6rem .75rem; border-radius: 7px; display: flex; align-items: center; gap: .5rem; transition: color .15s, background .15s; }
+    .pub-drawer a:hover { color: #fff; background: rgba(255,255,255,.07); }
+    .pub-drawer a.active { color: #E0A800; background: rgba(224,168,0,.1); }
+    .pub-drawer-divider { height: 1px; background: rgba(255,255,255,.08); margin: .5rem 0; }
+    .pub-drawer-cta { margin-top: .5rem; display: block; text-align: center; background: #E0A800; color: #0A2F44; font-weight: 700; font-size: .9rem; padding: .7rem; border-radius: 7px; text-decoration: none; }
+    .pub-page-offset { height: 65px; }
+
+    /* ── Filter pills (horizontal scroll) ── */
+    .filter-scroll { display: flex; gap: 6px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding-bottom: 2px; }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+    .filter-pill { transition: all 0.18s; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .filter-pill.active { background: #0A2F44; color: white; border-color: #0A2F44; }
+
+    /* ── Blog cards ── */
+    .blog-card { transition: all 0.25s; min-width: 280px; max-width: 360px; scroll-snap-align: start; }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(10,47,68,.13); }
+
+    /* Card image zoom on hover */
+    .card-img-wrap { overflow: hidden; position: relative; }
+    .card-img { transition: transform 0.45s cubic-bezier(.4,0,.2,1), filter 0.3s; width: 100%; height: 100%; object-fit: cover; display: block; }
+    .blog-card:hover .card-img { transform: scale(1.07); filter: brightness(0.9); }
+
+    /* Category badge colours */
+    .badge-ransomware  { background: #ef4444; }
+    .badge-phishing    { background: #f97316; }
+    .badge-compliance  { background: #3b82f6; }
+    .badge-zero-trust  { background: #a855f7; }
+    .badge-cloud       { background: #06b6d4; }
+    .badge-incident    { background: #ec4899; }
+
+    .blog-scroll-container {
+      display: flex;
+      gap: 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+    }
+    .blog-scroll-container::-webkit-scrollbar { height: 4px; }
+    .blog-scroll-container::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px; }
+    .blog-scroll-container::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px; }
+
+    @media (min-width: 1024px) {
+      .blog-scroll-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        overflow-x: visible;
+        scroll-snap-type: none;
+        gap: 1.5rem;
+      }
+      .blog-card { min-width: auto; max-width: none; }
+    }
+
+    #articleModal { backdrop-filter: blur(4px); }
+    @keyframes slideUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .modal-inner { animation: slideUp 0.3s ease; }
+    .material-symbols-outlined { font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24; vertical-align:middle; }
+  </style>
+</head>
+<body>
+
+  <div class="pub-header-stripe" aria-hidden="true"></div>
+
+  <header class="pub-header" id="pubHeader">
+    <div class="pub-header-inner">
+      <a href="index.html" class="pub-logo" aria-label="CyberNova home">
+        <img src="images/logo.png" alt="CyberNova Analytics"/>
+        <span class="pub-logo-text">Cyber<span>Nova</span></span>
+      </a>
+      <nav class="pub-nav" aria-label="Main navigation">
+        <a href="index.html"        data-page="index">Home</a>
+        <a href="services.html"     data-page="services">Services</a>
+        <a href="faq.html"          data-page="faq">FAQ</a>
+        <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+        <a href="blog.html"         data-page="blog">Blog</a>
+        <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+        <a href="gallery.html"      data-page="gallery">Gallery</a>
+        <a href="request.html"      data-page="request">Contact</a>
+      </nav>
+      <div class="pub-actions">
+        <span class="pub-site-badge" id="pubSiteBadge" aria-live="polite">
+          <span class="material-symbols-outlined" aria-hidden="true">public</span> Public site
+        </span>
+        <a href="login.html" class="pub-admin-link" aria-label="Admin login">
+          <span class="material-symbols-outlined" aria-hidden="true">lock</span> Admin
+        </a>
+        <a href="request.html" class="pub-cta">Get Protected</a>
+        <button class="pub-hamburger" id="pubHamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="pubDrawer">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="pub-drawer" id="pubDrawer" aria-label="Mobile navigation">
+    <div class="pub-drawer-inner">
+      <a href="index.html"        data-page="index">Home</a>
+      <a href="services.html"     data-page="services">Services</a>
+      <a href="faq.html"          data-page="faq">FAQ</a>
+      <a href="case-studies.html" data-page="case-studies">Case Studies</a>
+      <a href="blog.html"         data-page="blog">Blog</a>
+      <a href="chatbot.html"      data-page="chatbot">AI Analyst</a>
+      <a href="gallery.html"      data-page="gallery">Gallery</a>
+      <a href="request.html"      data-page="request">Contact</a>
+      <div class="pub-drawer-divider"></div>
+      <a href="login.html" data-page="login">
+        <span class="material-symbols-outlined" style="font-size:16px" aria-hidden="true">lock</span> Admin Login
+      </a>
+      <a href="request.html" class="pub-drawer-cta">Get Protected</a>
+    </div>
+  </nav>
+
+  <div class="pub-page-offset" aria-hidden="true"></div>
+
+  <main>
+    <!-- HERO -->
+    <section class="bg-[#0A2F44] py-14 sm:py-20 px-4 sm:px-8 relative overflow-hidden">
+      <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image:linear-gradient(rgba(224,168,0,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(224,168,0,.3) 1px,transparent 1px);background-size:40px 40px;"></div>
+      <div class="absolute top-0 right-0 w-80 h-80 bg-[#E0A800]/5 rounded-full -translate-y-1/3 translate-x-1/4 pointer-events-none"></div>
+      <div class="max-w-7xl mx-auto relative z-10">
+        <span class="text-[#E0A800] text-xs font-bold tracking-widest uppercase">Insights & Analysis</span>
+        <h1 class="text-4xl sm:text-5xl font-black text-white mt-3 mb-4 tracking-tight">Cyber Risk Blog</h1>
+        <p class="text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed">Expert articles on threats, compliance, and security best practices for the SADC region.</p>
+        <div class="mt-8 max-w-xl mx-auto relative">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+          <input id="blogSearch" type="text" placeholder="Search articles by title, topic, or keyword..."
+                 class="w-full bg-white/10 border border-white/20 text-white placeholder-slate-400 rounded-xl py-3.5 pl-12 pr-10 text-sm focus:outline-none focus:border-[#E0A800] focus:bg-white/15 transition-all"
+                 oninput="applyFilters()"/>
+          <span id="searchClearBlog" class="hidden absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-white material-symbols-outlined text-lg" onclick="clearSearch()">close</span>
+        </div>
+        <div class="flex gap-4 sm:gap-6 mt-6 sm:mt-8 flex-wrap">
+          <div class="text-center"><div class="text-xl sm:text-2xl font-black text-[#E0A800]">9</div><p class="text-slate-400 text-xs mt-0.5">Articles</p></div>
+          <div class="divider w-px bg-white/10 hidden sm:block"></div>
+          <div class="text-center"><div class="text-xl sm:text-2xl font-black text-[#E0A800]">6</div><p class="text-slate-400 text-xs mt-0.5">Categories</p></div>
+          <div class="divider w-px bg-white/10 hidden sm:block"></div>
+          <div class="text-center"><div class="text-xl sm:text-2xl font-black text-[#E0A800]">Weekly</div><p class="text-slate-400 text-xs mt-0.5">New Content</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTER BAR (sticky below header) -->
+    <section class="bg-white border-b border-slate-100 sticky top-[65px] z-30 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-slate-400 uppercase tracking-wider flex-shrink-0">Category:</span>
+          <div class="filter-scroll min-w-0 flex-1">
+            <button class="filter-pill active border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="all">All</button>
+            <button class="filter-pill border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="ransomware">Ransomware</button>
+            <button class="filter-pill border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="phishing">Phishing</button>
+            <button class="filter-pill border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="compliance">Compliance</button>
+            <button class="filter-pill border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="zero-trust">Zero Trust</button>
+            <button class="filter-pill border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="cloud">Cloud Security</button>
+            <button class="filter-pill border border-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-semibold" data-category="incident">Incident Response</button>
+          </div>
+          <span id="filterCount" class="text-xs text-slate-400 font-medium flex-shrink-0 ml-auto">Showing 9 of 9</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- BLOG CARDS GRID / HORIZONTAL SCROLLER -->
+    <section class="py-12 sm:py-16 px-4 sm:px-8">
+      <div class="max-w-7xl mx-auto">
+        <div id="blogScroll" class="blog-scroll-container">
+
+          <!-- Article 1 — Ransomware -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="ransomware">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80"
+                   alt="Cybersecurity threat concept"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-ransomware text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Ransomware</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 12 May 2026 · <span class="font-medium text-slate-500">Thabo M.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Ransomware in SADC: Why SMEs Are the New Prime Target</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">Small and medium enterprises are increasingly targeted because they lack dedicated security teams. We explore recent trends and practical defense strategies.</p>
+              <button onclick="openArticle('article1')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 2 — Phishing -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="phishing">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=600&q=80"
+                   alt="Email phishing concept"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-phishing text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Phishing</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 8 May 2026 · <span class="font-medium text-slate-500">Lerato K.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Spot the Scam: 7 Red Flags in Load‑Shedding Phishing Emails</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">Attackers are capitalising on electricity anxiety. We break down a real campaign and show you how to recognise the signs.</p>
+              <button onclick="openArticle('article2')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 3 — Compliance -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="compliance">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=600&q=80"
+                   alt="Legal compliance gavel"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-compliance text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Compliance</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 2 May 2026 · <span class="font-medium text-slate-500">Naledi P.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">POPIA Enforcement is Here: Lessons From the First Fines</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">The Information Regulator has issued its first penalties. We analyse what went wrong and how to avoid becoming a case study.</p>
+              <button onclick="openArticle('article3')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 4 — Zero Trust -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="zero-trust">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=600&q=80"
+                   alt="Digital identity and zero trust security"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-zero-trust text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Zero Trust</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 28 Apr 2026 · <span class="font-medium text-slate-500">David M.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Zero Trust for Hybrid Workforces: A Practical Implementation Guide</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">Remote work is permanent. We show how to apply Zero Trust principles step‑by‑step, from identity to endpoint.</p>
+              <button onclick="openArticle('article4')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 5 — Cloud Security -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="cloud">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80"
+                   alt="Cloud data sovereignty"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-cloud text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Cloud Security</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 22 Apr 2026 · <span class="font-medium text-slate-500">Aisha B.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Data Sovereignty in the Cloud: What SADC Organisations Must Know</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">With local data centres expanding, understanding where your data lives is critical. We demystify the legal and technical layers.</p>
+              <button onclick="openArticle('article5')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 6 — Incident Response -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="incident">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80"
+                   alt="Incident response team at laptops"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-incident text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Incident Response</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 15 Apr 2026 · <span class="font-medium text-slate-500">Kabelo T.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Your First 60 Minutes: An Incident Response Checklist for Managers</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">When a breach is suspected, panic is the enemy. This step‑by‑step checklist keeps your team focused and effective.</p>
+              <button onclick="openArticle('article6')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 7 — Ransomware Negotiation -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="ransomware">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=600&q=80"
+                   alt="Bitcoin cryptocurrency ransom concept"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-ransomware text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Ransomware</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 5 Apr 2026 · <span class="font-medium text-slate-500">Thabo M.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Ransomware Negotiation: Should You Ever Pay?</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">We examine the ethical, legal, and practical arguments for and against paying ransom, plus alternatives.</p>
+              <button onclick="openArticle('article7')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 8 — Compliance / SADC Laws -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="compliance">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=600&q=80"
+                   alt="Data protection legislation and documents"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-compliance text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Compliance</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 28 Mar 2026 · <span class="font-medium text-slate-500">Naledi P.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Beyond POPIA: Data Protection Laws Across the SADC Region</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">A comparative overview of data protection frameworks in Botswana, Namibia, Zimbabwe, and Zambia.</p>
+              <button onclick="openArticle('article8')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+          <!-- Article 9 — Micro-segmentation -->
+          <div class="blog-card bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden" data-category="zero-trust">
+            <div class="card-img-wrap h-48">
+              <img class="card-img"
+                   src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80"
+                   alt="Network server infrastructure"/>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-3 left-3 badge-zero-trust text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">Zero Trust</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-2 text-xs text-slate-400"><span class="material-symbols-outlined text-sm">calendar_today</span> 15 Mar 2026 · <span class="font-medium text-slate-500">David M.</span></div>
+              <h3 class="font-bold text-slate-800 leading-snug">Micro‑Segmentation: The Unsung Hero of Ransomware Defense</h3>
+              <p class="text-slate-500 text-sm line-clamp-3">Limiting lateral movement can stop ransomware in its tracks. We explain how micro‑segmentation works in practice.</p>
+              <button onclick="openArticle('article9')" class="text-[#0A2F44] text-xs font-bold hover:underline flex items-center gap-1">Read article <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+            </div>
+          </div>
+
+        </div>
+        <div id="noResults" class="hidden text-center py-24">
+          <span class="material-symbols-outlined text-5xl text-slate-300 block mb-3">search_off</span>
+          <p class="text-slate-500 font-semibold">No articles match this filter or search.</p>
+          <button onclick="resetFilters()" class="mt-4 text-[#0A2F44] font-bold text-sm underline">Reset filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-12 sm:py-16 px-4 sm:px-8 bg-[#E0A800]">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0A2F44] mb-4">Want deeper insights?</h2>
+        <p class="text-[#0A2F44]/75 mb-6 sm:mb-8 text-base sm:text-lg font-medium">Talk to our specialists about how these risks apply to your organisation.</p>
+        <a href="request.html" class="bg-[#0A2F44] text-white px-8 sm:px-10 py-4 rounded-lg font-bold text-base hover:bg-slate-800 transition-all hover:-translate-y-1 inline-block shadow-xl">Request a Consultation</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- ARTICLE MODAL (full text) -->
+  <div id="articleModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="modal-inner bg-white rounded-2xl w-full max-w-3xl shadow-2xl max-h-[90vh] overflow-y-auto" id="modalContent"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-900 text-white py-12 sm:py-16 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
+      <div><div class="font-black text-2xl tracking-tighter mb-4">CyberNova</div><p class="text-slate-400 text-sm leading-relaxed">Empowering the Southern African digital frontier with uncompromised AI security.</p></div>
+      <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Navigate</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="index.html" class="hover:text-white">Home</a></li><li><a href="services.html" class="hover:text-white">Services</a></li><li><a href="request.html" class="hover:text-white">Request Service</a></li><li><a href="chatbot.html" class="hover:text-white">AI Analyst</a></li></ul></div>
+      <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Legal</h4><ul class="space-y-3 text-sm text-slate-400"><li><a href="#" class="hover:text-white">Privacy Policy</a></li><li><a href="#" class="hover:text-white">Security Disclosure</a></li><li><a href="#" class="hover:text-white">Terms of Service</a></li></ul></div>
+      <div><h4 class="font-bold text-[#E0A800] text-xs mb-5 uppercase tracking-widest">Contact</h4><ul class="space-y-3 text-sm text-slate-400"><li>info@cybernova.co.bw</li><li>+267 365 000 43</li><li>Gaborone, Botswana</li></ul></div>
+    </div>
+    <div class="max-w-7xl mx-auto mt-10 pt-8 border-t border-slate-800 text-slate-500 text-xs">© 2026 CyberNova Analytics Ltd. All rights reserved.</div>
+  </footer>
+
+  <!-- Chat FAB -->
+  <a href="chatbot.html" class="fixed bottom-6 sm:bottom-8 right-4 sm:right-8 w-12 sm:w-14 h-12 sm:h-14 bg-[#0A2F44] text-white rounded-full shadow-2xl flex items-center justify-center hover:bg-slate-800 transition-all hover:scale-110 group z-40 border-2 border-[#E0A800]/30">
+    <span class="material-symbols-outlined text-xl sm:text-2xl group-hover:rotate-12 transition-transform" style="font-variation-settings:'FILL' 1">smart_toy</span>
+    <div class="absolute right-full mr-4 bg-white text-[#0A2F44] px-4 py-2 rounded shadow-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity hidden sm:block">Nova Assistant Online</div>
+  </a>
+
+  <script>
+    (function () {
+      var page = location.pathname.split('/').pop().replace('.html', '') || 'index';
+      document.querySelectorAll('[data-page]').forEach(a => { if (a.dataset.page === page) a.classList.add('active'); });
+      var hdr = document.getElementById('pubHeader');
+      window.addEventListener('scroll', () => hdr.classList.toggle('scrolled', window.scrollY > 8), {passive: true});
+      var btn = document.getElementById('pubHamburger'), drawer = document.getElementById('pubDrawer');
+      function open() { btn.classList.add('open'); drawer.classList.add('open'); btn.setAttribute('aria-expanded','true'); document.body.style.overflow = 'hidden'; }
+      function close() { btn.classList.remove('open'); drawer.classList.remove('open'); btn.setAttribute('aria-expanded','false'); document.body.style.overflow = ''; }
+      btn.addEventListener('click', () => drawer.classList.contains('open') ? close() : open());
+      drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+      document.addEventListener('click', e => { if (drawer.classList.contains('open') && !hdr.contains(e.target) && !drawer.contains(e.target)) close(); });
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+      try {
+        var session = window.CyberNovaDB?.getCurrentSession?.() || null;
+        var badge = document.getElementById('pubSiteBadge');
+        if (badge) badge.classList.toggle('visible', !!(session?.role === 'admin'));
+      } catch(e) {}
+    })();
+  </script>
+
+  <!-- FILTER + SEARCH + MODAL JS -->
+  <script>
+    let selectedCategory = 'all';
+    let searchQuery = '';
+
+    document.querySelectorAll('[data-category]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedCategory = btn.dataset.category;
+        applyFilters();
+      });
+    });
+
+    function applyFilters() {
+      const cards = document.querySelectorAll('.blog-card');
+      let visible = 0;
+      const query = searchQuery.toLowerCase().trim();
+
+      cards.forEach(card => {
+        const show = (selectedCategory === 'all' || card.dataset.category === selectedCategory) &&
+                     (query === '' || card.textContent.toLowerCase().includes(query));
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+
+      document.getElementById('filterCount').textContent = `Showing ${visible} of ${cards.length}`;
+      document.getElementById('noResults').classList.toggle('hidden', visible > 0);
+      document.getElementById('searchClearBlog').classList.toggle('hidden', query === '');
+    }
+
+    function clearSearch() {
+      document.getElementById('blogSearch').value = '';
+      searchQuery = '';
+      applyFilters();
+    }
+
+    function resetFilters() {
+      selectedCategory = 'all';
+      document.querySelectorAll('[data-category]').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-category="all"]').classList.add('active');
+      document.getElementById('blogSearch').value = '';
+      searchQuery = '';
+      applyFilters();
+    }
+
+    document.getElementById('blogSearch').addEventListener('input', e => {
+      searchQuery = e.target.value;
+      applyFilters();
+    });
+
+    applyFilters();
+
+    // Full article content
+    const articles = {
+      article1: {
+        title: 'Ransomware in SADC: Why SMEs Are the New Prime Target',
+        category: 'Ransomware',
+        date: '12 May 2026',
+        author: 'Thabo M.',
+        img: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=900&q=85',
+        body: `<p>Small and medium enterprises (SMEs) are the lifeblood of the SADC economy, accounting for over 60% of employment. Yet a disturbing shift has occurred in the last 18 months: ransomware operators are actively pivoting away from large corporates toward SMEs.</p>
+               <p>The reason is simple economics. Large enterprises have invested heavily in security operations, incident response retainers, and offline backups. SMEs, on the other hand, often rely on a single IT generalist, lack endpoint detection, and may not have tested their backups in months.</p>
+               <p>Recent data from CyberNova's threat intelligence shows a 67% increase in ransomware incidents targeting businesses with fewer than 100 employees in Botswana, Namibia, and South Africa. The average ransom demand has dropped to around $15,000 — an amount carefully calibrated to be painful but affordable.</p>
+               <p>What can SMEs do? Start with these five foundational controls: enforce multi‑factor authentication everywhere, segment your network so an attack on one machine doesn't spread, keep an offline backup that's tested monthly, patch internet‑facing systems religiously, and train staff to recognise phishing — still the primary entry vector.</p>`
+      },
+      article2: {
+        title: 'Spot the Scam: 7 Red Flags in Load‑Shedding Phishing Emails',
+        category: 'Phishing',
+        date: '8 May 2026',
+        author: 'Lerato K.',
+        img: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=900&q=85',
+        body: `<p>As loadshedding continues to impact daily life across Southern Africa, phishing campaigns have evolved to exploit the anxiety around power cuts. Malicious emails impersonating Eskom, municipal power utilities, and even mobile network providers now promise "load‑shedding exemptions" or "priority power restoration" in exchange for personal information.</p>
+               <p>We analysed a recent campaign that targeted over 5,000 recipients in Johannesburg and Cape Town. Here are the seven red flags that gave it away: 1) The sender address used a look‑alike domain (eskom-secure.co.za instead of eskom.co.za). 2) Urgency language — "Your area will be disconnected within 2 hours". 3) Generic greeting — "Dear Customer". 4) Suspicious attachment named "Exemption_Form.exe". 5) Hovering over any link revealed an IP address, not a proper URL. 6) Spelling and grammar errors. 7) The email asked for ID numbers and banking details.</p>
+               <p>Remember: legitimate utilities will never ask for sensitive personal information via email. If you receive such a message, report it to your IT security team and the relevant utility's fraud hotline.</p>`
+      },
+      article3: {
+        title: 'POPIA Enforcement is Here: Lessons From the First Fines',
+        category: 'Compliance',
+        date: '2 May 2026',
+        author: 'Naledi P.',
+        img: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=900&q=85',
+        body: `<p>After years of warnings, the Information Regulator of South Africa has started issuing administrative fines for POPIA violations. The first major case involved a financial services firm that failed to notify affected individuals of a data breach within 72 hours and did not have a valid consent mechanism for direct marketing.</p>
+               <p>The fine: R5 million, reduced from R10 million because the firm cooperated fully and subsequently implemented corrective measures. However, the reputational damage was immense — the story made national headlines.</p>
+               <p>Key takeaways for organisations: 1) Breach notification is not optional — you must have a documented process that kicks in immediately. 2) Consent must be specific, informed, and freely given; pre‑ticked boxes do not qualify. 3) Data protection impact assessments are mandatory for high‑risk processing. 4) The Information Regulator expects to see an Information Officer appointed with real authority, not just a figurehead.</p>`
+      },
+      article4: {
+        title: 'Zero Trust for Hybrid Workforces: A Practical Implementation Guide',
+        category: 'Zero Trust',
+        date: '28 Apr 2026',
+        author: 'David M.',
+        img: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?w=900&q=85',
+        body: `<p>Zero Trust has moved from buzzword to boardroom mandate. But how do you actually implement it without breaking your budget or your users' productivity? This guide outlines a phased approach.</p>
+               <p>Phase 1 (0‑3 months): Inventory all devices and identities. Enforce multi‑factor authentication for all remote access. Phase 2 (3‑6 months): Micro‑segment your most critical applications — HR, finance, IP repositories — so that a compromise in one area doesn't spread. Phase 3 (6‑12 months): Implement continuous session verification; devices must prove they're healthy before connecting. Finally, adopt a "never trust the network" posture where even internal traffic is encrypted and authenticated.</p>
+               <p>In our experience, the biggest challenge is cultural: employees are used to unrestricted internal access. Change management and clear communication are critical.</p>`
+      },
+      article5: {
+        title: 'Data Sovereignty in the Cloud: What SADC Organisations Must Know',
+        category: 'Cloud Security',
+        date: '22 Apr 2026',
+        author: 'Aisha B.',
+        img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=900&q=85',
+        body: `<p>As hyperscale cloud providers open data centres in South Africa and Botswana, organisations face a complex question: where does our data actually reside, and who has jurisdiction over it?</p>
+               <p>Data sovereignty means data is subject to the laws of the country where it is stored. If your data sits in a foreign region, a foreign government might legally compel the cloud provider to hand it over. POPIA requires data controllers to ensure adequate protection for cross‑border data transfers. Similarly, the Botswana Data Protection Act has its own restrictions.</p>
+               <p>The practical solution: adopt a sovereign cloud approach. Choose local data centre regions, encrypt data at rest and in transit with keys you control, and negotiate contractual commitments that require the provider to notify you of any government requests. CyberNova's Sovereign Cloud Guard was purpose‑built for this exact requirement.</p>`
+      },
+      article6: {
+        title: 'Your First 60 Minutes: An Incident Response Checklist for Managers',
+        category: 'Incident Response',
+        date: '15 Apr 2026',
+        author: 'Kabelo T.',
+        img: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=900&q=85',
+        body: `<p>When a security incident is suspected, the first 60 minutes often determine whether it's a manageable event or a catastrophe. We've distilled our incident response experience into a simple checklist for non‑technical managers.</p>
+               <p>Minute 0‑5: Don't panic. Do not reboot affected systems — you may destroy critical evidence. Minute 5‑15: Call your incident response provider (or your internal security team). Activate the pre‑defined communication plan. Minute 15‑30: Isolate affected systems from the network — physically disconnect network cables if necessary. Minute 30‑45: Begin documenting everything: who noticed what, when, what actions have been taken. Minute 45‑60: Decide whether this is a confirmed breach requiring full engagement or a false alarm. Communicate to key stakeholders only — no wide emails yet.</p>
+               <p>Having this checklist printed and visible in the operations centre can make the difference between swift containment and a multi‑day outage.</p>`
+      },
+      article7: {
+        title: 'Ransomware Negotiation: Should You Ever Pay?',
+        category: 'Ransomware',
+        date: '5 Apr 2026',
+        author: 'Thabo M.',
+        img: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=900&q=85',
+        body: `<p>The dilemma is painfully real: your critical systems are encrypted, backups are compromised, and the clock is ticking. Should you pay the ransom?</p>
+               <p>Legally, paying a ransom to a sanctioned entity or terrorist group is illegal in many jurisdictions. Ethically, you're funding criminal activity that will fuel more attacks. Practically, even if you pay, there's no guarantee you'll get your data back — about 40% of victims who pay never receive a working decryptor, according to industry data.</p>
+               <p>We recommend an alternative approach: invest proactively in offline, immutable backups and an incident response retainer. If you're already in a negotiation situation, engage a professional incident response firm that can manage the negotiation on your behalf. They understand the criminal dynamics and can often buy time while recovery options are explored.</p>`
+      },
+      article8: {
+        title: 'Beyond POPIA: Data Protection Laws Across the SADC Region',
+        category: 'Compliance',
+        date: '28 Mar 2026',
+        author: 'Naledi P.',
+        img: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=900&q=85',
+        body: `<p>While POPIA often dominates the data protection conversation, several other SADC countries have enacted or are drafting their own legislation. Botswana's Data Protection Act (2018) mirrors POPIA in many respects but has stricter requirements for cross‑border data transfers. Namibia's Data Protection Bill is currently in parliament. Zimbabwe's Cyber and Data Protection Act (2021) includes provisions for both cybersecurity and privacy.</p>
+               <p>Key differences: Botswana requires annual registration of data controllers with the Information and Data Protection Commission. Zimbabwe's law includes criminal penalties for cyber‑bullying and fake news alongside data protection. Zambia is developing a comprehensive data protection framework expected to be tabled in 2026.</p>
+               <p>Organisations operating across multiple SADC countries need a harmonised compliance strategy that accounts for these variations. CyberNova's Sovereign Cloud Guard includes a compliance mapping module that covers the entire region.</p>`
+      },
+      article9: {
+        title: 'Micro‑Segmentation: The Unsung Hero of Ransomware Defense',
+        category: 'Zero Trust',
+        date: '15 Mar 2026',
+        author: 'David M.',
+        img: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=900&q=85',
+        body: `<p>Micro‑segmentation divides your network into tiny, isolated zones so that if an attacker compromises one server, they can't hop to another. It's one of the most powerful yet under‑utilised defenses against ransomware.</p>
+               <p>Traditional network security relies on a perimeter firewall — once an attacker is inside, they can move freely. Micro‑segmentation implements strict internal firewalls, often down to the individual workload level. Policies are based on identity, not IP address, so they stay consistent even as servers move or scale.</p>
+               <p>In a recent engagement, we implemented micro‑segmentation for a financial services firm. During a subsequent ransomware attempt (a phishing user clicked a malicious attachment), the malware was confined to a single workstation. It never reached the payment processing servers or backup repositories. The cleanup took 4 hours instead of 4 days.</p>`
+      }
+    };
+
+    function openArticle(id) {
+      const art = articles[id];
+      document.getElementById('modalContent').innerHTML = `
+        <div class="relative rounded-t-2xl overflow-hidden">
+          <img src="${art.img}" alt="${art.title}" class="w-full h-48 object-cover"/>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#0A2F44]/90 via-[#0A2F44]/40 to-transparent"></div>
+          <div class="absolute bottom-0 left-0 right-0 px-6 sm:px-8 pb-5 pt-3">
+            <span class="text-[#E0A800] text-[10px] font-bold uppercase tracking-widest">${art.category} · ${art.date} · ${art.author}</span>
+            <h2 class="text-white font-black text-lg sm:text-xl mt-1 leading-snug">${art.title}</h2>
+          </div>
+          <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/40 hover:bg-black/60 text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+        <div class="p-6 sm:p-8 space-y-4 text-slate-600 text-sm leading-relaxed">${art.body}</div>
+        <div class="px-6 sm:px-8 pb-6">
+          <a href="request.html" class="flex items-center justify-center gap-2 bg-[#0A2F44] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-slate-700 transition-all">
+            <span class="material-symbols-outlined text-base">send</span> Discuss This Topic With an Expert
+          </a>
+        </div>`;
+      document.getElementById('articleModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('articleModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('articleModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('articleModal')) closeModal();
+    });
+  </script>
+</body>
+</html>

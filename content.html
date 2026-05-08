@@ -33,6 +33,8 @@
         const mobileAdminInitial = document.getElementById('mobileAdminInitial');
         if (mobileAdminEmail) mobileAdminEmail.textContent = user.email;
         if (mobileAdminInitial) mobileAdminInitial.textContent = user.email[0].toUpperCase();
+        // 👇 NEW: store the current user's email for audit trail
+        window.currentActor = user.email;
         document.getElementById('pageContent').classList.remove('hidden');
         document.getElementById('loadingScreen').classList.add('hidden');
       }
@@ -372,12 +374,16 @@
     const category  = document.getElementById('newCategory').value.trim();
     const body      = document.getElementById('newContent').value.trim();
 
+    // 👇 Get current actor (fallback to 'admin' if not yet loaded)
+    const actor = window.currentActor || 'admin';
+
     if (editingId) {
       // Edit mode
       CyberNovaDB.updateContent(editingId, {
         title,
         body,
         meta: { category },
+        actor,                // 👈 pass current actor
       });
       showUndo(`"${title}" updated.`);
     } else {
@@ -387,6 +393,7 @@
         title,
         body,
         meta:  { category },
+        actor,                // 👈 pass current actor
       });
       showUndo(`"${title}" published.`);
     }
@@ -409,11 +416,20 @@
   function doArchive(id) {
     const item = CyberNovaDB.getContent().find(c => c.id === id);
     if (!item) return;
+
+    // 👇 Get current actor
+    const actor = window.currentActor || 'admin';
+
     if (item.status === 'archived') {
-      CyberNovaDB.updateContent(id, { status: 'published' });
+      // Restore
+      CyberNovaDB.updateContent(id, {
+        status: 'published',
+        actor,                // 👈 pass current actor
+      });
       showUndo(`"${item.title}" restored.`);
     } else {
-      CyberNovaDB.archiveContent(id);
+      // Archive
+      CyberNovaDB.archiveContent(id, actor);   // 👈 second argument is the actor
       showUndo(`"${item.title}" archived. Undo?`);
     }
     renderContentTable();
@@ -428,12 +444,14 @@
     const all = JSON.parse(localStorage.getItem('cn_content') || '[]').filter(c => c.id !== id);
     localStorage.setItem('cn_content', JSON.stringify(all));
 
-    // Log to audit
+    // 👇 Get current actor and pass to audit
+    const actor = window.currentActor || 'admin';
     CyberNovaDB.addAuditEntry({
       action: 'deleted',
       targetType: item.type,
       targetId: id,
       targetTitle: item.title,
+      actor,                // 👈 pass current actor
     });
 
     renderContentTable();
@@ -456,7 +474,9 @@
   }
 
   function undoAction() {
-    const restored = CyberNovaDB.undoLastArchive();
+    // Get current actor and pass to undo
+    const actor = window.currentActor || 'admin';
+    const restored = CyberNovaDB.undoLastArchive(actor);
     if (restored) {
       renderContentTable();
       showUndo(`"${restored.title}" restored.`);
