@@ -271,15 +271,14 @@
     }
     empty.classList.add('hidden');
 
-    // Replace hardcoded 'admin' actor with the current user's email
-    const currentActor = window.currentActor || 'admin';
-
+    // Show the actual actor from the audit entry – never the currently logged‑in admin.
+    // Falls back to 'Unknown' only if the stored actor field is missing.
     tbody.innerHTML = entries.map(e => `
       <tr class="hover:bg-slate-50">
         <td class="px-5 py-3.5 text-slate-500 whitespace-nowrap">
           ${new Date(e.timestamp).toLocaleString('en-ZA',{timeZone:'Africa/Johannesburg',dateStyle:'short',timeStyle:'medium'})}
         </td>
-        <td class="px-5 py-3.5 text-slate-700 font-medium font-sans">${(e.actor === 'admin' ? currentActor : e.actor) || currentActor}</td>
+        <td class="px-5 py-3.5 text-slate-700 font-medium font-sans">${e.actor || 'Unknown'}</td>
         <td class="px-5 py-3.5 text-slate-400 capitalize font-sans">${e.targetType || '—'}</td>
         <td class="px-5 py-3.5 text-slate-600 font-sans max-w-[200px] truncate">${e.targetTitle || '—'}</td>
         <td class="px-5 py-3.5">
